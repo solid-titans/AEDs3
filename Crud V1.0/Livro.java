@@ -86,4 +86,11 @@ public class Livro implements Registro {
         this.nomeLivro = data.readUTF();
         this.nomeAutor = data.readUTF();
     }
+
+    public String toString() {
+        return "Nome do livro: " + this.nomeLivro + "\n" +
+                "Nome do autor: " + this.nomeAutor + "\n" +
+                "Preço do livro: " + this.preco + "\n";
+
+    }
 }
