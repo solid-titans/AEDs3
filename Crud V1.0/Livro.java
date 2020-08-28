@@ -1,11 +1,14 @@
-// Exemplo de classe para ser usada no Crud
-
-class Livro {
+public class Livro {
     private String nomeLivro;
     private String nomeAutor;
     private float preco;
 
-    // Criando um livro
+    // Construtor de um livro vazio
+    public Livro() {
+        this("", "", -1f);
+    }
+
+    // Construtor de um Livro
     public Livro(String nome, String autor, float preco) {
         this.nomeLivro = nome;
         this.nomeAutor = autor;
@@ -13,16 +16,16 @@ class Livro {
     }
 
     // Get nome do Livro
-    public String nomeLivro() {
+    public String getNome() {
         return this.nomeLivro;
     }
 
-    // Get nome do Autor
-    public String nomeAutor() {
+    // Get nome do Livro
+    public String getAutor() {
         return this.nomeAutor;
     }
 
-    // Get preco do Livro
+    // Get nome do Livro
     public float getPreco() {
         return this.preco;
     }
