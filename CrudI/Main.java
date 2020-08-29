@@ -14,8 +14,17 @@ public class Main {
         livros.create(livro2);
         livros.create(livro3);
 
-        livros.update(livro3, 10);
-        Livro ler = livros.read(10);
-        if(ler != null) System.out.println(ler.toString());
+        System.out.println(livros.read(0));
+        System.out.println(livros.read(1));
+
+        livros.update(livro3, 1);
+
+        System.out.println(livros.read(1));
+
+        livros.delete(1);
+
+        if(livros.read(1) == null)
+            System.out.println("Livro apagado com sucesso!");
+
     }
 }
