@@ -1,3 +1,3 @@
-cd 'Crud V1.0'
+cd 'CrudI'
 javac *.java 
-java Registro
+java Main
