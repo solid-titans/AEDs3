@@ -9,7 +9,7 @@ public class Livro implements Registro {
     private String nomeLivro;
     private String nomeAutor;
     private float  preco;
-    private int    id; 
+    private int    id = -1; 
 
     // Construtor de um livro vazio
     public Livro() {
@@ -88,9 +88,10 @@ public class Livro implements Registro {
     }
 
     public String toString() {
-        return "Nome do livro: " + this.nomeLivro + "\n" +
-                "Nome do autor: " + this.nomeAutor + "\n" +
-                "Preço do livro: " + this.preco + "\n";
+        return "ID: "              + this.id        + "\n" +
+                "Nome do livro: "  + this.nomeLivro + "\n" +
+                "Nome do autor: "  + this.nomeAutor + "\n" +
+                "Preço do livro: " + this.preco     + "\n";
 
     }
 }

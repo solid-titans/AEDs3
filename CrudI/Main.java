@@ -8,7 +8,14 @@ public class Main {
         } catch(Exception e) { e.printStackTrace(); }
             
         Livro livro1 = new Livro("Livro1", "Autor1", 10f);
-        System.out.println(livro1.toString());
+        Livro livro2 = new Livro("Livro2", "Autor2", 100f);
+        Livro livro3 = new Livro("Livro3", "Autor3", 3f);
         livros.create(livro1);
+        livros.create(livro2);
+        livros.create(livro3);
+
+        livros.update(livro3, 10);
+        Livro ler = livros.read(10);
+        if(ler != null) System.out.println(ler.toString());
     }
 }

@@ -5,7 +5,8 @@ import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
 
 public class Crud <T extends Registro> {
-    private final String     diretorio = "Dados";
+    private final String     diretorio    = "Dados";
+    private final byte       tamMetadados = 4;
     private RandomAccessFile arquivo;
     private Constructor<T>   constructor;
 
@@ -37,29 +38,146 @@ public class Crud <T extends Registro> {
         } catch(Exception e) { System.err.println(e); }
     }
     
+    // Metodo de criar novos objetos do Crud
+    public int create(T objeto) {
+        int id = -1;
+        try {
+            // Indo no inicio do arquivo pegar o metadado do ID
+            arquivo.seek(0);
+            id = arquivo.readInt();
+
+        } catch(IOException ioe) { ioe.printStackTrace(); }
+
+        // Retornando a id usada na criacao do objeto
+        if(id != -1) this.create(objeto, id);
+        return id;
+    }
+
+    // Lendo objeto a partir 
+    public T read(int id) {
+        // Criando uma entidade para receber o byteArray
+        T entidade        = null;
+        long pos          = -1;
+        boolean encontrar = false;
+
+        try {
+            // Lendo o primeiro registro do programa, apos os metadados
+            arquivo.seek(this.tamMetadados);
+
+            // Procurar o objeto com a id especificada no arquivo
+            boolean lapide;
+            while(arquivo.getFilePointer() < arquivo.length() && !encontrar) {
+                lapide = false;
+                if(arquivo.readChar() == '*') lapide = true;
+                
+                int tamRegistro = arquivo.readInt(); // Pegando o tamanho do registro
+                if(lapide) {
+                    arquivo.seek(arquivo.getFilePointer() + tamRegistro);
+
+                } else {
+                    byte[] registro = new byte[tamRegistro];
+                    arquivo.read(registro);
+
+                    // Construindo uma entidade a partir do vetor de bytes dela
+                    entidade = this.constructor.newInstance();
+                    entidade.fromByteArray(registro);
+
+                    // Verificando se a id do objeto eh a pesquisada
+                    if(entidade.getId() == id) {
+                        // Objeto encontrado
+                        encontrar = true;
+
+                    } // Caso nao encontre continue procurando no while
+                }
+            }
+            
+            
+        } catch(Exception e) { e.printStackTrace(); }
+
+        if(!encontrar) entidade = null;
+        return entidade;
+    }
+
+    // Atualizar um registro
+    public boolean update(T entidade, int id) {
+        boolean atualizou = false;
+
+        // Apagando o registro
+        this.delete(id);
+        // Atualizando o registro
+        if(this.create(entidade, id) != -1) atualizou = true;
+
+        return atualizou;
+    }
+
+    // Apagar um elemento do arquivo
+    public boolean delete(int id) {
+        // Criando uma entidade para receber o byteArray
+        T entidade        = null;
+        long pos          = -1;
+        long posLapide    = -1;
+        boolean encontrar = false;
+
+        try {
+            // Lendo o primeiro registro do programa, apos os metadados
+            arquivo.seek(this.tamMetadados);
+
+            // Procurar o objeto com a id especificada no arquivo
+            boolean lapide;
+            while(arquivo.getFilePointer() < arquivo.length() && !encontrar) {
+                lapide    = false;
+                posLapide = arquivo.getFilePointer();  // Pegando a posicao atual da lapide
+                if(arquivo.readChar() == '*') lapide = true;
+                
+                int tamRegistro = arquivo.readInt(); // Pegando o tamanho do registro
+                if(lapide) {
+                    arquivo.seek(arquivo.getFilePointer() + tamRegistro);
+
+                } else {
+                    byte[] registro = new byte[tamRegistro];
+                    arquivo.read(registro);
+
+                    // Construindo uma entidade a partir do vetor de bytes dela
+                    entidade = this.constructor.newInstance();
+                    entidade.fromByteArray(registro);
+
+                    // Verificando se a id do objeto eh a pesquisada
+                    if(entidade.getId() == id) {
+                        // Objeto encontrado
+                        encontrar = true;
+                        arquivo.seek(posLapide);
+                        arquivo.writeChar('*');
+
+                    } // Caso nao encontre continue procurando no while
+                }
+            }
+            
+            
+        } catch(Exception e) { e.printStackTrace(); }
+
+        return encontrar;
+    }
+
     // Criar um novo CRUD
-    public int create(T entidade) {
-        int id       = -1;
+    private int create(T entidade, int id) {
         long pos     = -1;
         byte[] dadosEntidade;
 
         try {
+            // Pegando o tamanho do arquivo
+            pos = arquivo.length();
+            
+            // Setando a id do objeto
+            entidade.setId(id);
+            
             // Montando um novo objeto
             dadosEntidade = entidade.toByteArray();
 
-            // Pegando o tamanho do arquivo e indo para o inicio dele
-            pos = arquivo.length();
-            arquivo.seek(0);
-
-            // Pegando o metadado ID do arquivo e setando no proximo objeto
-            id = arquivo.readInt();
-            entidade.setId(id);
-
             // Indo para o final do arquivo para escrever o novo objeto
             arquivo.seek(pos);
-            arquivo.writeChar(' ');                 // Escrevendo a lapide no arquivo
+            arquivo.writeChar(' ');                  // Escrevendo a lapide no arquivo
             arquivo.writeInt(dadosEntidade.length); // Escrevendo o tamanho do objeto
-            arquivo.write(dadosEntidade);           // Escrevendo o objeto na memoria
+            arquivo.write(dadosEntidade);            // Escrevendo o objeto na memoria
 
             // Sobreescrendo metadado com o novo id
             arquivo.seek(0);
@@ -73,29 +191,4 @@ public class Crud <T extends Registro> {
 
         return id;
     }
-
-    // Lendo objeto a partir 
-    /*public T read(int id) {
-        // Criando uma entidade para receber o byteArray
-        T entidade = null;
-
-        try {
-
-
-        }
-
-        return null;
-    }
-
-    // Atualizar um registro
-    public boolean update(T entidade) {
-
-        return false;
-    }
-
-    // Apagar um elemento do arquivo
-    public boolean delete(int id) {
-
-        return false;
-    }*/
 }
