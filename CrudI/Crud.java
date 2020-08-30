@@ -12,7 +12,7 @@ public class Crud <T extends Registro> {
 
     // Montar um Crud
     public Crud(String nomeArquivo, Constructor<T> constructor) throws IOException {
-        File d           = new File(this.diretorio);
+        File d                 = new File(this.diretorio);
         String enderecoArquivo = this.diretorio + "/" + nomeArquivo + ".db";
         
         // Atribuindo o construtor
@@ -57,7 +57,6 @@ public class Crud <T extends Registro> {
     public T read(int id) {
         // Criando uma entidade para receber o byteArray
         T entidade        = null;
-        long pos          = -1;
         boolean encontrar = false;
 
         try {
@@ -114,7 +113,6 @@ public class Crud <T extends Registro> {
     public boolean delete(int id) {
         // Criando uma entidade para receber o byteArray
         T entidade        = null;
-        long pos          = -1;
         long posLapide    = -1;
         boolean encontrar = false;
 
