@@ -68,10 +68,10 @@ public class Livro implements Registro {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         DataOutputStream      data      = new DataOutputStream(byteArray);
         
-        data.writeInt(id);
-        data.writeFloat(preco);
-        data.writeUTF(nomeLivro);
-        data.writeUTF(nomeLivro);
+        data.writeInt(this.id);
+        data.writeFloat(this.preco);
+        data.writeUTF(this.nomeLivro);
+        data.writeUTF(this.nomeAutor);
         
         return byteArray.toByteArray();
     }
