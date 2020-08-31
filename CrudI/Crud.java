@@ -158,23 +158,18 @@ public class Crud <T extends Registro> {
 
     // Criar um novo CRUD
     private int create(T entidade, int id) {
-        long pos     = -1;
         byte[] dadosEntidade;
 
-        try {
-            // Pegando o tamanho do arquivo
-            pos = arquivo.length();
-            
+        try {            
             // Setando a id do objeto
             entidade.setId(id);
-            
             // Montando um novo objeto
             dadosEntidade = entidade.toByteArray();
 
             // Indo para o final do arquivo para escrever o novo objeto
-            arquivo.seek(pos);
+            arquivo.seek(arquivo.length());          // Ir para o final do arquivo
             arquivo.writeChar(' ');                  // Escrevendo a lapide no arquivo
-            arquivo.writeInt(dadosEntidade.length); // Escrevendo o tamanho do objeto
+            arquivo.writeInt(dadosEntidade.length);  // Escrevendo o tamanho do objeto
             arquivo.write(dadosEntidade);            // Escrevendo o objeto na memoria
 
             // Sobreescrendo metadado com o novo id
