@@ -24,7 +24,7 @@ public class Main {
         livros.delete(1);
 
         if(livros.read(1) == null)
-            System.out.println("Livro apagado com sucesso!");
+            System.out.println("Livro ID 1 apagado com sucesso!");
 
     }
 }
