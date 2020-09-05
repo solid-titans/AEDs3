@@ -1,2 +1,1 @@
 run = "bash button.sh"
-language = "Java"
