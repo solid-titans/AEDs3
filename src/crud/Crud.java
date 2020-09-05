@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
 
+import crud.indices.*;
+
 public class Crud <T extends Registro> {
     private final String     diretorio    = "Dados";
     private final byte       tamMetadados = 4;

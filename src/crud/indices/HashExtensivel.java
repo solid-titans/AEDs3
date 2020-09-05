@@ -13,7 +13,7 @@
  * Implementado pelo Prof. Marcos Kutova
  * v1.0 - 2019
  */
-package aed3;
+package crud.indices;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
