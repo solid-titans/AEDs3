@@ -1,3 +1,3 @@
-cd 'CrudI'
+cd 'src'
 javac *.java 
 java Main
