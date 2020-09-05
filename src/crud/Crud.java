@@ -1,8 +1,11 @@
+package crud;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
+import produtos.*;
 
 public class Crud <T extends Registro> {
     private final String     diretorio    = "Dados";

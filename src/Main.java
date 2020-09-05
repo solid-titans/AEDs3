@@ -1,3 +1,6 @@
+import produtos.*;
+import crud.*;
+
 public class Main {
     public static void main(String[] args) {
         // Criando Crud
