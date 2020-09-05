@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import crud.Registro;
 
 public class Livro implements Registro {
     private String nomeLivro;
