@@ -8,16 +8,25 @@ import java.lang.reflect.Constructor;
 
 import crud.indices.*;
 
+/*
+* Contrutor de um banco de dados no disco
+* @create  -> Criar um novo produto no disco
+* @read    -> Ler os dados do disco
+* @update  -> Atualizar os dados do disco
+* @delete  -> Apagar dados do disco
+**/
 public class Crud <T extends Registro> {
-    private final String     diretorio    = "Dados";
-    private final byte       tamMetadados = 4;
-    private RandomAccessFile arquivo;
-    private Constructor<T>   constructor;
+    private final String     diretorio    = "Dados";  // Diretorio dos arquivos de dados
+    private final byte       tamMetadados = 4;        // Tamanho dos metadados dos arquivos
+    private RandomAccessFile arquivo;                 // Ponteiro para o arquivo dos produtos
+    private RandomAccessFile indice;                  // Ponteiro para o arquivo de indices
+    private Constructor<T>   constructor;             // Construtor do produto
 
     // Montar um Crud
     public Crud(String nomeArquivo, Constructor<T> constructor) throws IOException {
         File d                 = new File(this.diretorio);
         String enderecoArquivo = this.diretorio + "/" + nomeArquivo + ".db";
+        String enderecoIndice  = this.diretorio + "/" + nomeArquivo + ".idx";
         
         // Atribuindo o construtor
         this.constructor = constructor;
@@ -27,17 +36,27 @@ public class Crud <T extends Registro> {
         
         // Abrindo arquivo para leitura
         try {
-            arquivo = new RandomAccessFile(enderecoArquivo, "rw"); 
+            this.arquivo = new RandomAccessFile(enderecoArquivo, "rw"); 
         
         } catch (FileNotFoundException e) {
             System.err.println("Impossível abrir o arquivo " + enderecoArquivo + "\nTipo de erro: " + e);
 
         }
 
-        // Escrevendo o metadado ID 0, caso o arquivo nao exista
+        // Abrindo o arquivo do Indice para leitura
         try {
-            if(arquivo.length() == 0) 
-                arquivo.writeInt(0);
+            this.indice = new RandomAccessFile(enderecoIndice, "rw");
+
+        } catch (FileNotFoundException e) {
+            System.err.println("Impossível abrir o arquivo " + enderecoIndice + "\nTipo de erro: " + e);
+
+        }
+
+        // Escrevendo os metadados nos arquivos
+        try {
+            // Escrevendo o metadado ID 0, caso o arquivo nao exista
+            if(this.arquivo.length() == 0) 
+                this.arquivo.writeInt(0);
 
         } catch(Exception e) { System.err.println(e); }
     }
