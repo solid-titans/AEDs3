@@ -9,6 +9,9 @@ public interface Registro {
     // Pegar a ID de um objeto
     public int getId();
 
+    // Método de pesquisa por chave secundária
+    public String chaveSecundaria();
+
     // Transformar um objeto   em um vetor de bytes
     public byte[] toByteArray() throws IOException;
     

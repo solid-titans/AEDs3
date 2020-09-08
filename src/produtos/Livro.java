@@ -26,6 +26,11 @@ public class Livro implements Registro {
         this.preco     = preco;
     }
 
+    // Retorno da chave secundaria de pesquisa
+    public String chaveSecundaria() {
+        return this.nomeLivro;
+    }
+
     // Set ID
     public void setId(int id) {
         this.id = id;
