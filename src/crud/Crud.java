@@ -16,17 +16,19 @@ import crud.indices.*;
 * @delete  -> Apagar dados do disco
 **/
 public class Crud <T extends Registro> {
-    private final String     diretorio    = "Dados";  // Diretorio dos arquivos de dados
-    private final byte       tamMetadados = 4;        // Tamanho dos metadados dos arquivos
-    private RandomAccessFile arquivo;                 // Ponteiro para o arquivo dos produtos
-    private RandomAccessFile indice;                  // Ponteiro para o arquivo de indices
-    private Constructor<T>   constructor;             // Construtor do produto
+    private final String           diretorio     = "Dados";     // Diretorio dos arquivos de dados
+    private final byte             tamMetadados  = 4;           // Tamanho dos metadados dos arquivos
+    private RandomAccessFile       arquivo;                     // Ponteiro para o arquivo dos produtos
+    private int                    numDadosCesto = 100;         // Tamanho máximo do número de elementos do cesto
+    private int                    ordemArvoreB  = 5;           // Ordem da Árvore b+
+    private HashExtensivel         arquivoIndiceDireto;         // Arquivo de Hash extensivel para salvar uma ID e um ponteiro para uma entidade
+    private ArvoreBMais_String_Int arquivoIndiceIndireto;       // Arquivo de Arvore B+ para procurar elementos por String
+    private Constructor<T>         constructor;                 // Construtor do produto
 
     // Montar um Crud
     public Crud(String nomeArquivo, Constructor<T> constructor) throws IOException {
         File d                 = new File(this.diretorio);
-        String enderecoArquivo = this.diretorio + "/" + nomeArquivo + ".db";
-        String enderecoIndice  = this.diretorio + "/" + nomeArquivo + ".idx";
+        String enderecoArquivo = this.diretorio + "/" + nomeArquivo;
         
         // Atribuindo o construtor
         this.constructor = constructor;
@@ -36,19 +38,12 @@ public class Crud <T extends Registro> {
         
         // Abrindo arquivo para leitura
         try {
-            this.arquivo = new RandomAccessFile(enderecoArquivo, "rw"); 
-        
-        } catch (FileNotFoundException e) {
-            System.err.println("Impossível abrir o arquivo " + enderecoArquivo + "\nTipo de erro: " + e);
+            this.arquivo               = new RandomAccessFile(enderecoArquivo + ".db", "rw"); 
+            this.arquivoIndiceDireto   = new HashExtensivel(this.numDadosCesto, enderecoArquivo + ".hx", enderecoArquivo + ".chx");
+            this.arquivoIndiceIndireto = new ArvoreBMais_String_Int(this.ordemArvoreB, enderecoArquivo + ".bplus");
 
-        }
-
-        // Abrindo o arquivo do Indice para leitura
-        try {
-            this.indice = new RandomAccessFile(enderecoIndice, "rw");
-
-        } catch (FileNotFoundException e) {
-            System.err.println("Impossível abrir o arquivo " + enderecoIndice + "\nTipo de erro: " + e);
+        } catch (Exception e) {
+            System.err.println("Impossível abrir o conjunto de arquivos " + enderecoArquivo + "\nTipo de erro: " + e);
 
         }
 
@@ -76,7 +71,9 @@ public class Crud <T extends Registro> {
         return id;
     }
 
-    // Lendo objeto a partir 
+    /* Lendo objeto dentro do banco de dados de forma sequencial
+    *
+    *
     public T read(int id) {
         // Criando uma entidade para receber o byteArray
         T entidade        = null;
@@ -117,6 +114,14 @@ public class Crud <T extends Registro> {
         } catch(Exception e) { e.printStackTrace(); }
 
         if(!encontrar) entidade = null;
+        return entidade;
+    }
+    */
+
+    // Método de leitura de uma entidade usando Hash direto
+    public T read(int id) {
+        T entidade = null;
+
         return entidade;
     }
 
@@ -190,10 +195,15 @@ public class Crud <T extends Registro> {
             dadosEntidade = entidade.toByteArray();
 
             // Indo para o final do arquivo para escrever o novo objeto
-            arquivo.seek(arquivo.length());          // Ir para o final do arquivo
-            arquivo.writeChar(' ');                  // Escrevendo a lapide no arquivo
-            arquivo.writeInt(dadosEntidade.length);  // Escrevendo o tamanho do objeto
-            arquivo.write(dadosEntidade);            // Escrevendo o objeto na memoria
+            arquivo.seek(arquivo.length());            // Ir para o final do arquivo
+            long pos = arquivo.getFilePointer();       // Pegar a posicao atual do arquivo para inserir no indice direto e no indireto
+            arquivo.writeChar(' ');                    // Escrevendo a lapide no arquivo
+            arquivo.writeInt(dadosEntidade.length);    // Escrevendo o tamanho do objeto
+            arquivo.write(dadosEntidade);              // Escrevendo o objeto na memoria
+            
+            // Inserindo nos outros arquivos de banco de dados
+            this.arquivoIndiceDireto.create(id, pos);  // Inserindo a id e o pos no hash extensivel
+            this.arquivoIndiceIndireto.create(entidade.chaveSecundaria(), id); // Inserindo a chave de pesquisa na arvore B+
 
             // Sobreescrendo metadado com o novo id
             arquivo.seek(0);
