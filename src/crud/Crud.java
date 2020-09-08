@@ -118,9 +118,37 @@ public class Crud <T extends Registro> {
     }
     */
 
-    // Método de leitura de uma entidade usando Hash direto
-    public T read(int id) {
+    /* Método de leitura de uma entidade usando chave Secundaria
+    *  @return entidade caso a encontre
+    *  Caso a chave não seja encontrada uma exceção será gerada
+    **/
+    public T read(String chaveSecundaria) throws Exception {
         T entidade = null;
+        
+        // Procurar uma entidade a partir de sua chave secundaria
+        entidade = this.read(this.arquivoIndiceIndireto.read(chaveSecundaria));
+
+        return entidade;
+    }
+
+    /* Método de leitura de uma entidade usando Hash direto
+    *  @return Entidade
+    *  Gera exceção caso não encontre a entidade desejada
+    **/
+
+    public T read(int id) throws Exception {
+        T entidade = null;
+        
+        // Procurando a ID da entidade no índice direto, nao achar gera uma exceção
+        this.arquivo.seek(this.arquivoIndiceDireto.read(id));
+
+        this.arquivo.readChar();                   // Pulando a lápide (Se a entidade tiver sido removida criara uma exceção)
+        int tamEntidade = this.arquivo.readInt();  // Ler tamanho da entidade
+        byte[] registro = new byte[tamEntidade];   // Criar um byte array do registro
+        this.arquivo.read(registro);               // Ler a entidade do disco
+
+        entidade = this.constructor.newInstance(); // Criando um objeto na memória para receber a entidade
+        entidade.fromByteArray(registro);          // Recebendo os dados da entidade
 
         return entidade;
     }
@@ -150,18 +178,18 @@ public class Crud <T extends Registro> {
 
             // Procurar o objeto com a id especificada no arquivo
             boolean lapide;
-            while(arquivo.getFilePointer() < arquivo.length() && !encontrar) {
+            while(this.arquivo.getFilePointer() < this.arquivo.length() && !encontrar) {
                 lapide    = false;
                 posLapide = arquivo.getFilePointer();  // Pegando a posicao atual da lapide
-                if(arquivo.readChar() == '*') lapide = true;
+                if(this.arquivo.readChar() == '*') lapide = true;
                 
                 int tamRegistro = arquivo.readInt(); // Pegando o tamanho do registro
                 if(lapide) {
-                    arquivo.seek(arquivo.getFilePointer() + tamRegistro);
+                    this.arquivo.seek(arquivo.getFilePointer() + tamRegistro);
 
                 } else {
                     byte[] registro = new byte[tamRegistro];
-                    arquivo.read(registro);
+                    this.arquivo.read(registro);
 
                     // Construindo uma entidade a partir do vetor de bytes dela
                     entidade = this.constructor.newInstance();
@@ -171,8 +199,14 @@ public class Crud <T extends Registro> {
                     if(entidade.getId() == id) {
                         // Objeto encontrado
                         encontrar = true;
-                        arquivo.seek(posLapide);
-                        arquivo.writeChar('*');
+                        this.arquivo.seek(posLapide);
+                        this.arquivo.writeChar('*');
+                        
+                        // Removendo dos outros arquivos de dados
+                        // Removendo do Índice Direto
+                        this.arquivoIndiceDireto.delete(id);
+                        // Removendo do Índice Indireto
+                        this.arquivoIndiceIndireto.delete(entidade.chaveSecundaria());
 
                     } // Caso nao encontre continue procurando no while
                 }
