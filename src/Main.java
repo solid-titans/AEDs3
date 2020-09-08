@@ -6,7 +6,7 @@ public class Main {
         // Criando Crud
         Crud<Livro> livros = null;
         try{
-            livros = new Crud<>("Arquivo", Livro.class.getConstructor());
+            livros = new Crud<>("Livros", Livro.class.getConstructor());
         
         } catch(Exception e) { e.printStackTrace(); }
             
