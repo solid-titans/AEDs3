@@ -165,8 +165,23 @@ public class Crud <T extends Registro> {
         return atualizou;
     }
 
+    // Apagar um elemento do banco de dados
+    public boolean delete(String chaveSecundaria) {
+        boolean encontrar = false;
+
+        try {
+            encontrar = this.delete(this.arquivoIndiceIndireto.read(chaveSecundaria));
+
+        } catch (Exception e) {
+            //System.err.println("Não foi possível encontrar: " + chaveSecundaria + "\nPor conta disso não foi apagado!");
+            
+        }
+
+        return encontrar;
+    }
+
     // Apagar um elemento do arquivo
-    public boolean delete(int id) {
+    private boolean delete(int id) {
         // Criando uma entidade para receber o byteArray
         T entidade        = null;
         long posLapide    = -1;
