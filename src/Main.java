@@ -33,7 +33,7 @@ public class Main {
 
         }
 
-        //livros.update(livro3, 1);
+        livros.update(livro3, 1);
 
         try {
             System.out.println(livros.read("Livro1"));
