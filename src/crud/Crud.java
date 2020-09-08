@@ -221,51 +221,32 @@ public class Crud <T extends Registro> {
     private boolean delete(int id) {
         // Criando uma entidade para receber o byteArray
         T entidade        = null;
-        long posLapide    = -1;
         boolean encontrar = false;
+        long pos = -1;
 
         try {
-            // Lendo o primeiro registro do programa, apos os metadados
-            arquivo.seek(this.tamMetadados);
+            // Pegar o ponteiro do arquivo no indice
+            pos = this.arquivoIndiceDireto.read(id);
 
-            // Procurar o objeto com a id especificada no arquivo
-            boolean lapide;
-            while(this.arquivo.getFilePointer() < this.arquivo.length() && !encontrar) {
-                lapide    = false;
-                posLapide = arquivo.getFilePointer();  // Pegando a posicao atual da lapide
-                if(this.arquivo.readChar() == '*') lapide = true;
+        } catch (Exception e) { e.printStackTrace(); }
+
+        // Removendo apenas itens que não existem na memória
+        if (pos != -1) {
+            try {
+    
+                Entidade elemento = new Entidade(pos); // Criando uma cópia do objeto na memória
+                this.arquivo.seek(pos);                // Deslocar para o elemento no arquivo
+                this.arquivo.writeChar('*');           // Remover o elemento do disco
+    
+                // Removendo dos outros bancos de dados
+                this.arquivoIndiceDireto.delete(id);
+                this.arquivoIndiceIndireto.delete(elemento.objeto.chaveSecundaria());
+    
+                // Objeto encontrado e removido!
+                encontrar = true;
                 
-                int tamRegistro = arquivo.readInt(); // Pegando o tamanho do registro
-                if(lapide) {
-                    this.arquivo.seek(arquivo.getFilePointer() + tamRegistro);
-
-                } else {
-                    byte[] registro = new byte[tamRegistro];
-                    this.arquivo.read(registro);
-
-                    // Construindo uma entidade a partir do vetor de bytes dela
-                    entidade = this.constructor.newInstance();
-                    entidade.fromByteArray(registro);
-
-                    // Verificando se a id do objeto eh a pesquisada
-                    if(entidade.getId() == id) {
-                        // Objeto encontrado
-                        encontrar = true;
-                        this.arquivo.seek(posLapide);
-                        this.arquivo.writeChar('*');
-                        
-                        // Removendo dos outros arquivos de dados
-                        // Removendo do Índice Direto
-                        this.arquivoIndiceDireto.delete(id);
-                        // Removendo do Índice Indireto
-                        this.arquivoIndiceIndireto.delete(entidade.chaveSecundaria());
-
-                    } // Caso nao encontre continue procurando no while
-                }
-            }
-            
-            
-        } catch(Exception e) { e.printStackTrace(); }
+            } catch(Exception e) { e.printStackTrace(); }
+        }
 
         return encontrar;
     }
