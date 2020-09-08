@@ -1,10 +1,37 @@
 # Crud AEDs 3
 
+![Markdown Logo](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Markdown Logo")
+![Crud](https://img.shields.io/badge/Crud-FUNCIONAL!-brightgreen "Situação do Crud")
+![License](https://img.shields.io/badge/openSource-MIT-blue "License")
+
 Este repositório é dedicado a fazer o CRUD de AEDs 3.
 
 ### [Github do Projeto](https://github.com/lusantisuper/AEDs3/)
 
-## Quer testar?
+# O que já está funcionando:
+- [x] Crud Funcional
+- [x] Método de criar novos objetos em disco.
+- [x] Método de leitura dos objetos do disco.
+- [x] Método de atualizar registros em disco.
+- [x] Método de deletar objetos do disco.
+
+Considerações: **Crud suficiente!**
+
+###
+| Métodos | Retorno | Explicação do Método |
+| ------- | ------- | -------------------- |
+| Crud(String nomeArquivo, Constructor<T> constructor)| Crud | Método de criar um Crud no disco.
+| create(T Entidade)| int | Método create retorna o id que foi usado para inserir seu objeto no banco de dados |
+| read(String chave) | T | Retorna o objeto caso a chave secundária for encontrada no disco, não encontrar resulta em ```null```|
+|update(T entidade, int id) | boolean | Atualiza no disco um objeto ( Por enquanto precisa da ```id``` para encontra-lo)
+| delete(String chave) | boolean | Função deleta do disco um registro |
+
+## A fazer
+
+- [ ] Método update para procurar pela ```chave``` ao invés de ```id```.
+- [ ] Main interativa
+
+# Quer testar?
 
 Entre no meu [Replit](https://repl.it/github/lusantisuper/AEDs3)!
 
@@ -12,7 +39,7 @@ Entre no meu [Replit](https://repl.it/github/lusantisuper/AEDs3)!
 
 Para usar você precisa apenas clicar no botão ```RUN``` e o código irá compilar e executar o programa!
 
-## Acompanha meu repositório?
+# Acompanha meu repositório?
 
 Explicação das ```branchs``` do meu projeto. 
 
@@ -29,5 +56,5 @@ Quer ver as grandes atualizações do meu projeto.
 | V2.0    | 08/08/2020 | [Download](https://github.com/lusantisuper/AEDs3/releases/tag/V2.0) |
 
 
-## License
+# License
 [MIT](https://choosealicense.com/licenses/mit/)
