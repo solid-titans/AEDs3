@@ -20,10 +20,11 @@ public class Crud <T extends Registro> {
     private final byte             tamMetadados  = 4;           // Tamanho dos metadados dos arquivos
     private RandomAccessFile       arquivo;                     // Ponteiro para o arquivo dos produtos
     private int                    numDadosCesto = 100;         // Tamanho máximo do número de elementos do cesto
-    private int                    ordemArvoreB  = 5;           // Ordem da Árvore b+
+    private int                    ordemArvoreB  = 5;           // Ordem da Árvore B+
     private HashExtensivel         arquivoIndiceDireto;         // Arquivo de Hash extensivel para salvar uma ID e um ponteiro para uma entidade
     private ArvoreBMais_String_Int arquivoIndiceIndireto;       // Arquivo de Arvore B+ para procurar elementos por String
     private Constructor<T>         constructor;                 // Construtor do produto
+    private int                    porcentagemReciclagem = 65;  // Porcentagem do tamanho do registro para ser ignora e ir para o final do arquivo
 
     // Montar um Crud
     public Crud(String nomeArquivo, Constructor<T> constructor) throws IOException {
@@ -155,12 +156,48 @@ public class Crud <T extends Registro> {
 
     // Atualizar um registro
     public boolean update(T entidade, int id) {
-        boolean atualizou = false;
+        boolean atualizou = false;  // Verificar se foi possivel atualizar um elemento
+        Entidade antigo   = null;   // Montar um objeto que estava no disco na memoria
+        Entidade novo     = null;   // Montar um novo objeto para atualizar o antigo
 
-        // Apagando o registro
-        this.delete(id);
-        // Atualizando o registro
-        if(this.create(entidade, id) != -1) atualizou = true;
+        try {
+            antigo = new Entidade(this.arquivoIndiceDireto.read(id));  // Pegando do disco um elemento
+            novo   = new Entidade(entidade);                           // Montar um ponteiro para o novo objeto
+
+        } catch(Exception e) { e.printStackTrace(); }
+
+        // Verificar tamamnho do registro para substituir antigo pelo novo na mesma posição
+        boolean substituir = antigo.length != 0 && novo.length / antigo.length * 100 >= this.porcentagemReciclagem && novo.length / antigo.length * 100 <= 100;
+        if(substituir) {  
+            try {
+                arquivo.seek(this.arquivoIndiceDireto.read(id));  // Ir ate a posição do elemento antigo
+                arquivo.writeChar(' ');                           // Sobreescrever a lápide vazia 
+                arquivo.writeInt(antigo.length);                  // Escrevendo tamanho do registro antigo
+                arquivo.write(novo.objeto.toByteArray());         // Escrevendo o registro novo
+
+                // Atualizar a chave secundária no índice Indireto
+                // Não há necessidade de modificar no índice direto, pois não foi modificado a id do objeto
+                this.arquivoIndiceIndireto.update(novo.objeto.chaveSecundaria(), id);
+
+                atualizou = true;  // Registro substituido com sucesso
+
+            } catch (Exception e) { e.printStackTrace(); }
+        
+        } else {
+            // Apagando o registro
+            this.delete(id);
+            
+            try {
+                // Modificando o endereço no índice direto
+                this.arquivoIndiceDireto.update(id, this.arquivo.length());
+
+            } catch (Exception e) { e.printStackTrace(); }
+
+            // Atualizando o registro
+            if(this.create(entidade, id) != -1) atualizou = true; // Escrevendo o registro novo no final do arquivo
+
+        }
+
 
         return atualizou;
     }
@@ -265,5 +302,48 @@ public class Crud <T extends Registro> {
         }
 
         return id;
+    }
+
+    @SuppressWarnings("unused")
+    /* Ler um objeto da memória e retornar um objeto
+    *  Essa classe é apenas um conjunto de elementos para facilitar o movimentos de elementos do CRUD
+    **/
+    private class Entidade {
+        boolean lapide = false; // Verificar se o objeto tem lápide
+        int length     = 0;     // Tamanho em bytes do objeto 
+        T objeto;               // Ponteiro para um objeto
+
+        // Verificar se ha lapide
+        public boolean getLapide() {
+            return this.lapide;
+        }
+
+        // Verficar tamamnho do objeto
+        public int length() {
+            return this.length;
+        }
+
+        // Remontar um objeto a partir de um ponteiro
+        public Entidade(long ponteiro) {
+            try {
+                arquivo.seek(ponteiro);
+                if(arquivo.readChar() == '*') this.lapide = true;
+                int tamEntidade = arquivo.readInt();
+                byte[] entidade = new byte[tamEntidade];
+
+                objeto = constructor.newInstance();
+                objeto.fromByteArray(entidade);
+
+            } catch(Exception e) { e.printStackTrace(); }
+        }
+
+        // Encapsular um objeto
+        public Entidade(T objeto) {
+            try {
+                this.length = objeto.toByteArray().length;
+                this.objeto = objeto;
+
+            } catch(Exception e) {}
+        }
     }
 }
