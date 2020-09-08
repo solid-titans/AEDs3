@@ -1,9 +1,12 @@
+package produtos;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import crud.Registro;
 
 public class Livro implements Registro {
     private String nomeLivro;
@@ -21,6 +24,11 @@ public class Livro implements Registro {
         this.nomeLivro = nome;
         this.nomeAutor = autor;
         this.preco     = preco;
+    }
+
+    // Retorno da chave secundaria de pesquisa
+    public String chaveSecundaria() {
+        return this.nomeLivro;
     }
 
     // Set ID
