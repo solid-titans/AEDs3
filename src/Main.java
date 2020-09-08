@@ -17,17 +17,41 @@ public class Main {
         livros.create(livro2);
         livros.create(livro3);
 
-        System.out.println(livros.read(0));
-        System.out.println(livros.read(1));
+        try {
+            System.out.println(livros.read("Livro1"));
 
-        livros.update(livro3, 1);
+        } catch (Exception e) {
+            System.out.println("Livro1 não encontrado! ");
 
-        System.out.println(livros.read(1));
+        }
 
-        livros.delete(1);
+        try {
+            System.out.println(livros.read("Livro2"));
 
-        if(livros.read(1) == null)
+        } catch (Exception e) {
+            System.out.println("Livro2 não encontrado! ");
+
+        }
+
+        //livros.update(livro3, 1);
+
+        try {
+            System.out.println(livros.read("Livro1"));
+
+        } catch (Exception e) {
+            System.out.println("Livro1 não encontrado! ");
+
+        }
+
+        livros.delete("Livro1");
+
+        try {
+            livros.read("Livro1");
+
+        } catch (Exception e) {
             System.out.println("Livro ID 1 apagado com sucesso!");
+
+        }
 
     }
 }
