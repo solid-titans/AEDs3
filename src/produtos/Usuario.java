@@ -1,3 +1,7 @@
+/*
+* Registro de usuario para ser usado no CRUD
+*/ 
+
 package produtos;
 
 import java.io.ByteArrayInputStream;
@@ -71,6 +75,11 @@ public class Usuario implements Registro {
     }
 
     // Serializar objeto
+    /*
+    *   Faz uso do ByteArrayOutputStream e do DataOutputStream
+    *   para armazenar os dados do usuário dentro de um array
+    *   bytes e depois retornar esse array.
+    */
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         DataOutputStream      data      = new DataOutputStream(byteArray);
@@ -84,6 +93,11 @@ public class Usuario implements Registro {
     }
 
     // Desserializar objeto
+    /*
+    *   Recebe um array de bytes, que a partir do uso do 
+    *   ByteArrayInputStream e o DataInputStream, consegue
+    *   receber os dados do array e armazenar no objeto.
+    */
     public void fromByteArray(byte[] arrayObjeto) throws IOException {
         ByteArrayInputStream byteArray = new ByteArrayInputStream(arrayObjeto);
         DataInputStream      data      = new DataInputStream(byteArray);
@@ -94,8 +108,13 @@ public class Usuario implements Registro {
         this.email     = data.readUTF();
     }
 
+    //Imprimir os dados do usuário
+    /*
+    *   Organiza os dados do usuário(com exceção da senha)
+    *   para dentro de uma String e retorna essa String.
+    */
     public String toString() {
-        return "ID: "                + this.idUsuario + "\n" +
+        return  "ID: "               + this.idUsuario + "\n" +
                 "Nome de usuário: "  + this.nome      + "\n" +
                 "Email: "            + this.email     + "\n";
     }
