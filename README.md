@@ -52,7 +52,7 @@ Quer ver as grandes atualizações do meu projeto.
 
 | Release | Lançamento | Link |
 |---      |---         |---       |
-| V1.0    | 05/08/2020 | [Download](https://github.com/lusantisuper/AEDs3/releases/tag/V1.0) |
+| V1.0    | 01/08/2020 | [Download](https://github.com/lusantisuper/AEDs3/releases/tag/V1.0) |
 | V2.0    | 08/08/2020 | [Download](https://github.com/lusantisuper/AEDs3/releases/tag/V2.0) |
 
 
