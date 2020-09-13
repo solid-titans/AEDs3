@@ -95,9 +95,8 @@ public class Usuario implements Registro {
     }
 
     public String toString() {
-        return "ID: "                + this.idUsuario        + "\n" +
+        return "ID: "                + this.idUsuario + "\n" +
                 "Nome de usuário: "  + this.nome      + "\n" +
-                "Email: "            + this.email     + "\n" +
-                "Senha: "            + this.senha     + "\n";
+                "Email: "            + this.email     + "\n";
     }
 }
