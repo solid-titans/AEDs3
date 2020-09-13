@@ -9,34 +9,36 @@ import java.io.IOException;
 import crud.Registro;
 
 public class Usuario implements Registro {
-    private String username;
+    private String nome;
     private String email;
-    private int    id = -1; 
+    private String senha;
+    private int    idUsuario = -1; 
 
     // Construtor de um livro vazio
     public Usuario() {
-        this("", "");
+        this("", "", "");
     }
 
     // Construtor de um Livro
-    public Usuario(String username, String email) {
-        this.username = username;
+    public Usuario(String nome, String email, String senha) {
+        this.nome     = nome;
         this.email    = email;
+        this.senha    = senha;
     }
 
     // Retorno da chave secundaria de pesquisa
     public String chaveSecundaria() {
-        return this.username;
+        return this.email;
     }
 
     // Set ID
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    // Set nome do username
-    public void setUsername(String username) {
-        this.username = username;
+    // Set nome do nome
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     // Set nome do email
@@ -44,14 +46,18 @@ public class Usuario implements Registro {
         this.email = email;
     }
 
-    // Get ID
-    public int getId() {
-        return this.id;
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
-    // Get nome do username
-    public String getUsername() {
-        return this.username;
+    // Get ID
+    public int getId() {
+        return this.idUsuario;
+    }
+
+    // Get nome do nome
+    public String getNome() {
+        return this.nome;
     }
 
     // Get nome do email
@@ -59,13 +65,19 @@ public class Usuario implements Registro {
         return this.email;
     }
 
+    // Get senha
+    public String getSenha() {
+        return this.senha;
+    }
+
     // Serializar objeto
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         DataOutputStream      data      = new DataOutputStream(byteArray);
         
-        data.writeInt(this.id);
-        data.writeUTF(this.username);
+        data.writeInt(this.idUsuario);
+        data.writeUTF(this.nome);
+        data.writeUTF(this.senha);
         data.writeUTF(this.email);
         
         return byteArray.toByteArray();
@@ -76,14 +88,16 @@ public class Usuario implements Registro {
         ByteArrayInputStream byteArray = new ByteArrayInputStream(arrayObjeto);
         DataInputStream      data      = new DataInputStream(byteArray);
 
-        this.id        = data.readInt();
-        this.username  = data.readUTF();
+        this.idUsuario = data.readInt();
+        this.nome      = data.readUTF();
+        this.senha     = data.readUTF();
         this.email     = data.readUTF();
     }
 
     public String toString() {
-        return "ID: "                + this.id        + "\n" +
-                "Nome de usuário: "  + this.username  + "\n" +
-                "Email: "            + this.email     + "\n";
+        return "ID: "                + this.idUsuario        + "\n" +
+                "Nome de usuário: "  + this.nome      + "\n" +
+                "Email: "            + this.email     + "\n" +
+                "Senha: "            + this.senha     + "\n";
     }
 }
