@@ -149,7 +149,7 @@ public class Menu {
                         sucesso = acessoAoSistema();
 
                         if(sucesso) {
-                            System.out.println("\nSucesso! Login aprovado!\nSeja bem vindo usuário!\n")
+                            System.out.println("\nSucesso! Login aprovado!\nSeja bem vindo usuário!\n");
                             menuIndex = 1;
                         }
                         else {
@@ -160,8 +160,7 @@ public class Menu {
                         sucesso = criandoUsuario();
 
                         if(sucesso) {
-                            System.out.println("\nSucesso! Novo usuário criado! Agora faça login!\n")
-                            menuIndex = 1;
+                            System.out.println("\nSucesso! Novo usuário criado! Agora faça login!\n");
                         }
                         else {
                             System.err.println("\nERRO! Criação de usuário deu errado!\nTente novamente!\n");
@@ -262,9 +261,10 @@ public class Menu {
 
         if(verificarEmail(email)) {
 
-            System.out.println("Sucesso! uma mensagem de redifinição de senha foi enviada\nao seu email!");
+            System.out.println("\nSucesso! uma mensagem de redifinição de senha foi enviada\nao seu email!\n");
 
             do {
+                System.out.println(a.caixa((short)5,"Redefinindo senha!"));
 
                 System.out.println("Nova senha: ");
 
@@ -276,6 +276,7 @@ public class Menu {
                 */
                 try {
                     novaSenha = br.readLine();
+                    System.out.println("\nInsira novamente a senha: ");
                     confirmarSenha = br.readLine();
                 }
                 catch(IOException e) {
@@ -353,7 +354,7 @@ public class Menu {
                 }
 
                 a.limparTela();
-                if ( 1 != 1 ) {
+                if ( 1 != 1 ) { //conferir a senha no banco de dados
                         
                     System.out.println("Ops! Parece que essa não é a senha!\nTente novamente!\nN° de tentativas: " + tentativas + "\n");
                 }
@@ -367,7 +368,7 @@ public class Menu {
                 tentativas--;
                 System.out.println("\nO email inserido não é válido ou não existe no banco de dados\nTeste novamente!\nN° de tentativas: " + tentativas + "\n");
             }
-        } while( tentativas != 0 );
+        } while( tentativas != 0  && resp == false);
 
         
         return resp;
@@ -394,12 +395,12 @@ public class Menu {
             }
             
             a.limparTela();
-            if ( 1 != 1 ) {
+            if ( 1 != 1 ) { //conferir se o email ja esta no banco de dados
 
                 System.out.println("Esse e-mail já está registrado em nosso sistema\nTente outro e-mail!\n");
 
             }
-        } while ( 1 != 1);
+        } while ( 1 != 1); //enquanto o email nao estiver no banco de dados
     
         if(verificarEmail(email)) {
 
@@ -408,17 +409,16 @@ public class Menu {
 
             try {
                 usuario = br.readLine();
-                a.limparTela();
-                System.out.println(a.caixa((short)5,"Digite um nome e senha!"));
-                System.out.println("NOVO USUÁRIO\n\nSenha: ");
-                usuario = br.readLine();
+                System.out.println("\nSenha: ");
+                senha = br.readLine();
             }  
             catch(IOException e) {
                 System.err.println("Erro na leitura do buffer!");
             }
 
             a.limparTela();
-            System.out.println("Vamos então verificar os seus dados!" +
+            System.out.println(a.caixa((short)5,"Vamos então verificar os seus dados!"));
+            System.out.println("\n" +
                                "Email: "           + email     + "\n" + 
                                "Nome de usuário: " + usuario   + "\n" +
                                "Senha: "           + senha     + "\n");
@@ -426,7 +426,7 @@ public class Menu {
             System.out.println("\nEstá tudo de acordo?");
 
             try {
-                confirmar = br.readline();
+                confirmar = br.readLine();
             }  
             catch(IOException e) {
                 System.err.println("Erro na leitura do buffer!");
@@ -435,9 +435,8 @@ public class Menu {
             a.limparTela();
             if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) { 
                 
-                System.out.println("Certo! Vamos então criar o usuario "+ usuario +"para você!");
+                System.out.println("Certo! Vamos então criar o usuario "+ usuario +" para você!");
                 resp = true;
-                System.out.println("Sucesso! Usuário criado! Voltando ao menu!\n")
             }
             else {
 
