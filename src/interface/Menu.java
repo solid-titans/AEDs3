@@ -315,7 +315,7 @@ public class Menu {
         return resp;
     }
 
-    //Funcao booleana expressando se o usuario tem acesso ou não ao sistema
+    //Funcao expressando se o usuario tem acesso ou não ao sistema
     /* 
     *   Primeiro o usuario tenta inserir o e-mail, se o mesmo consta no banco
     *   de dados, então ele passa para a verificação de senha, se a senha
@@ -374,6 +374,21 @@ public class Menu {
         return resp;
     }
 
+    // Funcao para criar um novo usuario no CRUD
+    /*
+    *   Primeiro o usuario precisa digitar um email
+    *   Caso o email ja esteja no banco de dados entao
+    *   a leitura sera feita novamente. Apos isso, o 
+    *   email precisa ter confirmação por regex, ou
+    *   seja, a formatação da String tem que estar
+    *   de acordo com o formato de um email.
+    *   Caso dê certo, então agora é hora de criar o
+    *   usuario e pedir o nome e senha.
+    *
+    *   Por fim, o usuario irá confirmar se as credenciais estão certas
+    *   se for confirmado, o CRUD irá registrar esse novo usuario, caso
+    *   contrario, a operação será cancelada.
+    */
     public static boolean criandoUsuario() {
 
         String email     = "";
