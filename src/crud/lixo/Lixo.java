@@ -1,15 +1,18 @@
-package crud.lixo;
+//package crud.lixo;
 
 import java.io.RandomAccessFile;
 
 public class Lixo {
-    private RandomAccessFile arquivo;  // Arquivo de lixo no disco
+    private RandomAccessFile arquivo;                 // Arquivo de lixo no disco
+    private final int        PORCENTAGEMSOBREESCRITA; // Porcentagem de um arquivo para sobreescrita
 
     /** Método de exclusão de itens no Crud de forma eficiente
      * 
      */
-    public Lixo(String path) throws Exception {
-        
+    public Lixo(String path, int porcentagemSobreescrita) throws Exception {
+        // Setando o valor da porcetagem para sobreescrita de uma entidade
+        this.PORCENTAGEMSOBREESCRITA = porcentagemSobreescrita;
+
         try {
             this.arquivo = new RandomAccessFile(path, "rw");
 
@@ -26,46 +29,103 @@ public class Lixo {
     public void create(int tamanhoRegistro, long enderecoRegistro) throws Exception {
         // Criando um objeto para fazer a leitura do lixo
         LerLixo ler = new LerLixo(); 
-        ler.escrever(tamanhoRegistro, enderecoRegistro);
-        ler = null;
 
-    }
+        // Verificar se o registro não é preexistente no crud
+        if(ler.registroExistente(enderecoRegistro)) { //&& ler.haExclusao()) {
+            // Sera implementado um método de escrita mais eficiente usando pilhas no futuro
 
-    /** Ler os registros e procurar a melhor opção para substituir o antigo registro
-     * 
-     * 
-     */
-    public long read(int tamRegistro) throws Exception {
-        LerLixo ler = new LerLixo();
-        long endereco = -1;
-        Pagina pagina;
-
-        arquivo.seek(8); // Pular os metadados
-        while (this.arquivo.getFilePointer() < this.arquivo.length()) {
-            pagina = new Pagina(arquivo.getFilePointer());
-
-            if(pagina.tamanhoRegistro == tamRegistro) {
-                
-
-            }
-
-            // Limpar os itens 
-            pagina = null;
+        } else {
+            // Indo para o final do arquivo escrever um novo registro
+            this.arquivo.seek(this.arquivo.length());
+            
+            // Escrita no final do arquivo de um novo registro deletado
+            this.arquivo.writeInt(tamanhoRegistro);
+            this.arquivo.writeLong(enderecoRegistro);
         }
 
-
         ler = null;
-        return endereco;
-    }
 
-    /**
+    }
+    
+    /** Procurar o endereço do melhor candidato a substituir outro arquivo exluido
+     * 
+     * @return Endereço do melhor candidato para substituir o registro antigo, -1 caso não há (escreva no final do arquivo)
+     */
+    public long read(int tamRegistro) {
+        Pagina pagina                    = new Pagina();
+        long enderecoRegistro            = -1;
+        double porcentagem               = -1;
+        double porcentagemMelhorRegistro = 0;
+        
+        // Lendo o arquivo sequencialmente procurando a melhor posição para substituir algum lixo
+        try {
+            this.arquivo.seek(8);  // Pular o metadado do arquivo
+            pagina.lerProximaPagina();
+            
+            while(this.arquivo.getFilePointer() < this.arquivo.length()) {
+                // Ler a página seguinte
+                pagina.lerProximaPagina();
+                
+                // Testar o tamanho do registro apenas se ele for um registro livre para uma nova inserção
+                if(pagina.tamanhoRegistro != -1) {
+                    // Testar os tamanhos dos registros para encontrar aquele que melhor se adequa a situação
+                    porcentagem = 100.0 * tamRegistro / pagina.tamanhoRegistro;
+                    
+                    if(porcentagem >= this.PORCENTAGEMSOBREESCRITA && porcentagem <= 100) {
+                        // Melhor caso, os dois registro possuem o mesmo tamanho
+                        if(tamRegistro == pagina.tamanhoRegistro) {
+                            // Se for encontrado algum registro de mesmo tamanho do que vai ser substituido, pare a pesquisa usaremos ele
+                            enderecoRegistro  = pagina.enderecoRegistro;
+
+                            // Ir para o final do arquivo
+                            this.arquivo.seek(this.arquivo.length());
+                            
+                            // Caso o tamanho não seja igual procuremos o que for o mais proximo possivel
+                            // Verificando se o novo candidato é melhor que o anterior para trocar
+                        } else if(porcentagemMelhorRegistro < porcentagem) {
+                            porcentagemMelhorRegistro = porcentagem;
+                            enderecoRegistro = pagina.enderecoRegistro;
+                            
+                        }
+                    }
+                } 
+                System.out.println((int)porcentagemMelhorRegistro + "%     " + (int)porcentagem + "%");
+                
+            }        
+        } catch(Exception e ) { e.printStackTrace(); }
+        
+        pagina = null;
+        
+        return enderecoRegistro;
+    }
+    
+    /** Apagar registros do arquivo lixo
+     * 
      * 
      */
-    public void delete(int tamRegistro, long enderecoRegistro) {
-        
-    }
+    public void delete(long enderecoRegistro) {
+        try {
+            this.arquivo.seek(8);
+            Pagina pagina = new Pagina();
 
-    /**
+            pagina.lerProximaPagina();
+            while(this.arquivo.getFilePointer() < this.arquivo.length()) {
+                // Deslocar sequencialmente no arquivo até achar o registro que está sendo procurado
+                if(pagina.enderecoRegistro == enderecoRegistro) {
+                    // Voltando o ponteiro do arquivo para sobreescrever os dados antigos
+                    this.arquivo.seek(this.arquivo.getFilePointer() - 12);
+
+                    // Sobreescrevendo os dados do crud de lixo
+                    this.arquivo.writeInt(-1);
+                    this.arquivo.writeLong(-1);
+                }
+
+                pagina.lerProximaPagina();
+            }
+        } catch(Exception e) { e.printStackTrace(); }
+    }
+    
+    /** Classe para ler rapidamente do disco um conjunto de valores necessários
      * 
      */
     private class LerLixo {
@@ -100,39 +160,33 @@ public class Lixo {
             }
         }
 
-        // Verificar se houve alguma exclusao dentro do arquivo
-        public boolean haExclusao() {
-            return this.haExclusao;
-        }
-
-        /** Escrever novos valores no disco
-         *  Montar o escrever igual uma pilha sempre guardando o endereço do úlitmo item deletado
+        /**
+         * Verificar se um registro já existe no banco de dados
          * 
-         * @param tamanhoRegistro  Tamanho do registro que foi excluído
-         * @param enderecoRegistro Endereço para o registro deletado
+         * @return false: não existe, true: já existe no disco
          */
-        public void escrever(int tamanhoRegistro, long enderecoRegistro) throws Exception {
-            // Ir até a próxima posição livre
-            if(this.enderecoUltimoDeletado != -1) {
-                // Indo até o registro deletado
-                arquivo.seek(this.enderecoUltimoDeletado);
+        public boolean registroExistente(long enderecoRegistro) {
+            boolean haRegistro = false;
 
-                arquivo.writeInt(tamanhoRegistro);   // Escrevendo o novo registro deletado no disco
-                arquivo.writeLong(enderecoRegistro); // Escrevendo o endereço do último registro deletado no disco
+            try {
+                arquivo.seek(8);
+                Pagina pagina = new Pagina();
 
-                // Reescrevendo 
-                arquivo.seek(0);
-                arquivo.writeLong(this.enderecoRegistro);
-            
-            } else {
-                // Indo até o final do arquivo para escrever o novo registro excluído
-                arquivo.seek(arquivo.length());
+                while(arquivo.getFilePointer() < arquivo.length()) {
+                    pagina.lerProximaPagina();
+                    
+                    // Verificando se esse registro já existe no banco de dados
+                    if(pagina.enderecoRegistro == enderecoRegistro) {
+                        haRegistro = true;
+                        arquivo.seek(arquivo.length());
 
-                // Escrevendo novos registros no disco
-                arquivo.writeInt(tamanhoRegistro);
-                arquivo.writeLong(enderecoRegistro);
-            }
-        }  
+                    }
+                }
+
+            } catch(Exception e) { e.printStackTrace(); }
+
+            return haRegistro;
+        }
     }
 
     /** Ler um conjunto de elementos no disco
@@ -142,12 +196,22 @@ public class Lixo {
         public int  tamanhoRegistro;      // Pegar o tamanho de um registro
         public long enderecoRegistro;     // Pegar o endereço de um registro
 
-        public Pagina(long enderecoRegistro) throws Exception {
-            arquivo.seek(enderecoRegistro);
+        public Pagina() {
+            this.tamanhoRegistro  = 0;
+            this.enderecoRegistro = 0;
 
-            // Ler os registros do disco
+        }
+
+        public void lerProximaPagina() throws Exception {
             this.tamanhoRegistro  = arquivo.readInt();
-            this.enderecoRegistro = arquivo.readLong();
+            this.enderecoRegistro = arquivo.readLong(); 
+            
+        }
+
+        public String toString() {
+            return "Tamanho do registro: "  + this.tamanhoRegistro + "  |  " +
+                   "Endereço do registro: " + this.tamanhoRegistro;
+
         }
     }
 }
