@@ -55,6 +55,8 @@ public class Menu {
 
     public static void main(String[] args) {
 
+        a.limparTela();
+
         //Variaveis do menu
         String opcao;
         byte menuIndex = 0;
@@ -76,21 +78,21 @@ public class Menu {
 
                 //Acesso
                 case 0:
-                    System.out.println(acesso());
+                    System.out.print(acesso());
                     break;
                 //Inicio
                 case 1: 
-                    System.out.println(inicio(notificacoes));
+                    System.out.print(inicio(notificacoes));
                     break;
 
                 //Criacao de perguntas
                 case 2:
-                    System.out.println(criacaoDePerguntas());
+                    System.out.print(criacaoDePerguntas());
                     break;
 
                 //Listagem
                 case 12:
-                    System.out.println(listagem());
+                    System.out.print(listagem());
                     break;
 
                 //Caso a variavel tenha alguma variavel diferente
@@ -99,6 +101,7 @@ public class Menu {
                     break;
             }
 
+            //System.out.println(menuIndex);
             //Fazendo leitura do teclado
             try {
                 opcao = br.readLine();
@@ -244,7 +247,7 @@ public class Menu {
         boolean senhasIguais  = false;
         boolean resp = false;
 
-        int forca = -1;
+        byte forca = -1;
 
         System.out.println(a.caixa((short)5,"Vamos resetar sua senha"));
         System.out.println("Por favor insira o seu email");
@@ -434,11 +437,11 @@ public class Menu {
             a.limparTela();
             System.out.println(a.caixa((short)5,"Vamos então verificar os seus dados!"));
             System.out.println("\n" +
-                               "Email: "           + email     + "\n" + 
+                               "Email:           " + email     + "\n" + 
                                "Nome de usuário: " + usuario   + "\n" +
-                               "Senha: "           + senha     + "\n");
+                               "Senha:           " + senha     + "\n");
             
-            System.out.println("\nEstá tudo de acordo?");
+            System.out.println("\nEstá tudo de acordo?(s/n)");
 
             try {
                 confirmar = br.readLine();
@@ -482,10 +485,10 @@ public class Menu {
     * O objetivo da funcao e verificar se todas essas
     * demandas são atendidas
     */
-	public static int verificarSenha(String s) {
+	public static byte verificarSenha(String s) {
 	    
       //Variavel que vai retornar com a qualidade da senha
-	    int forca = 5;
+	    byte forca = 5;
 
       //Se a String recebida estiver vazia
 	    if (!s.equals("")) {
