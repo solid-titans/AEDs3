@@ -174,20 +174,33 @@ public class Main {
                         else {
                             System.err.println("\nERRO! Login não aprovado!\nTente novamente!\n");
                         }
+                        System.out.print("Pressione \"Enter\" para continuar...");
+                        try { 
+                           br.readLine(); 
+                        } catch (IOException e) {}
+                        a.limparTela();
                         break;
+
                     case "20": // Criando um novo usuario
                         sucesso = criandoUsuario();
-
+                
                         if(sucesso) {
                             System.out.println("\nSucesso! Novo usuário criado! Agora faça login!\n");
                         }
                         else {
                             System.err.println("\nERRO! Criação de usuário deu errado!\nTente novamente!\n");
                         }
+
+                        System.out.print("Pressione \"Enter\" para continuar...");
+                        try { 
+                           br.readLine(); 
+                        } catch (IOException e) {}
+                        a.limparTela();
                         break;
 
                     case "30": // Resentando a senha
                         sucesso = novaSenha();
+
                         if (sucesso) {
 
                             System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
@@ -195,6 +208,12 @@ public class Main {
                         else {
                             System.out.println("\nERRO! Não foi possível fazer a operação de mudança de senha!\nTente novamente!\n");
                         }
+
+                        System.out.print("Pressione \"Enter\" para continuar...");
+                        try { 
+                           br.readLine(); 
+                        } catch (IOException e) {}
+                        a.limparTela();
                         break;
 
                     //Menu Inicio
@@ -272,74 +291,95 @@ public class Main {
         //Fazendo leitura do teclado
         try {
             email = br.readLine();
-        }
-        catch(IOException e) {
-            System.err.println("Erro na leitura do buffer!");
-        }
 
-        a.limparTela();
+            a.limparTela();
 
-        if(verificarEmail(email)) {
+            if(verificarEmail(email) && usuarios.read(email).getEmail().equals(email)) {
 
-            System.out.println("\nSucesso! uma mensagem de redifinição de senha foi enviada\nao seu email!\n");
+                System.out.println("\nSucesso! uma mensagem de redifinição de senha foi enviada\nao seu email!\n");
 
-            do {
-                System.out.println(a.caixa((short)5,"Redefinindo senha!"));
+                do {
+                    System.out.println(a.caixa((short)5,"Redefinindo senha!"));
 
-                System.out.println("Nova senha: ");
+                    System.out.println("Nova senha: ");
 
-                //Leitura da senha
-                /*
-                *   O usuario precisa fazer a inserção da senha
-                *   duas vezes para conferir se o mesmo sabe
-                *   qual e a senha
-                */
-                try {
-                    novaSenha = br.readLine();
-                    System.out.println("\nInsira novamente a senha: ");
-                    confirmarSenha = br.readLine();
-                }
-                catch(IOException e) {
-                    System.err.println("Erro na leitura do buffer!");
-                }
+                    //Leitura da senha
+                    /*
+                    *   O usuario precisa fazer a inserção da senha
+                    *   duas vezes para conferir se o mesmo sabe
+                    *   qual e a senha
+                    */
+                    try {
+                        novaSenha = br.readLine();
+                        System.out.println("\nInsira novamente a senha: ");
+                        confirmarSenha = br.readLine();
+                    }
+                    catch(IOException e) {
+                        System.err.println("Erro na leitura do buffer!");
+                    }
 
-                forca = verificarSenha(novaSenha);
-                senhasIguais = novaSenha.equals(confirmarSenha);
+                    forca = verificarSenha(novaSenha);
+                    senhasIguais = novaSenha.equals(confirmarSenha);
 
-                a.limparTela();
-                if ( senhasIguais == false ) {
+                    a.limparTela();
+                    if ( senhasIguais == false ) {
 
+<<<<<<< HEAD
                     System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
                 }
                 if ( forca <= 2 && senhasIguais == false) {
+=======
+                        System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
+                    }
+                    if ( forca <= 2 || senhasIguais == false) {
 
-                    System.err.println("ERRO!\nForça da sua senha: " +  forca);
-                    System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
-                    System.out.println("*   -> Ter mais de 8 dígitos\n" +
-                                       "*   -> Ter algum caractere em minusculo\n" +
-                                       "*   -> Ter algum caractere em maiusculo\n" +
-                                       "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
-                                       "*   -> Possuir pelo menos 1 digito\n\n" +
-                                       "Obs: Recomendamos no mínimo uma senha de força 3.");
+                        System.err.println("ERRO!   Força da sua senha: " +  forca);
+                        System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
+                        System.out.print("*   -> Ter mais de 8 dígitos\n" +
+                                         "*   -> Ter algum caractere em minusculo\n" +
+                                         "*   -> Ter algum caractere em maiusculo\n" +
+                                         "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
+                                         "*   -> Possuir pelo menos 1 digito\n\n" +
+                                         "Obs: Recomendamos no mínimo uma senha de força 3.\n" +                                      
+                                         "Pressione \"Enter\" para continuar...");
+                        try { 
+                           br.readLine(); 
+                        } catch (IOException e) {}
+                        a.limparTela();
+>>>>>>> Gustavo
 
+                    }
+                } while( senhasIguais == false || forca <= 2);
+
+<<<<<<< HEAD
                 }
             } while( senhasIguais == false && forca <= 2);
+=======
+                try {
+                    user = usuarios.read(email);
+                    
+                } catch (Exception e) {}
+>>>>>>> Gustavo
 
-            try {
-                user = usuarios.read(email);
-                
-            } catch (Exception e) {}
+                user.setSenha(new GFG().senhaHasheada(novaSenha));
+                usuarios.update(user, user.getId());            
 
+<<<<<<< HEAD
             user.setSenha(new GFG().senhaHasheada(novaSenha));
             user.setEmail(email);
             usuarios.update(user, user.getId());            
  
+=======
+                resp = true;
+>>>>>>> Gustavo
 
-            resp = true;
+            }
+            else {
+                System.err.println("\nO email que foi inserido não é valido\nOu não consta em nosso banco de dados!\n Tente novamente!\n");
+            }
+    
+        }catch(Exception e) {
 
-        }
-        else {
-            System.err.println("\nO email que foi inserido não é valido\nOu não consta em nosso banco de dados!\n Tente novamente!\n");
         }
 
         return resp;
@@ -447,29 +487,43 @@ public class Main {
 
         if(verificarEmail(email)) {
 
-            System.out.println(a.caixa((short)5,"Digite um nome e senha!"));
-            System.out.println("NOVO USUÁRIO\n\nUsuário: ");
-
             try {
-                usuario = br.readLine();
-                
+
+                do {
+                    System.out.println(a.caixa((short)5,"Digite um nome e senha!"));
+                    System.out.print("NOVO USUÁRIO\n\nUsuário: ");
+
+                    usuario = br.readLine();
+
+                    if ( usuario.length() < 3) {
+
+                        a.limparTela();
+                        System.out.println(a.caixa((short)5,"Usuário inválido!"));
+                        System.out.print("Tenha um usuário com no mínimo 3 caracteres!\n" +
+                                         "Pressione \"enter\" para continuar...");
+                        br.readLine();
+                        a.limparTela();
+                    }
+
+                } while( usuario.length() < 3 );
+
                 do {
                 
-                System.out.println("\nSenha: ");
+                System.out.print("\nSenha: ");
                 senha = br.readLine();
                 
                 if (verificarSenha(senha) <= 2)
                 {
                     a.limparTela();
                     System.out.println(a.caixa((short)5,"Não recomendamos que use esta senha!"));
-                    System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
-                    System.out.println("*   -> Ter mais de 8 dígitos\n" +
+                    System.out.println("Considere as recomendações abaixo para uma boa senha:\n" +
+                                       "*   -> Ter mais de 8 dígitos\n" +
                                        "*   -> Ter algum caractere em minusculo\n" +
                                        "*   -> Ter algum caractere em maiusculo\n" +
                                        "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
                                        "*   -> Possuir pelo menos 1 digito\n\n" +
-                                       "Obs: Recomendamos no mínimo uma senha de força 3.");
-                    System.out.print("\nPressione enter para continuar...");
+                                       "Obs: Recomendamos no mínimo uma senha de força 3." + 
+                                       "\nPressione enter para continuar...");
                     br.readLine();
                     a.limparTela();
                     System.out.println(a.caixa((short)5,"Digite outra senha!"));
