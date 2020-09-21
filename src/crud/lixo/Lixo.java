@@ -60,7 +60,6 @@ public class Lixo {
         // Lendo o arquivo sequencialmente procurando a melhor posição para substituir algum lixo
         try {
             this.arquivo.seek(8);  // Pular o metadado do arquivo
-            pagina.lerProximaPagina();
             
             while(this.arquivo.getFilePointer() < this.arquivo.length()) {
                 // Ler a página seguinte
@@ -89,8 +88,7 @@ public class Lixo {
                         }
                     }
                 } 
-                System.out.println((int)porcentagemMelhorRegistro + "%     " + (int)porcentagem + "%");
-                
+                //System.out.println((int)porcentagemMelhorRegistro + "%     " + (int)porcentagem + "%");
             }        
         } catch(Exception e ) { e.printStackTrace(); }
         
@@ -108,8 +106,8 @@ public class Lixo {
             this.arquivo.seek(8);
             Pagina pagina = new Pagina();
 
-            pagina.lerProximaPagina();
             while(this.arquivo.getFilePointer() < this.arquivo.length()) {
+                pagina.lerProximaPagina();
                 // Deslocar sequencialmente no arquivo até achar o registro que está sendo procurado
                 if(pagina.enderecoRegistro == enderecoRegistro) {
                     // Voltando o ponteiro do arquivo para sobreescrever os dados antigos
@@ -120,7 +118,6 @@ public class Lixo {
                     this.arquivo.writeLong(-1);
                 }
 
-                pagina.lerProximaPagina();
             }
         } catch(Exception e) { e.printStackTrace(); }
     }
