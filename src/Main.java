@@ -1,6 +1,8 @@
 import produtos.*;
 import crud.*;
+import crud.lixo.Lixo;
 import menu.*;
+import seguranca.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -322,6 +324,9 @@ public class Main {
                 }
             } while( senhasIguais == false || forca <= 2);
 
+            Lixo lixo = new Lixo(path, porcentagemSobreescrita);
+
+
             resp = true;
 
         }
@@ -360,7 +365,7 @@ public class Main {
                     System.out.println(a.caixa((short)5,"Insira sua senha:"));
                     System.out.println("\nACESSO AO SISTEMA\nSenha: ");
     
-                    senha = br.readLine();
+                    senha = new GFG().senhaHasheada(br.readLine());
                     Usuario user = usuarios.read(email);
 
                     a.limparTela();
@@ -488,7 +493,8 @@ public class Main {
             if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
 
                 System.out.println("Certo! Vamos então criar o usuario "+ usuario +" para você!");
-                Usuario user = new Usuario(usuario,email,senha);
+                String senhah = new GFG().senhaHasheada(senha);
+                Usuario user = new Usuario(usuario,email,senhah);
                 int id = usuarios.create(user);
 
                 if(id != -1)

@@ -23,6 +23,7 @@ public class Crud <T extends Registro> {
     private int                    ordemArvoreB  = 5;           // Ordem da Árvore B+
     private HashExtensivel         arquivoIndiceDireto;         // Arquivo de Hash extensivel para salvar uma ID e um ponteiro para uma entidade
     private ArvoreBMais_String_Int arquivoIndiceIndireto;       // Arquivo de Arvore B+ para procurar elementos por String
+    private Lixo                   garbagecolector;             // Arquivo que contem diretorio do lixo
     private Constructor<T>         constructor;                 // Construtor do produto
     private int                    porcentagemReciclagem = 65;  // Porcentagem do tamanho do registro para ser ignora e ir para o final do arquivo
 
@@ -42,6 +43,7 @@ public class Crud <T extends Registro> {
             this.arquivo               = new RandomAccessFile(enderecoArquivo + ".db", "rw"); 
             this.arquivoIndiceDireto   = new HashExtensivel(this.numDadosCesto, enderecoArquivo + ".hx", enderecoArquivo + ".chx");
             this.arquivoIndiceIndireto = new ArvoreBMais_String_Int(this.ordemArvoreB, enderecoArquivo + ".bplus");
+            this.garbagecolector       = new Lixo(enderecoArquivo + ".lx", this.porcentagemReciclagem);
 
         } catch (Exception e) {
             System.err.println("Impossível abrir o conjunto de arquivos " + enderecoArquivo + "\nTipo de erro: " + e);
@@ -123,8 +125,7 @@ public class Crud <T extends Registro> {
         boolean substituir = antigo.length != 0 && novo.length / antigo.length * 100 >= this.porcentagemReciclagem && novo.length / antigo.length * 100 <= 100;
         if(substituir) {  
             try {
-                arquivo.seek(this.arquivoIndiceDireto.read(id));  // Ir ate a posição do elemento antigo
-                arquivo.writeChar(' ');                           // Sobreescrever a lápide vazia 
+                arquivo.seek(this.arquivoIndiceDireto.read());  // Ir ate a posição do elemento antigo
                 arquivo.writeInt(antigo.length);                  // Escrevendo tamanho do registro antigo
                 arquivo.write(novo.objeto.toByteArray());         // Escrevendo o registro novo
 
@@ -187,9 +188,9 @@ public class Crud <T extends Registro> {
         if (pos != -1) {
             try {
     
-                Entidade elemento = new Entidade(pos); // Criando uma cópia do objeto na memória
-                this.arquivo.seek(pos);                // Deslocar para o elemento no arquivo
-                this.arquivo.writeChar('*');           // Remover o elemento do disco
+                Entidade elemento = new Entidade(pos);                     // Criando uma cópia do objeto na memória
+                this.arquivo.seek(pos);                                    // Deslocar para o elemento no arquivo
+                this.garbagecolector.create(elemento.length(),pos);        // Remover o elemento do disco
     
                 // Removendo dos outros bancos de dados
                 this.arquivoIndiceDireto.delete(id);
@@ -215,11 +216,10 @@ public class Crud <T extends Registro> {
             dadosEntidade = entidade.toByteArray();
 
             // Indo para o final do arquivo para escrever o novo objeto
-            arquivo.seek(arquivo.length());            // Ir para o final do arquivo
-            long pos = arquivo.getFilePointer();       // Pegar a posicao atual do arquivo para inserir no indice direto e no indireto
-            arquivo.writeChar(' ');                    // Escrevendo a lapide no arquivo
-            arquivo.writeInt(dadosEntidade.length);    // Escrevendo o tamanho do objeto
-            arquivo.write(dadosEntidade);              // Escrevendo o objeto na memoria
+            arquivo.seek(this.garbagecolector.read(dadosEntidade.length));      // Ir para o final do arquivo
+            long pos = arquivo.getFilePointer();                                // Pegar a posicao atual do arquivo para inserir no indice direto e no indireto
+            arquivo.writeInt(dadosEntidade.length);                             // Escrevendo o tamanho do objeto
+            arquivo.write(dadosEntidade);                                       // Escrevendo o objeto na memoria
             
             // Inserindo nos outros arquivos de banco de dados
             this.arquivoIndiceDireto.create(id, pos);  // Inserindo a id e o pos no hash extensivel

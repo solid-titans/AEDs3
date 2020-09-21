@@ -1,3 +1,5 @@
+package seguranca;
+
 import java.math.BigInteger;  
 import java.nio.charset.StandardCharsets; 
 import java.security.MessageDigest;  
@@ -5,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
   
 // Java program to calculate SHA hash value  
   
-class GFG {  
+public class GFG {  
     public byte[] getSHA(String input) throws NoSuchAlgorithmException 
     {  
         // Static getInstance method is called with hashing SHA  
