@@ -256,8 +256,7 @@ public class Main {
     //Interface 03: Criação de nova senha
     public static boolean novaSenha() {
 
-        Usuario user = new Usuario();
-
+        Usuario user          = null;
         String email          = "";
         String novaSenha      = "";
         String confirmarSenha = "";
@@ -312,7 +311,7 @@ public class Main {
 
                     System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
                 }
-                if ( forca <= 2 || senhasIguais == false) {
+                if ( forca <= 2 && senhasIguais == false) {
 
                     System.err.println("ERRO!\nForça da sua senha: " +  forca);
                     System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
@@ -324,7 +323,7 @@ public class Main {
                                        "Obs: Recomendamos no mínimo uma senha de força 3.");
 
                 }
-            } while( senhasIguais == false || forca <= 2);
+            } while( senhasIguais == false && forca <= 2);
 
             try {
                 user = usuarios.read(email);
@@ -332,6 +331,7 @@ public class Main {
             } catch (Exception e) {}
 
             user.setSenha(new GFG().senhaHasheada(novaSenha));
+            user.setEmail(email);
             usuarios.update(user, user.getId());            
  
 

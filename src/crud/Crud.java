@@ -114,6 +114,8 @@ public class Crud <T extends Registro> {
         Entidade novo = new Entidade(entidade);
 
         try {
+            arquivo.seek(0);
+            arquivo.readInt();
             // Apagando o objeto antigo da memória
             this.garbagecolector.create(novo.length, this.arquivoIndiceDireto.read(id));
 
