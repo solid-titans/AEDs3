@@ -1,3 +1,5 @@
+package menu;
+
 import java.io.IOException;
 
 public class ASCIInterface {

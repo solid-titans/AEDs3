@@ -1,8 +1,17 @@
+package menu;
+
+import produtos.*;
+import crud.*;
+import menu.*;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
 
 public class Menu {
+    
+    //Cria o CRUD
+    public static Crud<Usuario> usuarios = null;
 
     //Id do Usuario que usar o sistema
     public static int IdUsuario             = - 1;
@@ -22,7 +31,7 @@ public class Menu {
                "1) Acesso ao sistema\n" +
                "2) Novo usuario\n" +
                "3) Esqueci minha senha\n\n"+
-               "0) Sair\n\n" + 
+               "0) Sair\n\n" +
                "Opção: ";
     }
 
@@ -32,7 +41,7 @@ public class Menu {
                "1) Criação de perguntas\n" +
                "2) Consultar/responder perguntas\n" +
                "3) Notificações: " + notificacoes + "\n\n"+
-               "0) Sair\n\n" + 
+               "0) Sair\n\n" +
                "Opção: ";
     }
 
@@ -42,7 +51,7 @@ public class Menu {
                "1) Listar\n" +
                "2) Incluir\n" +
                "3) Alterar\n"+
-               "4) Arquivar\n\n" + 
+               "4) Arquivar\n\n" +
                "0) Retornar ao menu anterior\n\n"+
                "Opção: ";
     }
@@ -53,7 +62,14 @@ public class Menu {
                "Pressione qualquer tecla para continuar...";
     }
 
+    
     public static void main(String[] args) {
+
+        try {
+    
+            usuarios = new Crud<>("Usuarios", Usuario.class.getConstructor());
+        
+        } catch(Exception e) { e.printStackTrace(); }
 
         a.limparTela();
 
@@ -68,7 +84,7 @@ public class Menu {
         do {
 
             //Limpar a String 'opcao'
-            opcao = ""; 
+            opcao = "";
 
             //Imprimir uma caixa com o titulo
             System.out.println(a.caixa((short)5,"PERGUNTAS 1.0"));
@@ -81,7 +97,7 @@ public class Menu {
                     System.out.print(acesso());
                     break;
                 //Inicio
-                case 1: 
+                case 1:
                     System.out.print(inicio(notificacoes));
                     break;
 
@@ -123,11 +139,11 @@ public class Menu {
             //Fazendo a mudança do menu
             /*
             *   Eis aqui uma explicacao de como o sistema de menu funciona
-            *   Primeiro o programa faz a leitura do teclado na linha 
+            *   Primeiro o programa faz a leitura do teclado na linha
             *   55(opcao = br.readLine();), apos isso, ele soma o valor
             *   da variavel 'menuIndex' com o que foi lido. O resultado
             *   Disso era uma String de 2 caracteres, sendo o primeiro
-            *   a opcao escolhida pelo usuario, e a segunda o menu na 
+            *   a opcao escolhida pelo usuario, e a segunda o menu na
             *   qual ele esta atualmente.
             *
             *   Lista de menus:
@@ -135,7 +151,7 @@ public class Menu {
             *   0 - Acesso
             *   1 - Inicio
             *   2 - Criacao de Perguntas
-            * 
+            *
             *   Obs: Se o usuario apenas apertou 'enter' deixando a String
             *   vazia, o programa contara isso como um erro.
             */
@@ -143,7 +159,7 @@ public class Menu {
                 switch(opcao) {
 
                     //Menu Acesso
-    
+
                     case "00": //Saindo do programa
                         System.out.println("Obrigado por usar o programa!\nTenha um excelente dia!");
                         break;
@@ -159,7 +175,7 @@ public class Menu {
                             System.err.println("\nERRO! Login não aprovado!\nTente novamente!\n");
                         }
                         break;
-                    case "20": // Criando um novo usuario 
+                    case "20": // Criando um novo usuario
                         sucesso = criandoUsuario();
 
                         if(sucesso) {
@@ -173,7 +189,7 @@ public class Menu {
                     case "30": // Resentando a senha
                         sucesso = novaSenha();
                         if (sucesso) {
-                            
+
                             System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
                         }
                         else {
@@ -233,7 +249,7 @@ public class Menu {
             }
 
         }while (!opcao.equals("00") && !opcao.equals("01"));
-        
+
 
     }
 
@@ -298,10 +314,10 @@ public class Menu {
 
                     System.err.println("ERRO!\nForça da sua senha: " +  forca);
                     System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
-                    System.out.println("*   -> Ter mais de 8 dígitos\n" + 
-                                       "*   -> Ter algum caractere em minusculo\n" + 
+                    System.out.println("*   -> Ter mais de 8 dígitos\n" +
+                                       "*   -> Ter algum caractere em minusculo\n" +
                                        "*   -> Ter algum caractere em maiusculo\n" +
-                                       "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" + 
+                                       "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
                                        "*   -> Possuir pelo menos 1 digito\n\n" +
                                        "Obs: Recomendamos no mínimo uma senha de força 3.");
 
@@ -319,7 +335,7 @@ public class Menu {
     }
 
     //Funcao expressando se o usuario tem acesso ou não ao sistema
-    /* 
+    /*
     *   Primeiro o usuario tenta inserir o e-mail, se o mesmo consta no banco
     *   de dados, então ele passa para a verificação de senha, se a senha
     *   não for válida, então o usuario não ganha acesso.
@@ -330,50 +346,46 @@ public class Menu {
         String senha = "";
         boolean resp = false;
 
-        byte tentativas = 5;
-        
-        do { 
-            System.out.println(a.caixa((short)5,"Bem vindo usuário!"));
-            System.out.println("ACESSO AO SISTEMA\n\nE-mail: ");
+        byte tentativas = 3;
 
-            try {
+        try{
+
+            do {
+                System.out.println(a.caixa((short)5,"Bem vindo usuário!"));
+                System.out.println("ACESSO AO SISTEMA\n\nE-mail: ");
+
                 email = br.readLine();
-            }  
-            catch(IOException e) {
-                System.err.println("Erro na leitura do buffer!");
-            }
-
-            a.limparTela();
-            if(verificarEmail(email)) {
-
-                System.out.println(a.caixa((short)5,"Insira sua senha:"));
-                System.out.println("\nACESSO AO SISTEMA\nSenha: ");
-
-                try {
-                    senha = br.readLine();
-                }  
-                catch(IOException e) {
-                    System.err.println("Erro na leitura do buffer!");
-                }
-
+            
                 a.limparTela();
-                if ( 1 != 1 ) { //conferir a senha no banco de dados
-                        
-                    System.out.println("Ops! Parece que essa não é a senha!\nTente novamente!\nN° de tentativas: " + tentativas + "\n");
+                if(usuarios.read(email).getEmail().equals(email)) {
+
+                    System.out.println(a.caixa((short)5,"Insira sua senha:"));
+                    System.out.println("\nACESSO AO SISTEMA\nSenha: ");
+    
+                    senha = br.readLine();
+                    Usuario user = usuarios.read(email);
+
+                    a.limparTela();
+                    if (!user.getSenha().equals(senha)) { //conferir a senha no banco de dados
+
+                        tentativas--;
+                        System.out.println("Ops! Parece que essa não é a senha!\nTente novamente!\nN° de tentativas: " + tentativas + "\n");
+
+                    }
+                    else {
+
+                        IdUsuario = user.getId();
+                        resp = true;
+                    }
                 }
                 else {
-                        
-                    resp = true;
-                }
-            }
-            else {
-                
-                tentativas--;
-                System.out.println("\nO email inserido não é válido ou não existe no banco de dados\nTeste novamente!\nN° de tentativas: " + tentativas + "\n");
-            }
-        } while( tentativas != 0  && resp == false);
 
-        
+                    System.out.println("\nO email inserido não é válido ou não existe no banco de dados\nTeste novamente!\nN° de tentativas: " + tentativas + "\n");
+                }
+            } while( tentativas != 0  && resp == false);
+
+        } catch (Exception e) {System.err.println("Erro ao tentar acessar o Sistema!");}
+
         return resp;
     }
 
@@ -381,7 +393,7 @@ public class Menu {
     /*
     *   Primeiro o usuario precisa digitar um email
     *   Caso o email ja esteja no banco de dados entao
-    *   a leitura sera feita novamente. Apos isso, o 
+    *   a leitura sera feita novamente. Apos isso, o
     *   email precisa ter confirmação por regex, ou
     *   seja, a formatação da String tem que estar
     *   de acordo com o formato de um email.
@@ -401,25 +413,27 @@ public class Menu {
         String confirmar = "";
         boolean resp     = false;
 
-        do {
-            System.out.println(a.caixa((short)5,"Vamos criar um novo usuário!"));
-            System.out.println("NOVO USUÁRIO\n\nEmail: ");
+        try{
 
-            try {
+            do {
+                System.out.println(a.caixa((short)5,"Vamos criar um novo usuário!"));
+                System.out.println("NOVO USUÁRIO\n\nEmail: ");
+
+                
                 email = br.readLine();
-            }  
-            catch(IOException e) {
-                System.err.println("Erro na leitura do buffer!");
-            }
+                
+                a.limparTela();
             
-            a.limparTela();
-            if ( 1 != 1 ) { //conferir se o email ja esta no banco de dados
+                if (usuarios.read(email).getEmail().equals(email)) { //conferir se o email ja esta no banco de dados
 
-                System.out.println("Esse e-mail já está registrado em nosso sistema\nTente outro e-mail!\n");
+                    System.out.println("Esse e-mail já está registrado em nosso sistema\nTente outro e-mail!\n");
 
-            }
-        } while ( 1 != 1); //enquanto o email nao estiver no banco de dados
-    
+                }
+
+            } while (usuarios.read(email).getEmail().equals(email)); //enquanto o email nao estiver no banco de dados
+        
+        } catch (Exception r) {/*System.err.println("Deu erro na leitura do email");*/}
+
         if(verificarEmail(email)) {
 
             System.out.println(a.caixa((short)5,"Digite um nome e senha!"));
@@ -427,9 +441,31 @@ public class Menu {
 
             try {
                 usuario = br.readLine();
+                
+                do {
+                
                 System.out.println("\nSenha: ");
                 senha = br.readLine();
-            }  
+                
+                if (verificarSenha(senha) <= 2)
+                {
+                    a.limparTela();
+                    System.out.println(a.caixa((short)5,"Não recomendamos que use esta senha!"));
+                    System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
+                    System.out.println("*   -> Ter mais de 8 dígitos\n" +
+                                       "*   -> Ter algum caractere em minusculo\n" +
+                                       "*   -> Ter algum caractere em maiusculo\n" +
+                                       "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
+                                       "*   -> Possuir pelo menos 1 digito\n\n" +
+                                       "Obs: Recomendamos no mínimo uma senha de força 3.");
+                    System.out.print("\nPressione enter para continuar...");
+                    br.readLine();
+                    a.limparTela();
+                    System.out.prSystem.err.println("Deu erro na leitura do email");intln(a.caixa((short)5,"Digite uma nova senha!"));
+                }
+
+                } while (verificarSenha(senha) <= 2);
+            }
             catch(IOException e) {
                 System.err.println("Erro na leitura do buffer!");
             }
@@ -437,31 +473,37 @@ public class Menu {
             a.limparTela();
             System.out.println(a.caixa((short)5,"Vamos então verificar os seus dados!"));
             System.out.println("\n" +
-                               "Email:           " + email     + "\n" + 
+                               "Email:           " + email     + "\n" +
                                "Nome de usuário: " + usuario   + "\n" +
-                               "Senha:           " + senha     + "\n");
-            
-            System.out.println("\nEstá tudo de acordo?(s/n)");
+                               "Senha:           " + senha     + "\n" +
+                               "\nEstá tudo de acordo?(s/n)"          );
 
             try {
                 confirmar = br.readLine();
-            }  
+            }
             catch(IOException e) {
                 System.err.println("Erro na leitura do buffer!");
             }
 
             a.limparTela();
-            if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) { 
-                
+            if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
+
                 System.out.println("Certo! Vamos então criar o usuario "+ usuario +" para você!");
-                resp = true;
+                Usuario user = new Usuario(usuario,email,senha);
+                int id = usuarios.create(user);
+
+                if(id != -1)
+                {
+                    resp = true;    
+                }
+                
             }
             else {
 
                 System.out.println("Processo cancelado!\nVoltando para o menu...\n");
             }
 
-            
+
         }
         else {
             System.err.println("O email inserido é inválido!\nVoltando ao menu...\n\n");
@@ -481,60 +523,60 @@ public class Menu {
     *   -> Ter algum caractere em maiusculo
     *   -> Possuir algum caractere especial(Exemplo: *?#)
     *   -> Possuir pelo menos 1 digito
-    * 
+    *
     * O objetivo da funcao e verificar se todas essas
     * demandas são atendidas
     */
 	public static byte verificarSenha(String s) {
-	    
+
       //Variavel que vai retornar com a qualidade da senha
 	    byte forca = 5;
 
       //Se a String recebida estiver vazia
 	    if (!s.equals("")) {
-        
+
           //Verificando se a String possui um tamanho menor que 8
     	    if (s.length() < 8) {
-    	        
+
     	        forca--;
-    	        System.out.println("Sua senha esta curta!\nRecomendamos uma senha entre 8 e 12 digitos\n");
+    	        //System.out.println("Sua senha esta curta!\nRecomendamos uma senha entre 8 e 12 digitos\n");
     	    }
 
           //Verificando pela existencia de caracteres em minúsculo
     	    if(!s.matches(".*[a-z].*")) {
-    	        
+
     	        forca--;
-    	        System.out.println("Tente inserir pelo menos um caractere minusculo\n");
+    	        //System.out.println("Tente inserir pelo menos um caractere minusculo\n");
     	    }
 
           //Verificando pela existencia de caracteres em maiúsculo
     	    if(!s.matches(".*[A-Z].*")) {
-    	        
+
     	        forca--;
-    	        System.out.println("Tente inserir pelo menos um caractere maiusculo\n");
+    	        //System.out.println("Tente inserir pelo menos um caractere maiusculo\n");
     	    }
 
           //Verificando se a String possui algum caractere especial
     	    if(s.matches("[a-zA-Z0-9 ]*")) {
-    	        
+
     	        forca--;
-    	        System.out.println("Coloque um caractere especial na sua senha\n");
+    	        //System.out.println("Coloque um caractere especial na sua senha\n");
     	    }
 
           //Verificando se possui algum numero
     	    if(!s.matches(".*\\d.*")) {
 
     	        forca--;
-                System.out.println("Tente inserir pelo menos um numero na sua senha\n");
+                //System.out.println("Tente inserir pelo menos um numero na sua senha\n");
             }
 	    }
       //Se a String estiver vazia
 	    else {
-	        
+
 	        forca = 0;
 	        System.out.println("Erro! Nenhuma senha inserida");
 	    }
-	    
+
 	    return forca;
 	}
 

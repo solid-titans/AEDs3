@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
 
 import crud.indices.*;
+import menu.*;
 
 /*
 * Contrutor de um banco de dados no disco
@@ -71,54 +72,7 @@ public class Crud <T extends Registro> {
         if(id != -1) this.create(objeto, id);
         return id;
     }
-
-    /* Lendo objeto dentro do banco de dados de forma sequencial
-    *
-    *
-    public T read(int id) {
-        // Criando uma entidade para receber o byteArray
-        T entidade        = null;
-        boolean encontrar = false;
-
-        try {
-            // Lendo o primeiro registro do programa, apos os metadados
-            arquivo.seek(this.tamMetadados);
-
-            // Procurar o objeto com a id especificada no arquivo
-            boolean lapide;
-            while(arquivo.getFilePointer() < arquivo.length() && !encontrar) {
-                lapide = false;
-                if(arquivo.readChar() == '*') lapide = true;
-                
-                int tamRegistro = arquivo.readInt(); // Pegando o tamanho do registro
-                if(lapide) {
-                    arquivo.seek(arquivo.getFilePointer() + tamRegistro);
-
-                } else {
-                    byte[] registro = new byte[tamRegistro];
-                    arquivo.read(registro);
-
-                    // Construindo uma entidade a partir do vetor de bytes dela
-                    entidade = this.constructor.newInstance();
-                    entidade.fromByteArray(registro);
-
-                    // Verificando se a id do objeto eh a pesquisada
-                    if(entidade.getId() == id) {
-                        // Objeto encontrado
-                        encontrar = true;
-
-                    } // Caso nao encontre continue procurando no while
-                }
-            }
-            
-            
-        } catch(Exception e) { e.printStackTrace(); }
-
-        if(!encontrar) entidade = null;
-        return entidade;
-    }
-    */
-
+    
     /* Método de leitura de uma entidade usando chave Secundaria
     *  @return entidade caso a encontre
     *  Caso a chave não seja encontrada uma exceção será gerada
