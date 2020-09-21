@@ -256,6 +256,8 @@ public class Main {
     //Interface 03: Criação de nova senha
     public static boolean novaSenha() {
 
+        Usuario user = new Usuario();
+
         String email          = "";
         String novaSenha      = "";
         String confirmarSenha = "";
@@ -324,8 +326,14 @@ public class Main {
                 }
             } while( senhasIguais == false || forca <= 2);
 
-            Lixo lixo = new Lixo(path, porcentagemSobreescrita);
+            try {
+                user = usuarios.read(email);
+                
+            } catch (Exception e) {}
 
+            user.setSenha(new GFG().senhaHasheada(novaSenha));
+            usuarios.update(user, user.getId());            
+ 
 
             resp = true;
 
