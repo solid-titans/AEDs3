@@ -1,4 +1,4 @@
-//package crud.lixo;
+package crud.lixo;
 
 import java.io.RandomAccessFile;
 
