@@ -154,7 +154,6 @@ public class Crud <T extends Registro> {
     // Apagar um elemento do arquivo
     private boolean delete(int id) {
         // Criando uma entidade para receber o byteArray
-        T entidade        = null;
         boolean encontrar = false;
         long pos = -1;
 
