@@ -74,8 +74,7 @@ public class Usuario implements Registro {
         return this.senha;
     }
 
-    // Serializar objeto
-    /*
+    /*  Serializar objeto
     *   Faz uso do ByteArrayOutputStream e do DataOutputStream
     *   para armazenar os dados do usuário dentro de um array
     *   bytes e depois retornar esse array.
@@ -92,8 +91,7 @@ public class Usuario implements Registro {
         return byteArray.toByteArray();
     }
 
-    // Desserializar objeto
-    /*
+    /*  Desserializar objeto
     *   Recebe um array de bytes, que a partir do uso do 
     *   ByteArrayInputStream e o DataInputStream, consegue
     *   receber os dados do array e armazenar no objeto.
