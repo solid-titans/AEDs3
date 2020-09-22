@@ -46,6 +46,7 @@ public class Main {
                "1) Criação de perguntas\n" +
                "2) Consultar/responder perguntas\n" +
                "3) Notificações: " + notificacoes + "\n\n"+
+               "4) Redefinir senha: \n\n" + 
                "0) Sair\n\n" +
                "Opção: ";
     }
@@ -204,7 +205,7 @@ public class Main {
                         break;
 
                     case "30": // Resentando a senha
-                        sucesso = novaSenha();
+                        sucesso = senhaTemporaria();
 
                         if (sucesso) {
 
@@ -238,6 +239,24 @@ public class Main {
                     case "31": // Verificar suas notificacoes
                         System.out.println("Olha so as notificacoes");
                         break;
+
+                    case "41": 
+                        sucesso = novaSenha();
+
+                        if (sucesso) {
+
+                            System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
+                        }
+                        else {
+                            System.out.println("\nERRO! Não foi possível fazer a operação de mudança de senha!\nTente novamente!\n");
+                        }
+
+                        System.out.print("Pressione \"Enter\" para continuar...");
+                        try { 
+                           br.readLine(); 
+                        } catch (IOException e) {}
+                        a.limparTela();
+                        break;                       
 
                     //Menu Criacao de Perguntas
 
@@ -277,8 +296,8 @@ public class Main {
 
     }
 
-    //Interface 03: Criação de nova senha
-    public static boolean novaSenha() {
+    //Interface 03: Mandar senha temporaria
+    public static boolean senhaTemporaria() {
 
         Usuario user = new Usuario();
 
@@ -354,7 +373,7 @@ public class Main {
                 if(usuarios.read(email) != null) {
 
                     System.out.println(a.caixa((short)5,"Insira sua senha:"));
-                    System.out.println("\nACESSO AO SISTEMA\nSenha: ");
+                    System.out.print("\nACESSO AO SISTEMA\n\nSenha: ");
     
                     senha = new GFG().senhaHasheada(br.readLine());
                     Usuario user = usuarios.read(email);
@@ -523,7 +542,90 @@ public class Main {
 
     }
 
+    public static boolean novaSenha() {
 
+        Usuario user = null;
+
+        String novaSenha      = "";
+        String confirmarSenha = "";
+
+        boolean senhasIguais  = false;
+        boolean resp = false;
+
+        byte forca = -1;
+
+        System.out.println(a.caixa((short)5,"Vamos resetar sua senha"));
+        System.out.println("Por favor insira a sua senha atual");
+
+        //Fazendo leitura do teclado
+        try {
+
+            user = usuarios.read(IdUsuario);
+
+            confirmarSenha = br.readLine();
+
+            a.limparTela();
+
+            if(user.getSenha().equals(new GFG().senhaHasheada(confirmarSenha))) {
+
+                do {
+                    System.out.println(a.caixa((short)5,"Redefinindo senha!"));
+
+                    System.out.println("Nova senha: ");
+
+                    //Leitura da senha
+                    /*
+                    *   O usuario precisa fazer a inserção da senha
+                    *   duas vezes para conferir se o mesmo sabe
+                    *   qual e a senha
+                    */
+                    novaSenha = br.readLine();
+                    System.out.println("\nInsira novamente a senha: ");
+                    confirmarSenha = br.readLine();
+
+                    forca = verificarSenha(novaSenha);
+                    senhasIguais = novaSenha.equals(confirmarSenha);
+
+                    a.limparTela();
+                    if ( senhasIguais == false ) {
+
+                        System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
+                    }
+                    if ( forca <= 2 || senhasIguais == false) {
+
+                        System.err.println("ERRO!   Força da sua senha: " +  forca);
+                        System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
+                        System.out.print("*   -> Ter mais de 8 dígitos\n" +
+                                         "*   -> Ter algum caractere em minusculo\n" +
+                                         "*   -> Ter algum caractere em maiusculo\n" +
+                                         "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
+                                         "*   -> Possuir pelo menos 1 digito\n\n" +
+                                         "Obs: Recomendamos no mínimo uma senha de força 3.\n" +                                      
+                                         "Pressione \"Enter\" para continuar...");
+                        try { 
+                           br.readLine(); 
+                        } catch (IOException e) {}
+                        a.limparTela();
+
+                    }
+                } while( senhasIguais == false || forca <= 2);
+
+                user.setSenha(new GFG().senhaHasheada(novaSenha));
+                usuarios.update(user, user.getId());            
+
+                resp = true;
+
+            }
+            else {
+                System.err.println("\nEssa não é a senha atual! Tente novamente!\n");
+            }
+    
+        }catch(Exception e) {
+
+        }
+
+        return resp;
+    }
     //Verificar se uma senha(String) é forte
     /*
     * Para verificar se uma senha e forte ela
@@ -632,13 +734,20 @@ public class Main {
     return s;
   }
 
+  //Operação de escrever email
+  /*
+  * Essa função serve para simular a operação
+  * de enviar a nova senha pelo email, nesse caso
+  * o email na verdade é um arquivo .txt com a senha
+  * acompanhada de um texto.
+  */
   public static void escreverEmail(String senha,String usuario) {
 
       String saida = "";
       RandomAccessFile r;
 
       try {
-            saida ="Prezado "+ usuario +" Tudo bem?\n" + 
+            saida ="Prezado "+ usuario +",tudo bem?\n" + 
                    "Parece que você pediu para mudar de senha e para isso\n" +
                    "estamos te mandando uma nova senha\n\n" +
                    "Essa é a sua nova senha: \n" +
