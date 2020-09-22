@@ -4,9 +4,14 @@ import crud.lixo.Lixo;
 import menu.*;
 import seguranca.*;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.io.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class Main {
     
@@ -278,8 +283,7 @@ public class Main {
         Usuario user = new Usuario();
 
         String email          = "";
-        String novaSenha      = "";
-        String confirmarSenha = "";
+        String senhaTemp      = "";
 
         boolean senhasIguais  = false;
         boolean resp = false;
@@ -297,61 +301,16 @@ public class Main {
 
             if(verificarEmail(email) && usuarios.read(email).getEmail().equals(email)) {
 
-                System.out.println("\nSucesso! uma mensagem de redifinição de senha foi enviada\nao seu email!\n");
+                System.out.println("\nSucesso! uma mensagem com uma senha temporaria foi enviado\nao seu email!\n");
 
-                do {
-                    System.out.println(a.caixa((short)5,"Redefinindo senha!"));
+                senhaTemp = gerarSenha();
 
-                    System.out.println("Nova senha: ");
+                System.out.println("Obs: Procure por um .txt, na pasta do projeto ;)");
+                escreverEmail(senhaTemp,email);
+                
+                user = usuarios.read(email);
 
-                    //Leitura da senha
-                    /*
-                    *   O usuario precisa fazer a inserção da senha
-                    *   duas vezes para conferir se o mesmo sabe
-                    *   qual e a senha
-                    */
-                    try {
-                        novaSenha = br.readLine();
-                        System.out.println("\nInsira novamente a senha: ");
-                        confirmarSenha = br.readLine();
-                    }
-                    catch(IOException e) {
-                        System.err.println("Erro na leitura do buffer!");
-                    }
-
-                    forca = verificarSenha(novaSenha);
-                    senhasIguais = novaSenha.equals(confirmarSenha);
-
-                    a.limparTela();
-                    if ( senhasIguais == false ) {
-
-                        System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
-                    }
-                    if ( forca <= 2 || senhasIguais == false) {
-
-                        System.err.println("ERRO!   Força da sua senha: " +  forca);
-                        System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
-                        System.out.print("*   -> Ter mais de 8 dígitos\n" +
-                                         "*   -> Ter algum caractere em minusculo\n" +
-                                         "*   -> Ter algum caractere em maiusculo\n" +
-                                         "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
-                                         "*   -> Possuir pelo menos 1 digito\n\n" +
-                                         "Obs: Recomendamos no mínimo uma senha de força 3.\n" +                                      
-                                         "Pressione \"Enter\" para continuar...");
-                        try { 
-                           br.readLine(); 
-                        } catch (IOException e) {}
-                        a.limparTela();
-
-                    }
-                } while( senhasIguais == false || forca <= 2);
-
-                try {
-                    user = usuarios.read(email);
-                    
-                } catch (Exception e) {}
-
-                user.setSenha(new GFG().senhaHasheada(novaSenha));
+                user.setSenha(new GFG().senhaHasheada(senhaTemp));
                 usuarios.update(user, user.getId());            
 
                 resp = true;
@@ -391,7 +350,7 @@ public class Main {
                 email = br.readLine();
             
                 a.limparTela();
-                if(usuarios.read(email).getEmail().equals(email)) {
+                if(usuarios.read(email) != null) {
 
                     System.out.println(a.caixa((short)5,"Insira sua senha:"));
                     System.out.println("\nACESSO AO SISTEMA\nSenha: ");
@@ -458,13 +417,13 @@ public class Main {
                 
                 a.limparTela();
             
-                if (usuarios.read(email).getEmail().equals(email)) { //conferir se o email ja esta no banco de dados
+                if (usuarios.read(email) == null) { //conferir se o email ja esta no banco de dados
 
                     System.out.println("Esse e-mail já está registrado em nosso sistema\nTente outro e-mail!\n");
 
                 }
 
-            } while (usuarios.read(email).getEmail().equals(email)); //enquanto o email nao estiver no banco de dados
+            } while (usuarios.read(email) == null); //enquanto o email nao estiver no banco de dados
         
         } catch (Exception r) {/*System.err.println("Deu erro na leitura do email");*/}
 
@@ -646,4 +605,53 @@ public class Main {
 
         return matcher.find();
     }
+
+    //Criar senha aleatoria
+    /*
+    *   Essa função é usada no contexto de criação
+    *   de redefinição de senha, quando ele pedir
+    *   pela troca da senha, sera enviado ao 'email'
+    *   uma senha aleatoria, e essa senha aleatoria
+    *   é criada nessa função, usando a classe 'Random'
+    */
+    public static String gerarSenha() {
+
+        String s = "";
+        Random r = new Random();
+        do { 
+            for (byte i = 0 ; i < 8 ; i++) {
+                char a = (char)(r.nextInt(122 - 48) + 48);
+                s += a;
+            }
+            if ( verificarSenha(s) <= 2 ) {
+                s = "";
+            }
+        } while(s.length() == 0);
+        
+    return s;
+  }
+
+  public static void escreverEmail(String senha,String email) {
+
+      String saida = "";
+      RandomAccessFile r;
+
+      try {
+            saida ="Prezado "+ email +" Tudo bem?\n" + 
+                   "Parece que você pediu para mudar de senha e para isso\n" +
+                   "estamos te mandando uma nova senha\n\n" +
+                   "Essa é a sua nova senha: \n" +
+                   senha +
+                   "\nNa proxima vez que você logar, você tera\n" +
+                   "a possibilidade de mudar de senha\n\n" +
+                   "Muito obrigado e um excelente dia!";
+
+            r = new RandomAccessFile("email.txt", "rw");     
+                
+            r.writeUTF(saida);     
+
+      } catch( Exception e) {
+          System.err.println("Deu errado");
+      }
+  }
 }
