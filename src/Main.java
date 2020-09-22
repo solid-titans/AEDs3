@@ -166,7 +166,7 @@ public class Main {
                     //Menu Acesso
 
                     case "00": //Saindo do programa
-                        System.out.println("Obrigado por usar o programa!\nTenha um excelente dia!");
+                        System.out.println("Obrigado por usar o programa!\nTenha um excelente dia!\n");
                         break;
 
                     case "10": // Acessando o sistema usando credenciais existentes
@@ -224,7 +224,7 @@ public class Main {
                     //Menu Inicio
 
                     case "01": // Saindo do programa
-                        System.out.println("Obrigado por usar o programa!\nTenha um excelente dia");
+                        System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
                         break;
 
                     case "11": // Indo para a tela de criacao de perguntas
@@ -305,9 +305,6 @@ public class Main {
 
                 senhaTemp = gerarSenha();
 
-                System.out.println("Obs: Procure por um .txt, na pasta do projeto ;)");
-                escreverEmail(senhaTemp,email);
-                
                 user = usuarios.read(email);
 
                 user.setSenha(new GFG().senhaHasheada(senhaTemp));
@@ -315,6 +312,10 @@ public class Main {
 
                 resp = true;
 
+                escreverEmail(senhaTemp,user.getNome());
+
+                System.out.println("Obs: Procure por um .txt, na pasta do projeto ;)");
+                
             }
             else {
                 System.err.println("\nO email que foi inserido não é valido\nOu não consta em nosso banco de dados!\n Tente novamente!\n");
@@ -631,13 +632,13 @@ public class Main {
     return s;
   }
 
-  public static void escreverEmail(String senha,String email) {
+  public static void escreverEmail(String senha,String usuario) {
 
       String saida = "";
       RandomAccessFile r;
 
       try {
-            saida ="Prezado "+ email +" Tudo bem?\n" + 
+            saida ="Prezado "+ usuario +" Tudo bem?\n" + 
                    "Parece que você pediu para mudar de senha e para isso\n" +
                    "estamos te mandando uma nova senha\n\n" +
                    "Essa é a sua nova senha: \n" +

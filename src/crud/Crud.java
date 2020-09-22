@@ -98,8 +98,8 @@ public class Crud <T extends Registro> {
         // Procurando a ID da entidade no índice direto, nao achar gera uma exceção
         this.arquivo.seek(this.arquivoIndiceDireto.read(id));
 
-        int tamEntidade = this.arquivo.readInt();  // Ler tamanho da entidade
-        byte[] registro = new byte[tamEntidade];   // Criar um byte array do registro
+        long tamEntidade = this.arquivo.readLong();  // Ler tamanho da entidade
+        byte[] registro = new byte[(int)tamEntidade];   // Criar um byte array do registro
         this.arquivo.read(registro);               // Ler a entidade do disco
 
         entidade = this.constructor.newInstance(); // Criando um objeto na memória para receber a entidade
@@ -114,20 +114,24 @@ public class Crud <T extends Registro> {
         Entidade novo = new Entidade(entidade);
 
         try {
+            
             // Apagando o objeto antigo da memória
             this.garbagecolector.create(novo.length, this.arquivoIndiceDireto.read(id));
-
+            
             // Setando a nova ID da entidade
             novo.objeto.setId(id);
             // Procurando a melhor posição de inserção para o novo objeto
             long melhorPos = this.garbagecolector.read(novo.length());
+            if (melhorPos == -1) melhorPos = this.arquivo.length();
             this.arquivo.seek(melhorPos);
             // Escrever a entidade no disco
+            this.arquivo.writeLong(novo.objeto.toByteArray().length);
             this.arquivo.write(novo.objeto.toByteArray());
     
             // Atualizando os outros indices
             this.arquivoIndiceDireto.update(id, melhorPos);
             this.arquivoIndiceIndireto.update(novo.objeto.chaveSecundaria(), id);
+            this.garbagecolector.delete(melhorPos);
 
         } catch(Exception e) { e.printStackTrace(); }
     }
@@ -192,9 +196,10 @@ public class Crud <T extends Registro> {
             dadosEntidade = entidade.toByteArray();
 
             // Indo para o final do arquivo para escrever o novo objeto
-            arquivo.seek(this.garbagecolector.read(dadosEntidade.length));      // Ir para o final do arquivo
-            long pos = arquivo.getFilePointer();                                // Pegar a posicao atual do arquivo para inserir no indice direto e no indireto
-            arquivo.writeInt(dadosEntidade.length);                             // Escrevendo o tamanho do objeto
+            long pos = this.garbagecolector.read(dadosEntidade.length);         // Pegar a posicao atual do arquivo para inserir no indice direto e no indireto
+            if(pos == -1) pos = this.arquivo.length();
+            arquivo.seek(pos);                                                  // Ir para o final do arquivo
+            arquivo.writeLong(dadosEntidade.length);                             // Escrevendo o tamanho do objeto
             arquivo.write(dadosEntidade);                                       // Escrevendo o objeto na memoria
             
             // Inserindo nos outros arquivos de banco de dados
@@ -231,8 +236,8 @@ public class Crud <T extends Registro> {
         public Entidade(long ponteiro) {
             try {
                 arquivo.seek(ponteiro);
-                int tamEntidade = arquivo.readInt();
-                byte[] entidade = new byte[tamEntidade];
+                long tamEntidade = arquivo.readLong();
+                byte[] entidade = new byte[(int)tamEntidade];
 
                 objeto = constructor.newInstance();
                 objeto.fromByteArray(entidade);
