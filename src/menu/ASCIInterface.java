@@ -113,12 +113,16 @@ public class ASCIInterface {
 
         if(OS.equals("linux") || OS.equals("mac")) {
 
-            System.out.print("\033[H\033[2J");   
-            System.out.flush(); 
+            ANSILibrary.limparTelaUnix();
         }
         else {
 
-            clear = "cls";
+            try {
+                Runtime.getRuntime().exec("cls");
+            }
+            catch (Exception e) {
+                System.out.println("Deu ruim");
+            }
         }
     }
 }
