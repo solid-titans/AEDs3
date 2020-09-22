@@ -1,6 +1,5 @@
 import produtos.*;
 import crud.*;
-import crud.lixo.Lixo;
 import menu.*;
 import seguranca.*;
 
@@ -284,11 +283,8 @@ public class Main {
 
         String email          = "";
         String senhaTemp      = "";
-
-        boolean senhasIguais  = false;
         boolean resp = false;
 
-        byte forca = -1;
 
         System.out.println(a.caixa((short)5,"Vamos resetar sua senha"));
         System.out.println("Por favor insira o seu email");

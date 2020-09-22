@@ -2,7 +2,6 @@ package menu;
 
 import produtos.*;
 import crud.*;
-import menu.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

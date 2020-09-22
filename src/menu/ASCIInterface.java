@@ -1,7 +1,5 @@
 package menu;
 
-import java.io.IOException;
-
 public class ASCIInterface {
 
     private ANSILibrary borda;
@@ -109,7 +107,6 @@ public class ASCIInterface {
     public void limparTela(){
 
         String OS = System.getProperty("os.name").toLowerCase();
-        String clear;
 
         if(OS.equals("linux") || OS.equals("mac")) {
 
