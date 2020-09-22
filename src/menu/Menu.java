@@ -461,7 +461,7 @@ public class Menu {
                     System.out.print("\nPressione enter para continuar...");
                     br.readLine();
                     a.limparTela();
-                    System.out.prSystem.err.println("Deu erro na leitura do email");intln(a.caixa((short)5,"Digite uma nova senha!"));
+                    System.out.println(a.caixa((short)5,"Digite uma nova senha!"));
                 }
 
                 } while (verificarSenha(senha) <= 2);
