@@ -275,7 +275,8 @@ public class Main {
     //Interface 03: Criação de nova senha
     public static boolean novaSenha() {
 
-        Usuario user          = null;
+        Usuario user = new Usuario();
+
         String email          = "";
         String novaSenha      = "";
         String confirmarSenha = "";
@@ -324,11 +325,6 @@ public class Main {
                     a.limparTela();
                     if ( senhasIguais == false ) {
 
-<<<<<<< HEAD
-                    System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
-                }
-                if ( forca <= 2 && senhasIguais == false) {
-=======
                         System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
                     }
                     if ( forca <= 2 || senhasIguais == false) {
@@ -346,32 +342,19 @@ public class Main {
                            br.readLine(); 
                         } catch (IOException e) {}
                         a.limparTela();
->>>>>>> Gustavo
 
                     }
                 } while( senhasIguais == false || forca <= 2);
 
-<<<<<<< HEAD
-                }
-            } while( senhasIguais == false && forca <= 2);
-=======
                 try {
                     user = usuarios.read(email);
                     
                 } catch (Exception e) {}
->>>>>>> Gustavo
 
                 user.setSenha(new GFG().senhaHasheada(novaSenha));
                 usuarios.update(user, user.getId());            
 
-<<<<<<< HEAD
-            user.setSenha(new GFG().senhaHasheada(novaSenha));
-            user.setEmail(email);
-            usuarios.update(user, user.getId());            
- 
-=======
                 resp = true;
->>>>>>> Gustavo
 
             }
             else {

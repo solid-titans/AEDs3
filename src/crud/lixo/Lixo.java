@@ -94,12 +94,6 @@ public class Lixo {
         
         pagina = null;
         
-        try {
-            if (enderecoRegistro == -1)
-                enderecoRegistro = arquivo.length();
-
-        } catch (Exception e) {}
-
         return enderecoRegistro;
     }
     
