@@ -6,6 +6,14 @@
 
 Este repositório é dedicado a fazer o CRUD de AEDs 3.
 
+# Quer testar?
+
+Entre no meu [Replit](https://repl.it/github/solid-titans/AEDs3)!
+
+## Já está no meu Replit?
+
+Para usar você precisa apenas clicar no botão ```RUN``` e o código irá compilar e executar o programa!
+
 ### [Github do Projeto](https://github.com/lusantisuper/AEDs3/)
 
 # O que já está funcionando:
@@ -14,6 +22,11 @@ Este repositório é dedicado a fazer o CRUD de AEDs 3.
 - [x] Método de leitura dos objetos do disco.
 - [x] Método de atualizar registros em disco.
 - [x] Método de deletar objetos do disco.
+- [x] Menu iterativo de usuário
+- [x] Desafio 1: Limite percentual máximo para esse espaço deve provocar a movimentação do registro caso excedido.
+- [x] Desafio 2: Crud de Lixo para aproveitar melhor os registros excluídos
+- [x] Desafio 3: Simular um envio de email para trocar a senha do usuário
+- [x] Desafio opcional: Usar algum algoritmo de hashing para escrever a senha do usuário no banco de dados. Algoritmo usado: SHA3-512 bits.
 
 Considerações: **Crud suficiente!**
 
@@ -25,19 +38,6 @@ Considerações: **Crud suficiente!**
 | read(String chave) | T | Retorna o objeto caso a chave secundária for encontrada no disco, não encontrar resulta em ```null```|
 |update(T entidade, int id) | boolean | Atualiza no disco um objeto ( Por enquanto precisa da ```id``` para encontra-lo)
 | delete(String chave) | boolean | Função deleta do disco um registro |
-
-## A fazer
-
-- [ ] Método update para procurar pela ```chave``` ao invés de ```id```.
-- [ ] Main interativa
-
-# Quer testar?
-
-Entre no meu [Replit](https://repl.it/github/lusantisuper/AEDs3)!
-
-## Já está no meu Replit?
-
-Para usar você precisa apenas clicar no botão ```RUN``` e o código irá compilar e executar o programa!
 
 # Acompanha meu repositório?
 
