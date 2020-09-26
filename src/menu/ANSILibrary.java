@@ -40,37 +40,67 @@ public class ANSILibrary{
         //para verificar expressões.
         p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
     }
+    
+    public ANSILibrary(int cor) { 
+    
+		setCor(cor);
+        fundo    = -1;
+        destaque = "";
+
+        //Configurando o padrão que será utilizado pelo programa
+        //para verificar expressões.
+        p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
+    }
+    
+    public ANSILibrary(int cor,int fundo) { 
+    
+    	setCor(cor);
+    	setFundo(fundo);
+        destaque = "";
+
+        //Configurando o padrão que será utilizado pelo programa
+        //para verificar expressões.
+        p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
+    }
+    
+    public ANSILibrary(int cor,int fundo,String destaque) { 
+    
+    	setCor(cor);
+    	setFundo(fundo);
+        setDestaque(destaque);
+
+        //Configurando o padrão que será utilizado pelo programa
+        //para verificar expressões.
+        p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
+    }
 
     //  Funções de 'set'
     /*
-    *   Todas as funções de set
-    *   possuem esse laço condicional
-    *   para verificar se o usuario
-    *   entrou com uma expressao
-    *   válida
+    *	As funções 'set' que estão em privado existem
+    *	para tratar a entrada de numeros que não podem serem
+    *	considerados números
     */
-    public void setFundo(short fundo) {
-        
-        if (fundo > 0 && fundo < 256) {
-
-            this.fundo = fundo;
-        }
-        else {
-
-            System.err.println("(FUNDO)Erro! Padrão que foi enviado é inválido!");
-        }
+    public void setFundo(int fundo) {
+    	if (ehCorValida(fundo)) 
+			setFundo((short)fundo);
+		else 
+            System.err.println("(COR)Erro! Padrão que foi enviado é inválido!");
+    }
+    
+    private void setFundo(short fundo) {
+    	this.fundo = fundo;
     }
 
-    public void setCor(short cor) {
-
-        if (cor > 0 && cor < 256) {
-
-            this.cor = cor;
-        }
-        else {
-
+	public void setCor(int cor) {
+		if (ehCorValida(cor)) 
+			setCor((short)cor);
+		else 
             System.err.println("(COR)Erro! Padrão que foi enviado é inválido!");
-        }
+	}
+	
+    private void setCor(short cor) {
+
+        this.cor = cor;
     }
 
     public void setDestaque(String destaque) {
@@ -83,6 +113,11 @@ public class ANSILibrary{
 
             System.err.println("(DESTAQUE)Erro! O padrão que foi enviado é inválido!");
         }
+    }
+    
+    //Funções 'get'
+    public String getDestaque() {
+    	return destaque;
     }
 
     public String getFundo() {
@@ -138,6 +173,10 @@ public class ANSILibrary{
         }
 
         return resp;        
+    }
+    
+    private boolean ehCorValida(int n) {
+    	return (n > 0 && n < 256);
     }
 
     public static void limparTelaUnix() {

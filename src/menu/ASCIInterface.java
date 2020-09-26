@@ -32,26 +32,10 @@ public class ASCIInterface {
     public ASCIInterface () {
 
         //Iniciando todos os objetos
-        borda = new ANSILibrary();
-        janela = new ANSILibrary();
-        texto_primario = new ANSILibrary();
-        texto_secundario = new ANSILibrary();
-
-        //Configurando borda
-        borda.setFundo((short)1);
-        borda.setCor((short)1);
-
-        //Configurando a janela
-        janela.setFundo((short)255);
-        janela.setCor((short)255);
-        
-        //Configurando texto_primario
-        texto_primario.setFundo((short)255);
-        texto_primario.setCor((short)232);
-        
-        //Configurando texto_secundario
-        texto_secundario.setFundo((short)255);
-        texto_secundario.setCor((short)1);
+        borda = new ANSILibrary(1,1);                   
+        janela = new ANSILibrary(255,255);  
+        texto_primario = new ANSILibrary(232,255);
+        texto_secundario = new ANSILibrary(1,255);
     }
 
     //Instanciando uma caixa
