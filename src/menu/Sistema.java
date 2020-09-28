@@ -6,11 +6,19 @@ import java.util.regex.Pattern;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 // Funções secundarias
 
 public class Sistema {
     
+    //Variaveis para leitura do teclado
+    public static InputStream is            = System.in;
+    public static InputStreamReader isr     = new InputStreamReader(is);
+    public static BufferedReader br         = new BufferedReader(isr);
+
+
     //Verificar se uma senha(String) é forte
     /*
     * Para verificar se uma senha e forte ela
@@ -151,7 +159,7 @@ public class Sistema {
         }
     }
   
-      public static String lerEntrada(BufferedReader br) {
+      public static String lerEntrada() {
           String resp = "";
           try {
               resp = br.readLine();

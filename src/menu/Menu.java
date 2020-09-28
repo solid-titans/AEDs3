@@ -1,27 +1,21 @@
 package menu;
 
 import produtos.*;
+import perguntas.*;
 import crud.*;
 import seguranca.*;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
 
 public class Menu {
     
     public Crud<Usuario> usuarios;
     public Crud<Pergunta> perguntas;
 
+    public Perguntas pergunta = new Perguntas(perguntas);
+
     //Id do Usuario que usar o sistema
     public static int IdUsuario             = - 1;
 
     public static ASCIInterface a           = new ASCIInterface(); // Interface grafica feita em ASCII
-
-    //Variaveis para leitura do teclado
-    public static InputStream is            = System.in;
-    public static InputStreamReader isr     = new InputStreamReader(is);
-    public static BufferedReader br         = new BufferedReader(isr);
 
     //String com as interfaces dos diferentes menu
 
@@ -111,7 +105,7 @@ public class Menu {
 
             //System.out.println(menuIndex);
             //Fazendo leitura do teclado
-            opcao = Sistema.lerEntrada(br);
+            opcao = Sistema.lerEntrada();
 
             //Se o usuario não tenha apenas apertado 'enter' (String vazia)
             if ( opcao.length() != 0 ) {
@@ -162,7 +156,7 @@ public class Menu {
                         }
                         System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;
 
@@ -178,7 +172,7 @@ public class Menu {
 
                         System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;
 
@@ -195,7 +189,7 @@ public class Menu {
 
                         System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;
 
@@ -230,7 +224,7 @@ public class Menu {
 
                         System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;                       
 
@@ -242,12 +236,12 @@ public class Menu {
 
                     case "12": // Listando as perguntas do usuario atual
                         //System.out.print(listagem() + "\n\nPressione qualquer tecla para continuar...");
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;
 
                     case "22": // Incluindo uma nova pergunta
-                        //idSucesso = novaPergunta();
+                        idSucesso = pergunta.novaPergunta(IdUsuario);
 
                         if (idSucesso != -1) {
 
@@ -259,7 +253,7 @@ public class Menu {
 
                         System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;
 
@@ -276,7 +270,7 @@ public class Menu {
 
                         System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;
 
@@ -293,7 +287,7 @@ public class Menu {
 
                         System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
                         break;
 
@@ -331,7 +325,7 @@ public class Menu {
                 System.out.println(a.caixa(5,"Bem vindo usuário!"));
                 System.out.println("ACESSO AO SISTEMA\n\nE-mail: ");
 
-                email = Sistema.lerEntrada(br);
+                email = Sistema.lerEntrada();
             
                 a.limparTela();
                 if(usuarios.read(email) != null) {
@@ -339,7 +333,7 @@ public class Menu {
                     System.out.println(a.caixa(5,"Insira sua senha:"));
                     System.out.print("\nACESSO AO SISTEMA\n\nSenha: ");
     
-                    senha = new GFG().senhaHasheada(Sistema.lerEntrada(br));
+                    senha = new GFG().senhaHasheada(Sistema.lerEntrada());
                     Usuario user = usuarios.read(email);
 
                     a.limparTela();
@@ -397,7 +391,7 @@ public class Menu {
                 System.out.println("NOVO USUÁRIO\n\nEmail: ");
 
                 
-                email = Sistema.lerEntrada(br);
+                email = Sistema.lerEntrada();
                 
                 a.limparTela();
             
@@ -417,7 +411,7 @@ public class Menu {
                 System.out.println(a.caixa(5,"Digite um nome e senha!"));
                 System.out.print("NOVO USUÁRIO\n\nUsuário: ");
 
-                usuario = Sistema.lerEntrada(br);
+                usuario = Sistema.lerEntrada();
 
                 if ( usuario.length() < 3) {
 
@@ -425,7 +419,7 @@ public class Menu {
                     System.out.println(a.caixa(5,"Usuário inválido!"));
                     System.out.print("Tenha um usuário com no mínimo 3 caracteres!\n" +
                                          "Pressione \"enter\" para continuar...");
-                    Sistema.lerEntrada(br);
+                    Sistema.lerEntrada();
                     a.limparTela();
                 }
 
@@ -434,7 +428,7 @@ public class Menu {
             do {
                 
                 System.out.print("\nSenha: ");
-                senha = Sistema.lerEntrada(br);
+                senha = Sistema.lerEntrada();
                 
                 if (Sistema.verificarSenha(senha) <= 2)
                 {
@@ -448,7 +442,7 @@ public class Menu {
                                        "*   -> Possuir pelo menos 1 digito\n\n" +
                                        "Obs: Recomendamos no mínimo uma senha de força 3." + 
                                        "\nPressione enter para continuar...");
-                    Sistema.lerEntrada(br);
+                    Sistema.lerEntrada();
                     a.limparTela();
                     System.out.println(a.caixa(5,"Digite outra senha!"));
 
@@ -464,7 +458,7 @@ public class Menu {
                                "Senha:           " + senha     + "\n" +
                                "\nEstá tudo de acordo?(s/n) : "       );
 
-            confirmar = Sistema.lerEntrada(br);
+            confirmar = Sistema.lerEntrada();
 
             a.limparTela();
             if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
@@ -520,7 +514,7 @@ public class Menu {
 
         //Fazendo leitura do teclado
         try {
-            email = Sistema.lerEntrada(br);
+            email = Sistema.lerEntrada();
 
             a.limparTela();
 
@@ -581,7 +575,7 @@ public class Menu {
 
             user = usuarios.read(IdUsuario);
 
-            confirmarSenha = Sistema.lerEntrada(br);
+            confirmarSenha = Sistema.lerEntrada();
 
             a.limparTela();
 
@@ -598,9 +592,9 @@ public class Menu {
                     *   duas vezes para conferir se o mesmo sabe
                     *   qual e a senha
                     */
-                    novaSenha = Sistema.lerEntrada(br);
+                    novaSenha = Sistema.lerEntrada();
                     System.out.println("\nInsira novamente a senha: ");
-                    confirmarSenha = Sistema.lerEntrada(br);
+                    confirmarSenha = Sistema.lerEntrada();
 
                     forca = Sistema.verificarSenha(novaSenha);
                     senhasIguais = novaSenha.equals(confirmarSenha);
@@ -622,7 +616,7 @@ public class Menu {
                                          "Obs: Recomendamos no mínimo uma senha de força 3.\n" +                                      
                                          "Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada(br);
+                        Sistema.lerEntrada();
                         a.limparTela();
 
                     }
