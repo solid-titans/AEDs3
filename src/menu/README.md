@@ -48,5 +48,24 @@ configurar isso, o código já vem com variáveis estáticas (static) para defin
 
 ## 2.1 - ASCIInterface
 
-A classe _ASCIInterface_ integra a funcionalidade da _ANSILibrary_ para criar caixas, tabelas além de outras coisas customizáves, para deixar mais interessante a navegação pelo terminal.
+A classe _ASCIInterface_ integra a funcionalidade da _ANSILibrary_ para criar caixas, tabelas com cores, além de outras funcionalidades, para deixar mais interessante a navegação pelo terminal.
+
+### 2.2 - Como usar
+
+Primeiramente é preciso invocar o objeto da classe _ASCIInterface_, tem duas possibilidades de construtor, em uma o objeto é criado com algumas coisas já predefinidas em questão de cor, enquanto que o segundo construtor, permite o usuário escolher qual são os esquemas de cores de 
+cada detalhe.
+
+Após isso, o objeto pode ser chamado para construir objetos na tela.
+
+#### 2.2.3 - Caixa
+
+A caixa serve como um espaço onde uma String pode ser inserida. Essa String pode ter o problema de ser muito longa para a caixa e por isso o programa irá calcular se dentro dessa caixa é possível inserir a String por completo e caso contrário o programa irá dar errado.
+
+Existe duas chamadas para a criação de uma caixa:
+
+*   Quando é indicado altura, largura e a String
+  
+*   Quando é indicado altura e a String(a largura é inferida como sendo a largura da String)
+  
+  
 

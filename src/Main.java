@@ -7,6 +7,8 @@ import seguranca.*;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Date;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -16,7 +18,8 @@ import java.io.RandomAccessFile;
 public class Main {
     
     //Cria o CRUD
-    public static Crud<Usuario> usuarios = null;
+    public static Crud<Usuario> usuarios    = null;
+    public static Crud<Pergunta> perguntas  = null;
 
     //Id do Usuario que usar o sistema
     public static int IdUsuario             = - 1;
@@ -62,18 +65,12 @@ public class Main {
                "Opção: ";
     }
 
-    //Menu 21 : Tela de listagem de perguntas
-    public static String listagem() {
-        return "Minhas perguntas\n\n"+
-               "Pressione qualquer tecla para continuar...";
-    }
-
-    
     public static void main(String[] args) {
 
         try {
     
             usuarios = new Crud<>("Usuarios", Usuario.class.getConstructor());
+            perguntas = new Crud<>("Perguntas", Pergunta.class.getConstructor());
         
         } catch(Exception e) { e.printStackTrace(); }
 
@@ -81,10 +78,11 @@ public class Main {
 
         //Variaveis do menu
         String opcao;
-        byte menuIndex = 0;
+        byte menuIndex    = 0;
         byte notificacoes = 0;
 
-        boolean sucesso = false;
+        boolean sucesso   = false;
+        int idSucesso     = -1;
 
         //Loop do menu
         do {
@@ -93,10 +91,11 @@ public class Main {
             opcao = "";
 
             //Imprimir uma caixa com o titulo
-            System.out.println(a.caixa((short)5,"PERGUNTAS 1.0"));
+            System.out.println(a.caixa(5,"PERGUNTAS 1.0"));
 
             //Imprimindo o menu a ser exibido para o usuario
-            switch(menuIndex) {
+            switch(menuIndex) 
+            {
 
                 //Acesso
                 case 0:
@@ -112,11 +111,6 @@ public class Main {
                     System.out.print(criacaoDePerguntas());
                     break;
 
-                //Listagem
-                case 12:
-                    System.out.print(listagem());
-                    break;
-
                 //Caso a variavel tenha alguma variavel diferente
                 default:
                     System.err.println("Erro! Alguma coisa deu muito errado");
@@ -125,12 +119,7 @@ public class Main {
 
             //System.out.println(menuIndex);
             //Fazendo leitura do teclado
-            try {
-                opcao = br.readLine();
-            }
-            catch(IOException e) {
-                System.err.println("Erro na leitura do buffer!");
-            }
+            opcao = lerEntrada();
 
             //Se o usuario não tenha apenas apertado 'enter' (String vazia)
             if ( opcao.length() != 0 ) {
@@ -161,10 +150,9 @@ public class Main {
             *   Obs: Se o usuario apenas apertou 'enter' deixando a String
             *   vazia, o programa contara isso como um erro.
             */
-            if ( menuIndex != 12) {
-                switch(opcao) {
+            switch(opcao) {
 
-                    //Menu Acesso
+                //Menu Acesso
 
                     case "00": //Saindo do programa
                         System.out.println("Obrigado por usar o programa!\nTenha um excelente dia!\n");
@@ -181,9 +169,8 @@ public class Main {
                             System.err.println("\nERRO! Login não aprovado!\nTente novamente!\n");
                         }
                         System.out.print("Pressione \"Enter\" para continuar...");
-                        try { 
-                           br.readLine(); 
-                        } catch (IOException e) {}
+
+                        lerEntrada();
                         a.limparTela();
                         break;
 
@@ -198,9 +185,8 @@ public class Main {
                         }
 
                         System.out.print("Pressione \"Enter\" para continuar...");
-                        try { 
-                           br.readLine(); 
-                        } catch (IOException e) {}
+
+                        lerEntrada();
                         a.limparTela();
                         break;
 
@@ -216,9 +202,8 @@ public class Main {
                         }
 
                         System.out.print("Pressione \"Enter\" para continuar...");
-                        try { 
-                           br.readLine(); 
-                        } catch (IOException e) {}
+
+                        lerEntrada();
                         a.limparTela();
                         break;
 
@@ -252,9 +237,8 @@ public class Main {
                         }
 
                         System.out.print("Pressione \"Enter\" para continuar...");
-                        try { 
-                           br.readLine(); 
-                        } catch (IOException e) {}
+
+                        lerEntrada();
                         a.limparTela();
                         break;                       
 
@@ -265,19 +249,60 @@ public class Main {
                         break;
 
                     case "12": // Listando as perguntas do usuario atual
-                        menuIndex = 12;
+                        System.out.print(listagem() + "\n\nPressione qualquer tecla para continuar...");
+                        lerEntrada();
+                        a.limparTela();
                         break;
 
                     case "22": // Incluindo uma nova pergunta
-                        System.out.println("Vamos Incluir!");
+                        idSucesso = novaPergunta();
+
+                        if (idSucesso != -1) {
+
+                            System.out.println("\nSucesso! Sua pergunta foi registrada...");
+                        }
+                        else {
+                            System.out.println("\nERRO! Não foi possível fazer a operação de criar pergunta!\nTente novamente!\n");
+                        }
+
+                        System.out.print("Pressione \"Enter\" para continuar...");
+
+                        lerEntrada();
+                        a.limparTela();
                         break;
 
                     case "32": // Alterando uma pergunta atual
-                        System.out.println("Vamos Alterar");
+                        idSucesso = alterarPergunta();
+
+                        if (idSucesso != -1) {
+
+                            System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
+                        }
+                        else {
+                            System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
+                        }
+
+                        System.out.print("Pressione \"Enter\" para continuar...");
+
+                        lerEntrada();
+                        a.limparTela();
                         break;
 
                     case "42": // Arquivando as perguntas
-                        System.out.println("Arquivar");
+                        idSucesso = arquivarPergunta();
+
+                        if (idSucesso != -1) {
+
+                            System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
+                        }
+                        else {
+                            System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
+                        }
+
+                        System.out.print("Pressione \"Enter\" para continuar...");
+
+                        lerEntrada();
+                        a.limparTela();
                         break;
 
                     //Operacao Invalida
@@ -286,68 +311,15 @@ public class Main {
                         System.err.println("Erro! Entrada inválida, tente novamente.");
                         break;
                 }
-            }
-            else {
-                menuIndex = 2;
-            }
 
         }while (!opcao.equals("00") && !opcao.equals("01"));
 
 
     }
 
-    //Interface 03: Mandar senha temporaria
-    public static boolean senhaTemporaria() {
+    //Menu 0
 
-        Usuario user = new Usuario();
-
-        String email          = "";
-        String senhaTemp      = "";
-
-        boolean senhasIguais  = false;
-        boolean resp = false;
-
-        byte forca = -1;
-
-        System.out.println(a.caixa((short)5,"Vamos resetar sua senha"));
-        System.out.println("Por favor insira o seu email");
-
-        //Fazendo leitura do teclado
-        try {
-            email = br.readLine();
-
-            a.limparTela();
-
-            if(verificarEmail(email) && usuarios.read(email).getEmail().equals(email)) {
-
-                System.out.println("\nSucesso! uma mensagem com uma senha temporaria foi enviado\nao seu email!\n");
-
-                senhaTemp = gerarSenha();
-
-                user = usuarios.read(email);
-
-                user.setSenha(new GFG().senhaHasheada(senhaTemp));
-                usuarios.update(user, user.getId());            
-
-                resp = true;
-
-                escreverEmail(senhaTemp,user.getNome());
-
-                System.out.println("Obs: Procure por um .txt, na pasta do projeto ;)");
-                
-            }
-            else {
-                System.err.println("\nO email que foi inserido não é valido\nOu não consta em nosso banco de dados!\n Tente novamente!\n");
-            }
-    
-        }catch(Exception e) {
-
-        }
-
-        return resp;
-    }
-
-    //Funcao expressando se o usuario tem acesso ou não ao sistema
+    //Opção 1: Acessando o sistema com um usuario já registrado
     /*
     *   Primeiro o usuario tenta inserir o e-mail, se o mesmo consta no banco
     *   de dados, então ele passa para a verificação de senha, se a senha
@@ -364,18 +336,18 @@ public class Main {
         try{
 
             do {
-                System.out.println(a.caixa((short)5,"Bem vindo usuário!"));
+                System.out.println(a.caixa(5,"Bem vindo usuário!"));
                 System.out.println("ACESSO AO SISTEMA\n\nE-mail: ");
 
-                email = br.readLine();
+                email = lerEntrada();
             
                 a.limparTela();
                 if(usuarios.read(email) != null) {
 
-                    System.out.println(a.caixa((short)5,"Insira sua senha:"));
+                    System.out.println(a.caixa(5,"Insira sua senha:"));
                     System.out.print("\nACESSO AO SISTEMA\n\nSenha: ");
     
-                    senha = new GFG().senhaHasheada(br.readLine());
+                    senha = new GFG().senhaHasheada(lerEntrada());
                     Usuario user = usuarios.read(email);
 
                     a.limparTela();
@@ -402,7 +374,7 @@ public class Main {
         return resp;
     }
 
-    // Funcao para criar um novo usuario no CRUD
+    // Opção 2 : criar um novo usuario no CRUD
     /*
     *   Primeiro o usuario precisa digitar um email
     *   Caso o email ja esteja no banco de dados entao
@@ -429,11 +401,11 @@ public class Main {
         try{
 
             do {
-                System.out.println(a.caixa((short)5,"Vamos criar um novo usuário!"));
+                System.out.println(a.caixa(5,"Vamos criar um novo usuário!"));
                 System.out.println("NOVO USUÁRIO\n\nEmail: ");
 
                 
-                email = br.readLine();
+                email = lerEntrada();
                 
                 a.limparTela();
             
@@ -449,35 +421,33 @@ public class Main {
 
         if(verificarEmail(email)) {
 
-            try {
+            do {
+                System.out.println(a.caixa(5,"Digite um nome e senha!"));
+                System.out.print("NOVO USUÁRIO\n\nUsuário: ");
 
-                do {
-                    System.out.println(a.caixa((short)5,"Digite um nome e senha!"));
-                    System.out.print("NOVO USUÁRIO\n\nUsuário: ");
+                usuario = lerEntrada();
 
-                    usuario = br.readLine();
+                if ( usuario.length() < 3) {
 
-                    if ( usuario.length() < 3) {
-
-                        a.limparTela();
-                        System.out.println(a.caixa((short)5,"Usuário inválido!"));
-                        System.out.print("Tenha um usuário com no mínimo 3 caracteres!\n" +
+                    a.limparTela();
+                    System.out.println(a.caixa(5,"Usuário inválido!"));
+                    System.out.print("Tenha um usuário com no mínimo 3 caracteres!\n" +
                                          "Pressione \"enter\" para continuar...");
-                        br.readLine();
-                        a.limparTela();
-                    }
+                    lerEntrada();
+                    a.limparTela();
+                }
 
-                } while( usuario.length() < 3 );
+            } while( usuario.length() < 3 );
 
-                do {
+            do {
                 
                 System.out.print("\nSenha: ");
-                senha = br.readLine();
+                senha = lerEntrada();
                 
                 if (verificarSenha(senha) <= 2)
                 {
                     a.limparTela();
-                    System.out.println(a.caixa((short)5,"Não recomendamos que use esta senha!"));
+                    System.out.println(a.caixa(5,"Não recomendamos que use esta senha!"));
                     System.out.println("Considere as recomendações abaixo para uma boa senha:\n" +
                                        "*   -> Ter mais de 8 dígitos\n" +
                                        "*   -> Ter algum caractere em minusculo\n" +
@@ -486,32 +456,23 @@ public class Main {
                                        "*   -> Possuir pelo menos 1 digito\n\n" +
                                        "Obs: Recomendamos no mínimo uma senha de força 3." + 
                                        "\nPressione enter para continuar...");
-                    br.readLine();
+                    lerEntrada();
                     a.limparTela();
-                    System.out.println(a.caixa((short)5,"Digite outra senha!"));
+                    System.out.println(a.caixa(5,"Digite outra senha!"));
 
                 }
 
-                } while (verificarSenha(senha) <= 2);
-            }
-            catch(IOException e) {
-                System.err.println("Erro na leitura do buffer!");
-            }
+            } while (verificarSenha(senha) <= 2);
 
             a.limparTela();
-            System.out.println(a.caixa((short)5,"Vamos então verificar os seus dados!"));
-            System.out.println("\n" +
+            System.out.println(a.caixa(5,"Vamos então verificar os seus dados!"));
+            System.out.print("\n" +
                                "Email:           " + email     + "\n" +
                                "Nome de usuário: " + usuario   + "\n" +
                                "Senha:           " + senha     + "\n" +
-                               "\nEstá tudo de acordo?(s/n)"          );
+                               "\nEstá tudo de acordo?(s/n) : "       );
 
-            try {
-                confirmar = br.readLine();
-            }
-            catch(IOException e) {
-                System.err.println("Erro na leitura do buffer!");
-            }
+            confirmar = lerEntrada();
 
             a.limparTela();
             if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
@@ -541,7 +502,73 @@ public class Main {
         return resp;
 
     }
+    
+    //Opção 3: Mandar senha temporaria
+    /*
+    *   O programa irá pedir ao usuário que o mesmo
+    *   insira o email usado pelo mesmo para registrar
+    *   ao sistema. Se o email for encontrado, então
+    *   um 'email' será enviado para o usuário, com
+    *   a sua nova senha temporária.
+    */
+    public static boolean senhaTemporaria() {
 
+        Usuario user = new Usuario();
+
+        String email          = "";
+        String senhaTemp      = "";
+
+        boolean senhasIguais  = false;
+        boolean resp = false;
+
+        byte forca = -1;
+
+        System.out.println(a.caixa(5,"Vamos resetar sua senha"));
+        System.out.println("Por favor insira o seu email");
+
+        //Fazendo leitura do teclado
+        try {
+            email = lerEntrada();
+
+            a.limparTela();
+
+            if(verificarEmail(email) && usuarios.read(email).getEmail().equals(email)) {
+
+                System.out.println("\nSucesso! uma mensagem com uma senha temporaria foi enviado\nao seu email!\n");
+
+                senhaTemp = gerarSenha();
+
+                user = usuarios.read(email);
+
+                user.setSenha(new GFG().senhaHasheada(senhaTemp));
+                usuarios.update(user, user.getId());            
+
+                resp = true;
+
+                escreverEmail(senhaTemp,user.getNome());
+
+                System.out.println("Obs: Procure por um .txt, na pasta do projeto ;)");
+                
+            }
+            else {
+                System.err.println("\nO email que foi inserido não é valido\nOu não consta em nosso banco de dados!\n Tente novamente!\n");
+            }
+    
+        }catch(Exception e) {}
+
+        return resp;
+    }
+
+    //Menu 1
+
+    //Opção 4 : Criação de uma novaSenha
+    /*
+    *   Caso o usuário esteja instatisfeito
+    *   com a sua senha atual, ele pode pedir os sistema
+    *   para atualizar a senha. Para isso o usuário terá que
+    *   inserir a senha atual e então colocar a nova senha duas
+    *   vezes para ter certeza que ele está ciente em qual é a senha
+    */
     public static boolean novaSenha() {
 
         Usuario user = null;
@@ -550,11 +577,11 @@ public class Main {
         String confirmarSenha = "";
 
         boolean senhasIguais  = false;
-        boolean resp = false;
+        boolean resp          = false;
 
-        byte forca = -1;
+        byte forca            = -1;
 
-        System.out.println(a.caixa((short)5,"Vamos resetar sua senha"));
+        System.out.println(a.caixa(5,"Vamos resetar sua senha"));
         System.out.println("Por favor insira a sua senha atual");
 
         //Fazendo leitura do teclado
@@ -562,14 +589,14 @@ public class Main {
 
             user = usuarios.read(IdUsuario);
 
-            confirmarSenha = br.readLine();
+            confirmarSenha = lerEntrada();
 
             a.limparTela();
 
             if(user.getSenha().equals(new GFG().senhaHasheada(confirmarSenha))) {
 
                 do {
-                    System.out.println(a.caixa((short)5,"Redefinindo senha!"));
+                    System.out.println(a.caixa(5,"Redefinindo senha!"));
 
                     System.out.println("Nova senha: ");
 
@@ -579,9 +606,9 @@ public class Main {
                     *   duas vezes para conferir se o mesmo sabe
                     *   qual e a senha
                     */
-                    novaSenha = br.readLine();
+                    novaSenha = lerEntrada();
                     System.out.println("\nInsira novamente a senha: ");
-                    confirmarSenha = br.readLine();
+                    confirmarSenha = lerEntrada();
 
                     forca = verificarSenha(novaSenha);
                     senhasIguais = novaSenha.equals(confirmarSenha);
@@ -602,9 +629,8 @@ public class Main {
                                          "*   -> Possuir pelo menos 1 digito\n\n" +
                                          "Obs: Recomendamos no mínimo uma senha de força 3.\n" +                                      
                                          "Pressione \"Enter\" para continuar...");
-                        try { 
-                           br.readLine(); 
-                        } catch (IOException e) {}
+
+                        lerEntrada();
                         a.limparTela();
 
                     }
@@ -620,12 +646,200 @@ public class Main {
                 System.err.println("\nEssa não é a senha atual! Tente novamente!\n");
             }
     
-        }catch(Exception e) {
-
-        }
+        }catch(Exception e) {}
 
         return resp;
     }
+
+    //Menu 2
+
+    //Opção 1 : Tela de listagem de perguntas
+    public static String listagem() {
+
+        String resp = "\nLista de perguntas: \n\n";
+
+        return resp;
+    }
+
+    //Opção 2: Criação de pergunta
+    /*
+    *   Primeiro o usuario precisa inserir a pergunta
+    *   se a pergunta não for vazia, ele 
+    */
+    public static int novaPergunta() {
+
+        int idResp       = -1;
+        String pergunta  = "";
+        String confirmar = "";
+
+        Pergunta p = null;
+ 
+        System.out.println(a.caixa(5,"Vamos criar uma nova pergunta"));
+        System.out.print("\nPor favor insira a sua pergunta: ");
+
+        pergunta = lerEntrada();
+
+        a.limparTela();
+
+        if(!pergunta.equals("")) {
+
+            System.out.println(a.caixa(5,"Vamos conferir a sua pergunta"));
+            System.out.print("\nPergunta: " + pergunta + "\n\nEssa é a sua pergunta?(s/n) : ");
+
+            confirmar = lerEntrada();
+
+            a.limparTela();
+
+            if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
+
+                System.out.println("Certo! a sua pergunta foi criada!");
+                p = new Pergunta(IdUsuario,new Date().getTime(),pergunta);
+
+                idResp = perguntas.create(p);
+                p.setId(idResp);
+                
+            }
+            else {
+
+                System.out.println("Processo cancelado!\nVoltando para o menu...\n");
+            }
+
+        }
+        else {
+            System.err.println("ERRO! a pergunta inserida está vazia! Tente novamente!");
+        }
+
+        return idResp;
+    }
+
+    //Opção 3: Alterar a pergunta
+    public static int alterarPergunta() {
+
+        int idResposta = -1;
+        String entrada = "";
+        String pergunta  = "";
+
+        Pergunta p = null;
+
+        System.out.println(a.caixa(5,"Vamos alterar uma pergunta"));
+        listagem();
+
+        System.out.print("\nInsira o numero da pergunta que você quer alterar:\nObs: Pressione \'0\' para voltar ao menu\n-> ");
+        entrada = lerEntrada();
+
+        if ( entrada.length() != 0 && !entrada.equals("0")) {
+
+            System.out.println("Ok... vamos encontrar a sua pergunta.");
+
+            try {
+                p = perguntas.read(Integer.parseInt(entrada) - 1);
+            } catch(Exception e ) {}
+
+            if( p == null ) {
+
+                System.out.print("Sucesso! Pergunta encontrada!\nVamos alterar a sua pergunta, pressione enter para continuar...");
+                lerEntrada();
+
+                System.out.println(a.caixa(5,"Vamos criar uma nova pergunta"));
+                System.out.print("\nPor favor insira a sua pergunta: ");
+
+                pergunta = lerEntrada();
+                
+                if(!pergunta.equals("")) {
+
+                    System.out.println(a.caixa(5,"Vamos conferir a sua pergunta"));
+                    System.out.print("\nPergunta: " + pergunta + "\n\nEssa é a sua pergunta?(s/n) : ");
+
+                    entrada = lerEntrada();
+
+                    a.limparTela();
+
+                    if(entrada.length() == 0 || entrada.toLowerCase().equals("s")) {
+
+                        System.out.println("Certo! a sua pergunta foi criada!");
+                        p.setPergunta(pergunta);
+
+                        perguntas.update(p,p.getId());
+                    }   
+                }
+                else {
+
+                     System.out.println("Processo cancelado!\nVoltando para o menu...\n");
+                }
+
+            }
+            else {
+
+                System.err.println("ERRO! O valor inserido não é válido!\nVoltando ao menu...");
+            }
+
+        }
+        else {
+
+            System.out.println("Ok! Voltando menu...");
+        }
+
+        return idResposta;
+    }
+
+    // Opção 4 : Arquivar pergunta
+    /*
+    *   
+    */
+    public static int arquivarPergunta() {
+
+        int idResposta = -1;
+        String entrada = "";
+        String pergunta  = "";
+
+        Pergunta p = null;
+
+        System.out.println(a.caixa(5,"Vamos alterar uma pergunta"));
+        listagem();
+
+        System.out.print("\nInsira o numero da pergunta que você quer alterar:\nObs: Pressione \'0\' para voltar ao menu\n-> ");
+        entrada = lerEntrada();
+
+        if ( entrada.length() != 0 && !entrada.equals("0")) {
+
+            System.out.println("Ok... vamos encontrar a sua pergunta.");
+
+            try {
+                p = perguntas.read(Integer.parseInt(entrada) - 1);
+            } catch(Exception e ) {}
+
+            if( p == null ) {
+
+                System.out.println("Sucesso! Pergunta encontrada!\nVamos imprimir essa pergunta:");
+
+                System.out.print("\nConfirme se essa é a pergunta?(s/n): ");
+
+                entrada = lerEntrada();
+
+                a.limparTela();
+                if(entrada.length() == 0 || entrada.toLowerCase().equals("s")) {
+
+                    System.out.println("Certo! Vamos então criar o usuario "+ usuario +" para você!");
+                    p.setAtiva(false);
+
+                    perguntas.update(p,p.getId());
+                    
+                }
+                else {
+
+                    System.out.println("Processo cancelado!\nVoltando para o menu...\n");
+                }
+
+        }
+        else {
+
+            System.out.println("Ok! Voltando menu...");
+        }
+
+        return idResposta;
+    }
+    // Funções secundarias
+
     //Verificar se uma senha(String) é forte
     /*
     * Para verificar se uma senha e forte ela
@@ -764,4 +978,12 @@ public class Main {
           System.err.println("Deu errado");
       }
   }
+
+    public static String lerEntrada() {
+        String resp = "";
+        try {
+            resp = br.readLine();
+        } catch(IOException e ) {System.err.println("Erro na leitura!");}
+        return resp;
+    }
 }
