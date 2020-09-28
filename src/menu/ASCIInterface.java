@@ -6,8 +6,6 @@
 */
 package menu;
 
-import java.io.IOException;
-
 public class ASCIInterface {
 
     //Definindo a altura e largura maxima dos elementos
@@ -27,7 +25,7 @@ public class ASCIInterface {
     private ANSILibrary borda;
     private ANSILibrary janela;
     private ANSILibrary texto_primario;
-    private ANSILibrary texto_secundario;
+    //private ANSILibrary texto_secundario;
 
     public ASCIInterface () {
 
@@ -35,7 +33,7 @@ public class ASCIInterface {
         borda = new ANSILibrary(1,1);                   
         janela = new ANSILibrary(255,255);  
         texto_primario = new ANSILibrary(232,255);
-        texto_secundario = new ANSILibrary(1,255);
+        //texto_secundario = new ANSILibrary(1,255);
     }
 
     //Instanciando uma caixa
@@ -123,10 +121,10 @@ public class ASCIInterface {
     *   Em WINDOWS ele tentará executar o código
     *   'cls' no terminal
     */
-    public static void limparTela(){
+    public void limparTela(){
 
         String OS = System.getProperty("os.name").toLowerCase();
-        String clear;
+        //String clear;
 
         if(OS.equals("linux") || OS.equals("mac")) {
 
