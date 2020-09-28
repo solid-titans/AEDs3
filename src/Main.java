@@ -1,9 +1,6 @@
-import produtos.*;
-import crud.*;
-import crud.lixo.Lixo;
-import menu.*;
-import seguranca.*;
+import menu.Menu;
 
+<<<<<<< HEAD
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,10 +66,15 @@ public class Main {
     }
 
     
+=======
+public class Main
+{
+>>>>>>> Thiago
     public static void main(String[] args) {
 
-        try {
+        Menu.gerenciamento();
     
+<<<<<<< HEAD
             usuarios = new Crud<>("Usuarios", Usuario.class.getConstructor());
         
         } catch(Exception e) { e.printStackTrace(); }
@@ -764,4 +766,8 @@ public class Main {
           System.err.println("Deu errado");
       }
   }
+=======
+    }
+
+>>>>>>> Thiago
 }

@@ -17,7 +17,7 @@ import crud.lixo.*;
 **/
 public class Crud <T extends Registro> {
     private final String           diretorio     = "Dados";     // Diretorio dos arquivos de dados
-    private final byte             tamMetadados  = 4;           // Tamanho dos metadados dos arquivos
+    //private final byte             tamMetadados  = 4;           // Tamanho dos metadados dos arquivos
     private RandomAccessFile       arquivo;                     // Ponteiro para o arquivo dos produtos
     private int                    numDadosCesto = 100;         // Tamanho máximo do número de elementos do cesto
     private int                    ordemArvoreB  = 5;           // Ordem da Árvore B+
