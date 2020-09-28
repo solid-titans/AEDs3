@@ -10,9 +10,8 @@ import java.io.BufferedReader;
 
 public class Menu {
     
-    //Cria o CRUD
-    public static Crud<Usuario> usuarios    = null;
-    public static Crud<Pergunta> perguntas  = null;
+    public Crud<Usuario> usuarios;
+    public Crud<Pergunta> perguntas;
 
     //Id do Usuario que usar o sistema
     public static int IdUsuario             = - 1;
@@ -27,7 +26,7 @@ public class Menu {
     //String com as interfaces dos diferentes menu
 
     //Menu 0 : Tela de Acesso
-    public static String acesso() {
+    public String acesso() {
         return "ACESSO\n\n" +
                "1) Acesso ao sistema\n" +
                "2) Novo usuario\n" +
@@ -37,7 +36,7 @@ public class Menu {
     }
 
     //Menu 1 : Tela de Inicio
-    public static String inicio(byte notificacoes) {
+    public String inicio(byte notificacoes) {
         return "INÍCIO\n\n" +
                "1) Criação de perguntas\n" +
                "2) Consultar/responder perguntas\n" +
@@ -48,7 +47,7 @@ public class Menu {
     }
 
     //Menu 2 : Tela de criacaoDePerguntas
-    public static String criacaoDePerguntas() {
+    public String criacaoDePerguntas() {
         return "INÍCIO > CRIAÇÃO DE PERGUNTAS\n\n" +
                "1) Listar\n" +
                "2) Incluir\n" +
@@ -58,14 +57,14 @@ public class Menu {
                "Opção: ";
     }
 
-    public static void gerenciamento() {
+    // Construtor do Menu
+    public Menu(Crud<Usuario> usuarios,Crud<Pergunta> perguntas)
+    {
+        this.usuarios = usuarios;
+        this.perguntas = perguntas;
+    }
 
-        try {
-    
-            usuarios = new Crud<>("Usuarios", Usuario.class.getConstructor());
-            perguntas = new Crud<>("Perguntas", Pergunta.class.getConstructor());
-        
-        } catch(Exception e) { e.printStackTrace(); }
+    public void gerenciamento() {
 
         a.limparTela();
 
@@ -318,7 +317,7 @@ public class Menu {
     *   de dados, então ele passa para a verificação de senha, se a senha
     *   não for válida, então o usuario não ganha acesso.
     */
-    public static boolean acessoAoSistema() {
+    public boolean acessoAoSistema() {
 
         String email = "";
         String senha = "";
@@ -382,7 +381,7 @@ public class Menu {
     *   se for confirmado, o CRUD irá registrar esse novo usuario, caso
     *   contrario, a operação será cancelada.
     */
-    public static boolean criandoUsuario() {
+    public boolean criandoUsuario() {
 
         String email     = "";
         String usuario   = "";
@@ -504,7 +503,7 @@ public class Menu {
     *   um 'email' será enviado para o usuário, com
     *   a sua nova senha temporária.
     */
-    public static boolean senhaTemporaria() {
+    public boolean senhaTemporaria() {
 
         Usuario user = new Usuario();
 
@@ -562,7 +561,7 @@ public class Menu {
     *   inserir a senha atual e então colocar a nova senha duas
     *   vezes para ter certeza que ele está ciente em qual é a senha
     */
-    public static boolean novaSenha() {
+    public boolean novaSenha() {
 
         Usuario user = null;
 
