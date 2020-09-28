@@ -2,6 +2,12 @@ package crud.lixo;
 
 import java.io.RandomAccessFile;
 
+/** Sistema de lixo eficiente
+ * @author Lucas Santiago
+ * @funcao create -> Recebe um int com o tamanho do registro deletado e a posição de exclusão dele
+ * @funcao Read   -> Recebe um int com o tamanho de uma nova entidade para sobreescrever um registro
+ * @funcao Delete -> Deletar um lixo que tiver sido usado
+ */
 public class Lixo {
     private RandomAccessFile arquivo;                 // Arquivo de lixo no disco
     private final int        PORCENTAGEMSOBREESCRITA; // Porcentagem de um arquivo para sobreescrita
@@ -24,7 +30,9 @@ public class Lixo {
     }
 
     /** Inserindo um novo elemento no banco de dados
+     * @param tamanhoRegistro Tamanho do registro que foi excluido.
      * 
+     * @param enderecoRegistro long contendo o endereço do registro deletado.
      */
     public void create(int tamanhoRegistro, long enderecoRegistro) throws Exception {
         // Criando um objeto para fazer a leitura do lixo
@@ -48,6 +56,8 @@ public class Lixo {
     }
     
     /** Procurar o endereço do melhor candidato a substituir outro arquivo exluido
+     * 
+     * @param tamRegistro Ler no banco de dados o melhor candidato para sobreescrever esse lixo
      * 
      * @return Endereço do melhor candidato para substituir o registro antigo, -1 caso não há (escreva no final do arquivo)
      */
@@ -99,7 +109,7 @@ public class Lixo {
     
     /** Apagar registros do arquivo lixo
      * 
-     * 
+     * @param endereçoRegistro Excluir um lixo do banco de dados, usar apos dar um read no lixo e escrever outro objeto nessa posição
      */
     public void delete(long enderecoRegistro) {
         try {
@@ -212,4 +222,3 @@ public class Lixo {
         }
     }
 }
-
