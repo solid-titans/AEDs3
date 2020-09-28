@@ -12,29 +12,29 @@ public class Pergunta implements Registro {
 
     private int idPergunta;
     private int idUsuario;
-    private long criacao;
     private short nota;
-    private String pergunta;
     private boolean ativa;
+    private long criacao;
+    private String pergunta;
 
     //Construtor de uma pergunta vazia
     public Pergunta(){
         this.idPergunta = -1;
         this.idUsuario  = -1;
-        this.criacao    = -1;
         this.nota       = 0;
-        this.pergunta   = "";
         this.ativa      = false;
+        this.criacao    = -1;
+        this.pergunta   = "";
     }
 
     //Construtor de uma pergunta
     public Pergunta(int idUsuario, long criacao, String pergunta) {
         this.idPergunta = -1;
         this.idUsuario  = idUsuario;
-        this.criacao    = criacao;
         this.nota       = 0;
-        this.pergunta   = pergunta;
         this.ativa      = true;
+        this.criacao    = criacao;
+        this.pergunta   = pergunta;
     }
 
     //Funções 'set'
@@ -103,10 +103,10 @@ public class Pergunta implements Registro {
 
         data.writeInt(this.idPergunta);
         data.writeInt(this.idUsuario);
-        data.writeLong(this.criacao);
-        data.writeShort((int)this.nota); //O unico jeito de escrever short é usando int
-        data.writeUTF(this.pergunta);
         data.writeBoolean(this.ativa);
+        data.writeShort((int)this.nota); //O unico jeito de escrever short é usando int
+        data.writeLong(this.criacao);
+        data.writeUTF(this.pergunta);
 
         return byteArray.toByteArray();
     }
@@ -123,10 +123,10 @@ public class Pergunta implements Registro {
 
         this.idPergunta = data.readInt();
         this.idUsuario  = data.readInt();
-        this.criacao    = data.readLong();
-        this.nota       = data.readShort();
-        this.pergunta   = data.readUTF();
         this.ativa      = data.readBoolean();
+        this.nota       = data.readShort();
+        this.criacao    = data.readLong();
+        this.pergunta   = data.readUTF();
     }
 
 } 
