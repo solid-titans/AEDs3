@@ -23,6 +23,7 @@ public class GerenciadorPerguntas {
          //Menu 2
     
         //Opção 1 : Tela de listagem de perguntas
+        
         public String listarPerguntas(int IdUsuario) {
 
             Pergunta[] array = null;
@@ -130,7 +131,7 @@ public class GerenciadorPerguntas {
         
                 graficos.limparTela();
 
-                if ( entrada.length() != 0 && !entrada.equals("0")) {
+                if ( entrada.length() != 0 && !entrada.equals("0") && array.length > Integer.parseInt(entrada) - 1) {
 
                     indexSelecionado = array[Integer.parseInt(entrada) - 1].getId();
 
@@ -142,7 +143,7 @@ public class GerenciadorPerguntas {
                         p = perguntas.read(indexSelecionado);
                     } catch(Exception e ) {}
         
-                    if( p != null ) {
+                    if( p != null && p.getAtiva() != false) {
         
                         System.out.print("Sucesso! Pergunta encontrada!\nVamos alterar a sua pergunta, pressione enter para continuar...");
                         Sistema.lerEntrada();
@@ -212,9 +213,10 @@ public class GerenciadorPerguntas {
 
             array = getPerguntaArray(IdUsuario);
 
+            System.out.println(graficos.caixa(5,"Vamos alterar uma pergunta"));
+
             if (array != null ) {
-    
-                System.out.println(graficos.caixa(5,"Vamos alterar uma pergunta"));
+
                 System.out.println(listarPerguntas(IdUsuario));
         
                 System.out.print("\nInsira o numero da pergunta que você quer alterar:\nObs: Pressione \'0\' para voltar ao menu\n-> ");
@@ -222,7 +224,7 @@ public class GerenciadorPerguntas {
 
                 graficos.limparTela();
         
-                if ( entrada.length() != 0 && !entrada.equals("0")) {
+                if (entrada.length() != 0 && !entrada.equals("0") && array.length > Integer.parseInt(entrada) - 1) {
 
                     indexSelecionado = array[Integer.parseInt(entrada) - 1].getId();
         
@@ -232,7 +234,7 @@ public class GerenciadorPerguntas {
                         p = perguntas.read(indexSelecionado);
                     } catch(Exception e ) {}
         
-                    if( p != null ) {
+                    if( p != null  &&  p.getAtiva() != false) {
         
                         System.out.println("Sucesso! Pergunta encontrada!\nVamos imprimir essa pergunta:\n\n"+ p.getPergunta()  + "\n\nConfirme se essa é a pergunta?(s/n): ");
         
@@ -255,6 +257,9 @@ public class GerenciadorPerguntas {
         
                             System.out.println("Processo cancelado!\nVoltando para o menu...\n");
                         }
+                    }
+                    else {
+                        System.err.println("Erro! Pergunta não encontrada, ou já está desativada!");
                     }        
                 }
                 else {
