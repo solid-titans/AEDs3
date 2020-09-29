@@ -15,7 +15,7 @@ public class MPerguntas {
         public MPerguntas()
         {
             try {
-            this.arvB = new ArvoreBMais_String_Int(5, "teste.blus");
+            this.arvB = new ArvoreBMais_String_Int(5, "teste.bplus");
             } catch (Exception e) {}
 
         }
@@ -24,9 +24,15 @@ public class MPerguntas {
          //Menu 2
     
         //Opção 1 : Tela de listagem de perguntas
-        public String listagem() {
+        public String listagem(int IdUsuario,Crud<Pergunta> perguntas) {
+
+            Pergunta yes = perguntas.read(arvB.read(String.valueOf(IdUsuario)));
     
             String resp = "\nLista de perguntas: \n\n";
+
+            if(yes != null) {
+                resp += yes.ofLongToStringData();
+            } 
     
             return resp;
         }

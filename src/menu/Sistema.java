@@ -166,4 +166,18 @@ public class Sistema {
           } catch(IOException e ) {System.err.println("Erro na leitura!");}
           return resp;
       }
+
+      public static char lerChar() {
+           String entrada = "";
+           char resp = 'B';
+
+           try {
+              entrada = br.readLine();
+           } catch(IOException e ) {System.err.println("Erro na leitura!");}
+
+           if(!entrada.equals("")) {
+             resp = entrada.charAt(0);
+           }
+          return resp;       
+      }
 }

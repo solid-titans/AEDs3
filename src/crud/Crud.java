@@ -210,7 +210,7 @@ public class Crud <T extends Registro> {
             arquivo.writeInt(id + 1);
         
         } catch (Exception e) { 
-            System.err.println(e); 
+            //System.err.println(e); 
             id = -1;
 
         }

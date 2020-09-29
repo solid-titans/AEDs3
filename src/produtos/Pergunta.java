@@ -128,5 +128,24 @@ public class Pergunta implements Registro {
         this.criacao    = data.readLong();
         this.pergunta   = data.readUTF();
     }
+    /** ofLongToStringData - a contribution by Homecas
+     *  
+     * @param data
+     * @return
+     */
+    private String ofLongToStringData(long data){
+                // Definir o tempo Sistema
+                Date SistemaData = new Date(data);
+                // Caledario para setar o fuso horario
+                Calendar caledario = Calendar.getInstance();
+                // Formatacao de como data 
+                DateFormat dataFormatada = new SimpleDateFormat ("dd/MM/yyyy HH:mm");
+                
+                // Formanto a formatacao da data apatir do fuso horario do sistema 
+                dataFormatada.setTimeZone(caledario.getTimeZone());
+                
+        
+                return dataFormatada.format(SistemaData);
+    }
 
 } 
