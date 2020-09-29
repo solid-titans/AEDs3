@@ -5,6 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import crud.Registro;
 
@@ -128,12 +132,17 @@ public class Pergunta implements Registro {
         this.criacao    = data.readLong();
         this.pergunta   = data.readUTF();
     }
+
+    public String getData() {
+        return ofLongToStringData(this.criacao);
+    }
     /** ofLongToStringData - a contribution by Homecas
      *  
      * @param data
      * @return
      */
     private String ofLongToStringData(long data){
+
                 // Definir o tempo Sistema
                 Date SistemaData = new Date(data);
                 // Caledario para setar o fuso horario

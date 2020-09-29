@@ -15,23 +15,26 @@ public class MPerguntas {
         public MPerguntas()
         {
             try {
-            this.arvB = new ArvoreBMais_String_Int(5, "teste.bplus");
+                this.arvB = new ArvoreBMais_String_Int(5, "teste.bplus");
             } catch (Exception e) {}
 
         }
 
-
          //Menu 2
     
         //Opção 1 : Tela de listagem de perguntas
-        public String listagem(int IdUsuario,Crud<Pergunta> perguntas) {
+        public String listarPerguntas(int IdUsuario,Crud<Pergunta> perguntas) {
 
-            Pergunta yes = perguntas.read(arvB.read(String.valueOf(IdUsuario)));
+            Pergunta yes = null;
+            try { 
+                yes = perguntas.read(arvB.read(String.valueOf(IdUsuario)));
+            } catch(Exception e ) {}
     
             String resp = "\nLista de perguntas: \n\n";
 
             if(yes != null) {
-                resp += yes.ofLongToStringData();
+                resp += yes.getData();
+                resp += "\n" + yes.getPergunta();
             } 
     
             return resp;
@@ -94,7 +97,7 @@ public class MPerguntas {
         }
     
         //Opção 3: Alterar a pergunta
-        public int alterarPergunta(Crud<Pergunta> perguntas) {
+        public int alterarPergunta(int IdUsuario, Crud<Pergunta> perguntas) {
     
             int idResposta = -1;
             String entrada = "";
@@ -103,7 +106,7 @@ public class MPerguntas {
             Pergunta p = null;
     
             System.out.println(a.caixa(5,"Vamos alterar uma pergunta"));
-            listagem();
+            listarPerguntas(IdUsuario,perguntas);
     
             System.out.print("\nInsira o numero da pergunta que você quer alterar:\nObs: Pressione \'0\' para voltar ao menu\n-> ");
             entrada = Sistema.lerEntrada();

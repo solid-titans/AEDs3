@@ -10,7 +10,7 @@ public class Menu {
     public Crud<Usuario> usuarios;
     public Crud<Pergunta> perguntas;
 
-    public MPerguntas pergunta = new MPerguntas();
+    public MPerguntas gerenciador = new MPerguntas();
 
     //Id do Usuario que usar o sistema
     public static int IdUsuario             = - 1;
@@ -168,13 +168,13 @@ public class Menu {
                         break;
 
                     case "12": // Listando as perguntas do usuario atual
-                        System.out.print(pergunta.listagem() + "\n\nPressione qualquer tecla para continuar...");
+                        System.out.print(gerenciador.listarPerguntas(IdUsuario,perguntas) + "\n\nPressione qualquer tecla para continuar...");
                         Sistema.lerEntrada();
                         graficos.limparTela();
                         break;
 
                     case "22": // Incluindo uma nova pergunta
-                        idSucesso = pergunta.novaPergunta(IdUsuario,perguntas);
+                        idSucesso = gerenciador.novaPergunta(IdUsuario,perguntas);
 
                         if (idSucesso != -1) {
 
