@@ -2,7 +2,6 @@ package menu;
 
 import crud.Crud;
 import produtos.*;
-import menu.*;
 import seguranca.*;
 
 public class Acesso {

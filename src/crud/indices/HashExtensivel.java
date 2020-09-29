@@ -1,3 +1,4 @@
+package crud.indices;
 /*********
  * TABELA HASH EXTENSÍVEL
  * int chave, long dado
@@ -13,7 +14,6 @@
  * Implementado pelo Prof. Marcos Kutova
  * v1.0 - 2019
  */
-package crud.indices;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

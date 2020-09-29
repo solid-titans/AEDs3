@@ -7,12 +7,11 @@ import seguranca.*;
 public class Menu {
     
     public Crud<Usuario> usuarios;
-    public Crud<Pergunta> perguntas;
 
-    public GerenciarP gerenciador = new GerenciarP();
+    public GerenciadorPerguntas gerenciador = new GerenciadorPerguntas();
 
     //Id do Usuario que usar o sistema
-    public static int IdUsuario             = - 1;
+    public int IdUsuario             = - 1;
 
     public static ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
 
@@ -43,11 +42,8 @@ public class Menu {
     // Construtor do Menu
     public Menu(Crud<Usuario> usuarios,int idUsuario)
     {
-        this.IdUsuario = idUsuario;
-        this.usuarios  = usuarios;
-        try {
-            this.perguntas = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
-        } catch(Exception e) {} 
+        IdUsuario = idUsuario;
+        usuarios  = usuarios;
     }
 
     public void gerenciamento() {
@@ -167,13 +163,13 @@ public class Menu {
                         break;
 
                     case "12": // Listando as perguntas do usuario atual
-                        System.out.print(gerenciador.listarPerguntas(IdUsuario,perguntas) + "\n\nPressione qualquer tecla para continuar...");
+                        System.out.print(gerenciador.listarPerguntas(IdUsuario) + "\n\nPressione qualquer tecla para continuar...");
                         Sistema.lerEntrada();
                         graficos.limparTela();
                         break;
 
                     case "22": // Incluindo uma nova pergunta
-                        idSucesso = gerenciador.novaPergunta(IdUsuario,perguntas);
+                        idSucesso = gerenciador.novaPergunta(IdUsuario);
 
                         if (idSucesso != -1) {
 
@@ -190,7 +186,7 @@ public class Menu {
                         break;
 
                     case "32": // Alterando uma pergunta atual
-                        //idSucesso = alterarPergunta();
+                        idSucesso = gerenciador.alterarPergunta(IdUsuario);
 
                         if (idSucesso != -1) {
 
@@ -207,7 +203,7 @@ public class Menu {
                         break;
 
                     case "42": // Arquivando as perguntas
-                        //idSucesso = arquivarPergunta();
+                        idSucesso = gerenciador.arquivarPergunta(IdUsuario);
 
                         if (idSucesso != -1) {
 

@@ -143,18 +143,18 @@ public class Pergunta implements Registro {
      */
     private String ofLongToStringData(long data){
 
-                // Definir o tempo Sistema
-                Date SistemaData = new Date(data);
-                // Caledario para setar o fuso horario
-                Calendar caledario = Calendar.getInstance();
-                // Formatacao de como data 
-                DateFormat dataFormatada = new SimpleDateFormat ("dd/MM/yyyy HH:mm");
+        // Definir o tempo Sistema
+        Date SistemaData = new Date(data);
+        // Caledario para setar o fuso horario
+        Calendar caledario = Calendar.getInstance();
+        // Formatacao de como data 
+        DateFormat dataFormatada = new SimpleDateFormat ("dd/MM/yyyy HH:mm");
                 
-                // Formanto a formatacao da data apatir do fuso horario do sistema 
-                dataFormatada.setTimeZone(caledario.getTimeZone());
+        // Formanto a formatacao da data apatir do fuso horario do sistema 
+        dataFormatada.setTimeZone(caledario.getTimeZone());
                 
         
-                return dataFormatada.format(SistemaData);
+        return dataFormatada.format(SistemaData);
     }
 
 } 

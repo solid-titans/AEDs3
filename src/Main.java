@@ -81,7 +81,7 @@ public class Main
                         id = acesso.acessoAoSistema(usuarios);
 
                         if(id != -1) {
-                            System.out.println("\nSucesso! Login aprovado!\nSeja bem vindo usuário!\n");
+                            System.out.println("\nSucesso! Login aprovado!\nSeja bem vindo usuário!\n\nPressione \"Enter\" para continuar...");
                             Sistema.lerChar();
 
                             menu = new Menu(usuarios,id);

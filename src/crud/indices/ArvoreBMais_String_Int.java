@@ -1,3 +1,4 @@
+package crud.indices;
 /*********
  * ARVORE B+ SI
  * String chave, int dado
@@ -15,7 +16,6 @@
  */
 
 
-package crud.indices;
 import java.io.*;
 import java.util.ArrayList;
 

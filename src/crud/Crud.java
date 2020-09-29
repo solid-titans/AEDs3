@@ -200,14 +200,14 @@ public class Crud <T extends Registro> {
             arquivo.seek(pos);                                                  // Ir para o final do arquivo
             arquivo.writeLong(dadosEntidade.length);                             // Escrevendo o tamanho do objeto
             arquivo.write(dadosEntidade);                                       // Escrevendo o objeto na memoria
-            
-            // Inserindo nos outros arquivos de banco de dados
-            this.arquivoIndiceDireto.create(id, pos);  // Inserindo a id e o pos no hash extensivel
-            this.arquivoIndiceIndireto.create(entidade.chaveSecundaria(), id); // Inserindo a chave de pesquisa na arvore B+
 
             // Sobreescrendo metadado com o novo id
             arquivo.seek(0);
             arquivo.writeInt(id + 1);
+            
+            // Inserindo nos outros arquivos de banco de dados
+            this.arquivoIndiceDireto.create(id, pos);  // Inserindo a id e o pos no hash extensivel
+            this.arquivoIndiceIndireto.create(entidade.chaveSecundaria(), id); // Inserindo a chave de pesquisa na arvore B+
         
         } catch (Exception e) { 
             //System.err.println(e); 
