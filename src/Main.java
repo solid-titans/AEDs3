@@ -13,7 +13,7 @@ public class Main
 
         try {
     
-            usuarios = new Crud<>("Usuarios", Usuario.class.getConstructor());
+            usuarios  = new Crud<>("Usuarios",  Usuario.class.getConstructor());
             perguntas = new Crud<>("Perguntas", Pergunta.class.getConstructor());
         
         } catch(Exception e) { e.printStackTrace(); }

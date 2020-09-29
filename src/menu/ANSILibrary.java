@@ -1,3 +1,4 @@
+
 /*
 *   Classe com configurações para imprensão 
 *   personalizada no terminal
@@ -183,7 +184,5 @@ public class ANSILibrary{
         System.out.print("\033[H\033[2J");   
         System.out.flush(); 
     }
-
-
 
 }

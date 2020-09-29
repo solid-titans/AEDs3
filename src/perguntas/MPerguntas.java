@@ -6,19 +6,16 @@ import crud.Crud;
 import menu.*;
 import produtos.*;
 
-public class Perguntas {
+public class MPerguntas {
 
     public ArvoreBMais_String_Int arvB;
-    public Crud<Pergunta> perguntas;
     public static ASCIInterface a           = new ASCIInterface(); // Interface grafica feita em ASCII
 
 
-        public Perguntas(Crud<Pergunta> perguntas)
+        public MPerguntas()
         {
-            this.perguntas = perguntas;
-            
             try {
-            this.arvB = new ArvoreBMais_String_Int(5, "teste" + ".blus");
+            this.arvB = new ArvoreBMais_String_Int(5, "teste.blus");
             } catch (Exception e) {}
 
         }
@@ -39,7 +36,7 @@ public class Perguntas {
         *   Primeiro o usuario precisa inserir a pergunta
         *   se a pergunta não for vazia, ele 
         */
-        public int novaPergunta(int IdUsuario) {
+        public int novaPergunta(int IdUsuario,Crud<Pergunta> perguntas) {
     
             int idResp       = -1;
             String pergunta  = "";
@@ -65,22 +62,13 @@ public class Perguntas {
     
                 if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
     
-                    System.out.println("Certo! a sua pergunta foi criada!");
-                    
-                    System.out.println(IdUsuario);
-                    //System.out.println(new Date().getTime());
-                    System.out.println(pergunta);
-                    
-                    
-                    p = new Pergunta(IdUsuario,-1,pergunta);
-                    
-
-
+                    System.out.println("Certo! a sua pergunta foi criada!");                  
+                    p = new Pergunta(IdUsuario,new Date().getTime(),pergunta);                
 
                     idResp = perguntas.create(p);
                     
                     try {
-                    arvB.create(String.valueOf(IdUsuario), idResp);
+                        arvB.create(String.valueOf(IdUsuario), idResp);
                     } catch (Exception e) {}
                     
                     p.setId(idResp);
@@ -100,7 +88,7 @@ public class Perguntas {
         }
     
         //Opção 3: Alterar a pergunta
-        public int alterarPergunta() {
+        public int alterarPergunta(Crud<Pergunta> perguntas) {
     
             int idResposta = -1;
             String entrada = "";
