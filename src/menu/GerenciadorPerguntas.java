@@ -35,6 +35,9 @@ public class GerenciadorPerguntas {
                 resp = "\nOps.. parece que você não tem nenhum pergunta.";
             }
             else {
+
+                resp += graficos.caixa(5,"MINHAS PERGUNTAS");
+
                 for (byte i = 0; i < array.length; i++,contador++) {
                     if(array[i].getAtiva() == false) {
                         resp += "\n(Arquivada)";
@@ -216,6 +219,8 @@ public class GerenciadorPerguntas {
         
                 System.out.print("\nInsira o numero da pergunta que você quer alterar:\nObs: Pressione \'0\' para voltar ao menu\n-> ");
                 entrada = Sistema.lerEntrada();
+
+                graficos.limparTela();
         
                 if ( entrada.length() != 0 && !entrada.equals("0")) {
 
@@ -267,26 +272,22 @@ public class GerenciadorPerguntas {
 
     private void novoParId(int IdUsuario, int IdPergunta ) {
 
-        //System.out.println("IdPergunta = " + IdPergunta);
-
         CelulaIDs tmp   = null;
         String    idTmp = "";
 
         try {
             tmp = ids.read(IdUsuario);
         }
-    catch(Exception e) {/*System.err.println("Eh bro, tentamos");*/}
+    catch(Exception e) {}
 
             if ( tmp != null) {
 
-                //System.out.println("Why am i here?");
                 idTmp = tmp.chaveSecundaria() + "-" + String.valueOf(IdPergunta);
                 tmp.setChaveSecundaria(idTmp);
                 ids.update(tmp,tmp.getId());
 
             }
             else {
-                //System.out.println("Mamemos");
                 ids.create(new CelulaIDs(IdUsuario,String.valueOf(IdPergunta)));
             }
         }
