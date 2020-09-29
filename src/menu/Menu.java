@@ -1,7 +1,6 @@
 package menu;
 
 import produtos.*;
-import perguntas.*;
 import crud.*;
 import seguranca.*;
 
@@ -10,7 +9,7 @@ public class Menu {
     public Crud<Usuario> usuarios;
     public Crud<Pergunta> perguntas;
 
-    public MPerguntas gerenciador = new MPerguntas();
+    public GerenciarP gerenciador = new GerenciarP();
 
     //Id do Usuario que usar o sistema
     public static int IdUsuario             = - 1;

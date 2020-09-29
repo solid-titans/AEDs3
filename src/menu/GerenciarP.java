@@ -1,18 +1,17 @@
-package perguntas;
+package menu;
 
 import java.util.Date;
 import crud.indices.*;
 import crud.Crud;
-import menu.*;
 import produtos.*;
 
-public class MPerguntas {
+public class GerenciarP {
 
     public ArvoreBMais_String_Int arvB;
     public static ASCIInterface a           = new ASCIInterface(); // Interface grafica feita em ASCII
 
 
-        public MPerguntas()
+        public GerenciarP()
         {
             try {
                 this.arvB = new ArvoreBMais_String_Int(5, "teste.bplus");
@@ -26,11 +25,25 @@ public class MPerguntas {
         public String listarPerguntas(int IdUsuario,Crud<Pergunta> perguntas) {
 
             Pergunta yes = null;
+
             try { 
                 yes = perguntas.read(arvB.read(String.valueOf(IdUsuario)));
             } catch(Exception e ) {}
     
             String resp = "\nLista de perguntas: \n\n";
+
+            System.out.println("Teste");
+
+            if(yes != null) {
+                resp += yes.getData();
+                resp += "\n" + yes.getPergunta();
+            } 
+
+            yes = null;
+
+            try { 
+                yes = perguntas.read(arvB.read(String.valueOf(IdUsuario)));
+            } catch(Exception e ) {}
 
             if(yes != null) {
                 resp += yes.getData();
