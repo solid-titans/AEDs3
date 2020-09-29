@@ -134,8 +134,6 @@ public class GerenciadorPerguntas {
                 if ( entrada.length() != 0 && !entrada.equals("0") && array.length > Integer.parseInt(entrada) - 1) {
 
                     indexSelecionado = array[Integer.parseInt(entrada) - 1].getId();
-
-                    System.out.println(indexSelecionado);
         
                     System.out.println("\nOk... vamos encontrar a sua pergunta.");
         
