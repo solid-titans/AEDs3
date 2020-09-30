@@ -63,6 +63,10 @@ public class Menu {
                         IdUsuario = idSucesso;
                         System.out.println("\nSucesso! Login aprovado!\nSeja bem vindo usuário!\n\nPressione \"Enter\" para continuar...");
                         Sistema.lerChar();
+
+                        graficos.limparTela();
+
+                        AcessoGarantido();
                 
                         opcao = '0';
                     }
