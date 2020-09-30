@@ -1,104 +1,137 @@
 package menu;
 
-import produtos.*;
-import crud.*;
-import seguranca.*;
+import menu.pergunta.*;
+import menu.sistema.graficos.*;
+import menu.sistema.Sistema;
+import menu.usuario.*;
 
 public class Menu {
-    
-    public Crud<Usuario> usuarios;
-
-    public GerenciadorPerguntas gerenciador = new GerenciadorPerguntas();
 
     //Id do Usuario que usar o sistema
-    public int IdUsuario             = - 1;
+    private int IdUsuario             = - 1;
+    private ADMPerguntas minhasPerguntas = new ADMPerguntas();
+    private ADMUsuario   meusUsuarios    = new ADMUsuario();
 
     public static ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
 
-    //String com as interfaces dos diferentes menu
+    public Menu() {
 
-    //Menu 1 : Tela de Inicio
-    public String inicio(byte notificacoes) {
-        return "INÍCIO\n\n" +
-               "1) Criação de perguntas\n" +
-               "2) Consultar/responder perguntas\n" +
-               "3) Notificações: " + notificacoes + "\n\n"+
-               "4) Redefinir senha: \n\n" + 
-               "0) Sair\n\n" +
-               "Opção: ";
+        IdUsuario       = -1;
+        minhasPerguntas = new ADMPerguntas();
+        meusUsuarios    = new ADMUsuario();
     }
 
-    //Menu 2 : Tela de criacaoDePerguntas
-    public String criacaoDePerguntas() {
-        return "INÍCIO > CRIAÇÃO DE PERGUNTAS\n\n" +
-               "1) Listar\n" +
-               "2) Incluir\n" +
-               "3) Alterar\n"+
-               "4) Arquivar\n\n" +
-               "0) Retornar ao menu anterior\n\n"+
-               "Opção: ";
+    public void Inicio() {
+
+        char opcao;
+
+        boolean sucesso   = false;
+        int idSucesso     = -1;
+
+        do {
+
+            opcao = Selecao.Acesso();
+            //Fazendo a interação com o acesso
+            /*
+            *   O acesso ao sistema funciona a partir de um
+            *   switch, com o char 'opcao', cada case representa
+            *   a opcao escolhida pelo usuario
+            *
+            *   Lista de opções:
+            *
+            *   0 - Sair
+            *   1 - Acessando o Sistema
+            *   2 - Criacao de usuario
+            *   3 - Senha temporaria
+            *
+            *   Obs: Se o usuario apenas apertou 'enter' deixando a String
+            *   vazia, o programa contara isso como um erro.
+            */
+            switch(opcao) {
+
+            //Menu Acesso
+
+                case '0': //Saindo do programa
+                    System.out.println("Obrigado por usar o programa!\nTenha um excelente dia!\n");
+                    break;
+
+                case '1': // Acessando o sistema usando credenciais existentes
+                    idSucesso = meusUsuarios.acessoAoSistema();
+
+                    if(idSucesso != -1) {
+
+                        IdUsuario = idSucesso;
+                        System.out.println("\nSucesso! Login aprovado!\nSeja bem vindo usuário!\n\nPressione \"Enter\" para continuar...");
+                        Sistema.lerChar();
+                
+                        opcao = '0';
+                    }
+                    else {
+                        System.err.println("\nERRO! Login não aprovado!\nTente novamente!\n");
+                    }
+                    System.out.print("Pressione \"Enter\" para continuar...");
+
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;
+
+                case '2': // Criando um novo usuario
+                    sucesso = meusUsuarios.criandoUsuario();
+            
+                    if(sucesso) {
+                        System.out.println("\nSucesso! Novo usuário criado! Agora faça login!\n");
+                    }
+                    else {
+                        System.err.println("\nERRO! Criação de usuário deu errado!\nTente novamente!\n");
+                    }
+
+                    System.out.print("Pressione \"Enter\" para continuar...");
+
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;
+
+                case '3': // Resentando a senha
+                    sucesso = meusUsuarios.senhaTemporaria();
+
+                    if (sucesso) {
+
+                        System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
+                    }
+                    else {
+                        System.out.println("\nERRO! Não foi possível fazer a operação de mudança de senha!\nTente novamente!\n");
+                    }
+
+                    System.out.print("Pressione \"Enter\" para continuar...");
+
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;
+
+                //Operacao Invalida
+
+                default:
+                    System.err.println("Erro! Entrada inválida, tente novamente.");
+                    break;
+            }
+
+        } while (opcao != '0');
     }
 
-    // Construtor do Menu
-    public Menu(Crud<Usuario> usuarios,int idUsuario)
-    {
-        IdUsuario = idUsuario;
-        usuarios  = usuarios;
-    }
+    private void AcessoGarantido() {
 
-    public void gerenciamento() {
+        String opcao = "";
 
-        graficos.limparTela();
-
-        //Variaveis do menu
-        String opcao;
         byte menuIndex    = 1;
         byte notificacoes = 0;
-
+    
         boolean sucesso   = false;
         int idSucesso     = -1;
 
         //Loop do menu
         do {
 
-            //Limpar a String 'opcao'
-            opcao = "";
-
-            //Imprimir uma caixa com o titulo
-            System.out.println(graficos.caixa(5,"PERGUNTAS 1.0"));
-
-            //Imprimindo o menu a ser exibido para o usuario
-            switch(menuIndex) 
-            {
-
-                //Inicio
-                case 1:
-                    System.out.print(inicio(notificacoes));
-                    break;
-
-                //Criacao de perguntas
-                case 2:
-                    System.out.print(criacaoDePerguntas());
-                    break;
-
-                //Caso a variavel tenha alguma variavel diferente
-                default:
-                    System.err.println("Erro! Alguma coisa deu muito errado");
-                    break;
-            }
-
-            //System.out.println(menuIndex);
-            //Fazendo leitura do teclado
-            opcao = Sistema.lerEntrada();
-
-            //Se o usuario não tenha apenas apertado 'enter' (String vazia)
-            if ( opcao.length() != 0 ) {
-                opcao = opcao.charAt(0) + String.valueOf((int)menuIndex);
-            }
-
-            //limpando a tela
-            graficos.limparTela();
-
+            opcao = Selecao.Inicio(menuIndex,notificacoes);
             //System.out.println(opcao);
 
             //Fazendo a mudança do menu
@@ -121,206 +154,113 @@ public class Menu {
             */
             switch(opcao) {
 
-                    //Menu Inicio
+                //Menu Inicio
 
-                    case "01": // Saindo do programa
-                        System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
-                        break;
+                case "01": // Saindo do programa
+                    System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
+                    break;
 
-                    case "11": // Indo para a tela de criacao de perguntas
-                        menuIndex = 2;
-                        break;
+                case "11": // Indo para a tela de criacao de perguntas
+                    menuIndex = 2;
+                    break;
 
-                    case "21": // Indo para a tela de consultar/responder perguntas
-                        System.out.println("Vamos consultar/responder perguntas");
-                        break;
+                case "21": // Indo para a tela de consultar/responder perguntas
+                    System.out.println("Vamos consultar/responder perguntas");
+                    break;
 
-                    case "31": // Verificar suas notificacoes
-                        System.out.println("Olha so as notificacoes");
-                        break;
+                case "31": // Verificar suas notificacoes
+                    System.out.println("Olha so as notificacoes");
+                    break;
 
-                    case "41": 
-                        sucesso = novaSenha();
+                case "41": 
+                    sucesso = meusUsuarios.novaSenha(IdUsuario);
 
-                        if (sucesso) {
+                    if (sucesso) {
 
-                            System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
-                        }
-                        else {
-                            System.out.println("\nERRO! Não foi possível fazer a operação de mudança de senha!\nTente novamente!\n");
-                        }
+                        System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
+                    }
+                    else {
+                        System.out.println("\nERRO! Não foi possível fazer a operação de mudança de senha!\nTente novamente!\n");
+                    }
 
-                        System.out.print("Pressione \"Enter\" para continuar...");
+                    System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada();
-                        graficos.limparTela();
-                        break;                       
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;                       
 
-                    //Menu Criacao de Perguntas
+                //Menu Criacao de Perguntas
 
-                    case "02": // Voltando a tela de Inicio
-                        menuIndex = 1;
-                        break;
+                case "02": // Voltando a tela de Inicio
+                    menuIndex = 1;
+                    break;
 
-                    case "12": // Listando as perguntas do usuario atual
-                        System.out.print(gerenciador.listarPerguntas(IdUsuario) + "\n\nPressione qualquer tecla para continuar...");
-                        Sistema.lerEntrada();
-                        graficos.limparTela();
-                        break;
+                case "12": // Listando as perguntas do usuario atual
+                    System.out.print(minhasPerguntas.listarPerguntas(IdUsuario) + "\n\nPressione qualquer tecla para continuar...");
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;
 
-                    case "22": // Incluindo uma nova pergunta
-                        idSucesso = gerenciador.novaPergunta(IdUsuario);
+                case "22": // Incluindo uma nova pergunta
+                    idSucesso = minhasPerguntas.novaPergunta(IdUsuario);
 
-                        if (idSucesso != -1) {
+                    if (idSucesso != -1) {
 
-                            System.out.println("\nSucesso! Sua pergunta foi registrada...");
-                        }
-                        else {
-                            System.out.println("\nERRO! Não foi possível fazer a operação de criar pergunta!\nTente novamente!\n");
-                        }
+                        System.out.println("\nSucesso! Sua pergunta foi registrada...");
+                    }
+                    else {
+                        System.out.println("\nERRO! Não foi possível fazer a operação de criar pergunta!\nTente novamente!\n");
+                    }
 
-                        System.out.print("Pressione \"Enter\" para continuar...");
+                    System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada();
-                        graficos.limparTela();
-                        break;
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;
 
-                    case "32": // Alterando uma pergunta atual
-                        idSucesso = gerenciador.alterarPergunta(IdUsuario);
+                case "32": // Alterando uma pergunta atual
+                    idSucesso = minhasPerguntas.alterarPergunta(IdUsuario);
 
-                        if (idSucesso != -1) {
+                    if (idSucesso != -1) {
 
-                            System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
-                        }
-                        else {
-                            System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
-                        }
+                        System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
+                    }
+                    else {
+                        System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
+                    }
 
-                        System.out.print("Pressione \"Enter\" para continuar...");
+                    System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada();
-                        graficos.limparTela();
-                        break;
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;
 
-                    case "42": // Arquivando as perguntas
-                        idSucesso = gerenciador.arquivarPergunta(IdUsuario);
+                case "42": // Arquivando as perguntas
+                    idSucesso = minhasPerguntas.arquivarPergunta(IdUsuario);
 
-                        if (idSucesso != -1) {
+                    if (idSucesso != -1) {
 
-                            System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
-                        }
-                        else {
-                            System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
-                        }
+                        System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
+                    }
+                    else {
+                        System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
+                    }
 
-                        System.out.print("Pressione \"Enter\" para continuar...");
+                    System.out.print("Pressione \"Enter\" para continuar...");
 
-                        Sistema.lerEntrada();
-                        graficos.limparTela();
-                        break;
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
+                    break;
 
-                    //Operacao Invalida
+                //Operacao Invalida
 
-                    default:
-                        System.err.println("Erro! Entrada inválida, tente novamente.");
-                        break;
+                default:
+                    System.err.println("Erro! Entrada inválida, tente novamente.");
+                    break;
                 }
 
         }while (!opcao.equals("01"));
 
-
-    }
-
-    //Menu 1
-
-    //Opção 4 : Criação de uma novaSenha
-    /*
-    *   Caso o usuário esteja instatisfeito
-    *   com a sua senha atual, ele pode pedir os sistema
-    *   para atualizar a senha. Para isso o usuário terá que
-    *   inserir a senha atual e então colocar a nova senha duas
-    *   vezes para ter certeza que ele está ciente em qual é a senha
-    */
-    public boolean novaSenha() {
-
-        Usuario user = null;
-
-        String novaSenha      = "";
-        String confirmarSenha = "";
-
-        boolean senhasIguais  = false;
-        boolean resp          = false;
-
-        byte forca            = -1;
-
-        System.out.println(graficos.caixa(5,"Vamos resetar sua senha"));
-        System.out.print("\nPor favor insira a sua senha atual.\nSenha: ");
-
-        //Fazendo leitura do teclado
-        try {
-
-            user = usuarios.read(IdUsuario);
-
-            confirmarSenha = Sistema.lerEntrada();
-
-            graficos.limparTela();
-
-            if(user.getSenha().equals(new GFG().senhaHasheada(confirmarSenha))) {
-
-                do {
-                    System.out.println(graficos.caixa(5,"Redefinindo senha!"));
-
-                    System.out.println("Nova senha: ");
-
-                    //Leitura da senha
-                    /*
-                    *   O usuario precisa fazer a inserção da senha
-                    *   duas vezes para conferir se o mesmo sabe
-                    *   qual e a senha
-                    */
-                    novaSenha = Sistema.lerEntrada();
-                    System.out.println("\nInsira novamente a senha: ");
-                    confirmarSenha = Sistema.lerEntrada();
-
-                    forca = Sistema.verificarSenha(novaSenha);
-                    senhasIguais = novaSenha.equals(confirmarSenha);
-
-                    graficos.limparTela();
-                    if ( senhasIguais == false ) {
-
-                        System.err.println("ERRO!\nAs duas senhas inseridas não são iguais! Tente novamente\n");
-                    }
-                    if ( forca <= 2 || senhasIguais == false) {
-
-                        System.err.println("ERRO!   Força da sua senha: " +  forca);
-                        System.out.println("Considere as recomendações abaixo para uma boa senha:\n");
-                        System.out.print("*   -> Ter mais de 8 dígitos\n" +
-                                         "*   -> Ter algum caractere em minusculo\n" +
-                                         "*   -> Ter algum caractere em maiusculo\n" +
-                                         "*   -> Possuir algum caractere especial(Exemplo: *?#)\n" +
-                                         "*   -> Possuir pelo menos 1 digito\n\n" +
-                                         "Obs: Recomendamos no mínimo uma senha de força 3.\n" +                                      
-                                         "Pressione \"Enter\" para continuar...");
-
-                        Sistema.lerEntrada();
-                        graficos.limparTela();
-
-                    }
-                } while( senhasIguais == false || forca <= 2);
-
-                user.setSenha(new GFG().senhaHasheada(novaSenha));
-                usuarios.update(user, user.getId());            
-
-                resp = true;
-
-            }
-            else {
-                System.err.println("\nEssa não é a senha atual! Tente novamente!\n");
-            }
-    
-        }catch(Exception e) {}
-
-        return resp;
     }
 
 }

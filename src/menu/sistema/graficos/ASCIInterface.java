@@ -4,7 +4,7 @@
 *   Criada por: Gustavo Lopes Rodrigues
 *   Versão : 0.0.2
 */
-package menu;
+package menu.sistema.graficos;
 
 public class ASCIInterface {
 

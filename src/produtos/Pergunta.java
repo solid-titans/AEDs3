@@ -32,12 +32,12 @@ public class Pergunta implements Registro {
     }
 
     //Construtor de uma pergunta
-    public Pergunta(int idUsuario, long criacao, String pergunta) {
+    public Pergunta(int idUsuario,String pergunta) {
         this.idPergunta = -1;
         this.idUsuario  = idUsuario;
         this.nota       = 0;
         this.ativa      = true;
-        this.criacao    = criacao;
+        this.criacao    = new Date().getTime();
         this.pergunta   = pergunta;
     }
 

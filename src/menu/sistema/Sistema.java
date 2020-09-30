@@ -1,4 +1,4 @@
-package menu;
+package menu.sistema;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -159,25 +159,25 @@ public class Sistema {
         }
     }
   
-      public static String lerEntrada() {
-          String resp = "";
-          try {
-              resp = br.readLine();
-          } catch(IOException e ) {System.err.println("Erro na leitura!");}
-          return resp;
+    public static String lerEntrada() {
+        String resp = "";
+        try {
+            resp = br.readLine();
+        } catch(IOException e ) {System.err.println("Erro na leitura!");}
+        return resp;
       }
 
-      public static char lerChar() {
-           String entrada = "";
-           char resp = 'B';
+    public static char lerChar() {
+        String entrada = "";
+        char resp = 'B';
 
-           try {
-              entrada = br.readLine();
-           } catch(IOException e ) {System.err.println("Erro na leitura!");}
+        try {
+          entrada = br.readLine();
+        } catch(IOException e ) {System.err.println("Erro na leitura!");}
 
-           if(!entrada.equals("")) {
-             resp = entrada.charAt(0);
-           }
-          return resp;       
-      }
+        if(!entrada.equals("")) {
+          resp = entrada.charAt(0);
+        }
+        return resp;       
+    }
 }

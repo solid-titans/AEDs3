@@ -7,7 +7,7 @@
 *   Versão : 0.0.1
 */
 
-package menu;
+package menu.sistema.graficos;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
