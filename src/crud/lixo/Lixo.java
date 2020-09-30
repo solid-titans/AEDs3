@@ -11,6 +11,7 @@ import java.io.RandomAccessFile;
 public class Lixo {
     private RandomAccessFile arquivo;                 // Arquivo de lixo no disco
     private final int        PORCENTAGEMSOBREESCRITA; // Porcentagem de um arquivo para sobreescrita
+    private final long       tamMetadados = 8;        // Tamanho dos metadados
 
     /** Método de exclusão de itens no Crud de forma eficiente
      * 
@@ -69,7 +70,7 @@ public class Lixo {
         
         // Lendo o arquivo sequencialmente procurando a melhor posição para substituir algum lixo
         try {
-            this.arquivo.seek(8);  // Pular o metadado do arquivo
+            this.arquivo.seek(this.tamMetadados);  // Pular o metadado do arquivo
             
             while(this.arquivo.getFilePointer() < this.arquivo.length()) {
                 // Ler a página seguinte
@@ -111,61 +112,47 @@ public class Lixo {
      * 
      * @param endereçoRegistro Excluir um lixo do banco de dados, usar apos dar um read no lixo e escrever outro objeto nessa posição
      */
-    public void delete(long enderecoRegistro) {
+    public boolean delete(long enderecoRegistro) {
+        boolean achou = false;
+        
         try {
-            this.arquivo.seek(8);
+            this.arquivo.seek(0);
+            long valorMetadado = this.arquivo.readLong();  // Recebendo o ultimo valor do metadado que foi deletado
             Pagina pagina = new Pagina();
 
-            while(this.arquivo.getFilePointer() < this.arquivo.length()) {
+            while(this.arquivo.getFilePointer() < this.arquivo.length() && !achou) {
                 pagina.lerProximaPagina();
                 // Deslocar sequencialmente no arquivo até achar o registro que está sendo procurado
                 if(pagina.enderecoRegistro == enderecoRegistro) {
                     // Voltando o ponteiro do arquivo para sobreescrever os dados antigos
-                    this.arquivo.seek(this.arquivo.getFilePointer() - 12);
+                    this.arquivo.seek(this.arquivo.getFilePointer() - ((Long.SIZE + Integer.SIZE) / Byte.SIZE));  // Voltando o tamanho de um int + um long
 
-                    // Sobreescrevendo os dados do crud de lixo
+                    // Marcando como excluido o elemento
                     this.arquivo.writeInt(-1);
-                    this.arquivo.writeLong(-1);
+
+                    // Receber a posição atual para ser inserida no inicio do arquivo
+                    long metadadoAtualizado = this.arquivo.getFilePointer();
+                    // Escrevendo o valor do metadado no long da posição do item deletado anteriormente
+                    this.arquivo.writeLong(valorMetadado);                                               
+
+                    // Voltando ao inicio do arquivo para escrever o novo valor do metadado
+                    this.arquivo.seek(0);
+                    this.arquivo.writeLong(metadadoAtualizado);
+
+                    // Marcando a flag como encontrado
+                    achou = true;
                 }
 
             }
         } catch(Exception e) { e.printStackTrace(); }
+
+        return achou;
     }
     
     /** Classe para ler rapidamente do disco um conjunto de valores necessários
      * 
      */
     private class LerLixo {
-        private long enderecoUltimoDeletado;  // Pegar o endereco do ultimo elemento deletado
-
-        private int     tamanhoRegistro;      // Tamanho de um registro deletado
-        private long    enderecoRegistro;     // Endereço de um registro deletado
-        private boolean haExclusao;           // Verificar se ouve alguma exclusao de algum lixo
-
-        // Ler metadados do lixo
-        public LerLixo() throws Exception {
-            arquivo.seek(0);    // Começar a leitura do arquivo
-
-            // Lendo o metadado do último endereço encontrado no lixo
-            this.enderecoUltimoDeletado = arquivo.readLong();
-
-            // Verificar o estado 
-            if(this.enderecoUltimoDeletado != -1) {
-                arquivo.seek(this.enderecoUltimoDeletado);
-
-                // Ler os últimos dados deletados
-                this.tamanhoRegistro  = arquivo.readInt();
-                this.enderecoRegistro = arquivo.readLong();
-
-                // Marcar como deletado algum registro no meio do arquivo
-                this.haExclusao = true;
-            
-            } else {
-                // Desmarcar se houve algum registro deletado no meio do arquivo
-                this.haExclusao = false;
-
-            }
-        }
 
         /**
          * Verificar se um registro já existe no banco de dados
@@ -176,7 +163,7 @@ public class Lixo {
             boolean haRegistro = false;
 
             try {
-                arquivo.seek(8);
+                arquivo.seek(tamMetadados);
                 Pagina pagina = new Pagina();
 
                 while(arquivo.getFilePointer() < arquivo.length()) {
