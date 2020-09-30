@@ -1,55 +1,54 @@
-package menu;
+package menu.pergunta;
 
-import java.util.Date;
-import crud.Crud;
 import produtos.*;
+import menu.sistema.graficos.*;
+import menu.sistema.Sistema;
 
-public class GerenciadorPerguntas {
+public class ADMPerguntas {
 
     public static ASCIInterface graficos           = new ASCIInterface(); // Interface grafica feita em ASCII
-    public Crud<CelulaIDs> ids;
-    public Crud<Pergunta> perguntas;
+    private PerguntasCRUD perguntasCRUD;
 
 
-        public GerenciadorPerguntas() 
+        public ADMPerguntas() 
         {
-            try {
-                this.ids = new Crud<>("Ids",  CelulaIDs.class.getConstructor());
-                this.perguntas = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
-            } catch (Exception e) {}
-
+            perguntasCRUD = new PerguntasCRUD();
         }
 
          //Menu 2
     
         //Opção 1 : Tela de listagem de perguntas
-        
         public String listarPerguntas(int IdUsuario) {
 
+            String resp = "";
+
             Pergunta[] array = null;
-            String      resp = "";
-            byte    contador = 1;
-
-            array = getPerguntaArray(IdUsuario);
-            if( array == null ) {
-
-                resp = "\nOps.. parece que você não tem nenhum pergunta.";
+            array = perguntasCRUD.getPerguntaArray(IdUsuario);
+            if ( array == null ) {
+                resp = "Ops.. parece que você não tem nenhuma pergunta...\n";
             }
             else {
+                resp = listarPerguntas(array);
+            }
 
-                resp += graficos.caixa(5,"MINHAS PERGUNTAS");
+            return resp;
+        }
+        
+        private String listarPerguntas(Pergunta[] array) {
 
-                for (byte i = 0; i < array.length; i++,contador++) {
-                    if(array[i].getAtiva() == false) {
-                        resp += "\n(Arquivada)";
-                    }
-                    resp += "\n" + contador + ".\n";
-                    resp += array[i].getData() + "\n" + array[i].getPergunta() + "\n";
+            String  resp     = "";
+            byte    contador = 1;
 
+            resp += graficos.caixa(3,"MINHAS PERGUNTAS");
+
+            for (byte i = 0; i < array.length; i++,contador++) {
+                if(array[i].getAtiva() == false) {
+                    resp += "\n(Arquivada)";
                 }
+                resp += "\n" + contador + ".\n";
+                resp += array[i].getData() + "\n" + array[i].getPergunta() + "\n";
 
             }
-    
     
             return resp;
         }
@@ -86,12 +85,10 @@ public class GerenciadorPerguntas {
                 if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
     
                     System.out.println("Certo! a sua pergunta foi criada!");                  
-                    p = new Pergunta(IdUsuario,new Date().getTime(),pergunta);                
+                    p = new Pergunta(IdUsuario,pergunta);                
 
-                    idResp = perguntas.create(p);
+                    idResp = perguntasCRUD.novaPergunta(p,IdUsuario);
                     p.setId(idResp);
-                    
-                    novoParId(IdUsuario,idResp);
                                      
                 }
                 else {
@@ -120,11 +117,11 @@ public class GerenciadorPerguntas {
     
             System.out.println(graficos.caixa(5,"Vamos alterar uma pergunta"));
 
-            array = getPerguntaArray(IdUsuario);
+            array = perguntasCRUD.getPerguntaArray(IdUsuario);
 
             if (array != null) {
 
-                System.out.println(listarPerguntas(IdUsuario));
+                System.out.println(listarPerguntas(array));
     
                 System.out.print("\nInsira o numero da pergunta que você quer alterar:\nObs: Pressione \'0\' para voltar ao menu\n-> ");
                 entrada = Sistema.lerEntrada();
@@ -138,7 +135,7 @@ public class GerenciadorPerguntas {
                     System.out.println("\nOk... vamos encontrar a sua pergunta.");
         
                     try {
-                        p = perguntas.read(indexSelecionado);
+                        p = perguntasCRUD.acharPergunta(indexSelecionado);
                     } catch(Exception e ) {}
         
                     if( p != null && p.getAtiva() != false) {
@@ -168,8 +165,7 @@ public class GerenciadorPerguntas {
         
                                 System.out.println("Certo! a sua pergunta foi criada!");
                                 p.setPergunta(pergunta);
-        
-                                perguntas.update(p,p.getId());
+                                perguntasCRUD.atualizarPergunta(p);
                                 IdResposta = p.getId();
                             }   
                         }
@@ -209,13 +205,13 @@ public class GerenciadorPerguntas {
             Pergunta[] array = null;
             Pergunta p = null;
 
-            array = getPerguntaArray(IdUsuario);
+            array = perguntasCRUD.getPerguntaArray(IdUsuario);
 
             System.out.println(graficos.caixa(5,"Vamos alterar uma pergunta"));
 
             if (array != null ) {
 
-                System.out.println(listarPerguntas(IdUsuario));
+                System.out.println(listarPerguntas(array));
         
                 System.out.print("\nInsira o numero da pergunta que você quer alterar:\nObs: Pressione \'0\' para voltar ao menu\n-> ");
                 entrada = Sistema.lerEntrada();
@@ -229,7 +225,7 @@ public class GerenciadorPerguntas {
                     System.out.println("Ok... vamos encontrar a sua pergunta.");
         
                     try {
-                        p = perguntas.read(indexSelecionado);
+                        p = perguntasCRUD.acharPergunta(indexSelecionado);
                     } catch(Exception e ) {}
         
                     if( p != null  &&  p.getAtiva() != false) {
@@ -246,7 +242,7 @@ public class GerenciadorPerguntas {
                             System.out.println("Certo! Vamos desativar essa pergunta");
                             p.setAtiva(false);
         
-                            perguntas.update(p,p.getId());
+                            perguntasCRUD.atualizarPergunta(p);
 
                             IdResposta = p.getId();
                             
@@ -271,55 +267,6 @@ public class GerenciadorPerguntas {
     
             return IdResposta;
         }
-        
-
-    private void novoParId(int IdUsuario, int IdPergunta ) {
-
-        CelulaIDs tmp   = null;
-        String    idTmp = "";
-
-        try {
-            tmp = ids.read(IdUsuario);
-        }
-    catch(Exception e) {}
-
-            if ( tmp != null) {
-
-                idTmp = tmp.chaveSecundaria() + "-" + String.valueOf(IdPergunta);
-                tmp.setChaveSecundaria(idTmp);
-                ids.update(tmp,tmp.getId());
-
-            }
-            else {
-                ids.create(new CelulaIDs(IdUsuario,String.valueOf(IdPergunta)));
-            }
-        }
-
-    private Pergunta[] getPerguntaArray(int IdUsuario) {
-        
-        Pergunta[] resp = null;
-        CelulaIDs  tmp  = null;
-        String[] split  = null;
-
-        try {
-            
-            tmp = ids.read(IdUsuario);
-            if ( tmp != null) {
-
-                split = tmp.chaveSecundaria().split("-"); 
-                resp = new Pergunta[split.length];
-
-                for (byte i = 0 ; i < split.length; i++) {
-
-                    resp[i] = perguntas.read(Integer.parseInt(split[i]));
-                }
-                
-            }
-
-        }
-        catch(Exception e) {}
-        return resp;
-    }
 
 }
    
