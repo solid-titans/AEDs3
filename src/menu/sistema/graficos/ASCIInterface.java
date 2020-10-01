@@ -25,7 +25,7 @@ public class ASCIInterface {
     private ANSILibrary borda;
     private ANSILibrary janela;
     private ANSILibrary texto_primario;
-    //private ANSILibrary texto_secundario;
+    private ANSILibrary texto_secundario;
 
     public ASCIInterface () {
 
@@ -33,7 +33,53 @@ public class ASCIInterface {
         borda = new ANSILibrary(1,1);                   
         janela = new ANSILibrary(255,255);  
         texto_primario = new ANSILibrary(232,255);
-        //texto_secundario = new ANSILibrary(1,255);
+        texto_secundario = new ANSILibrary(1,255);
+    }
+
+    //Funções 'set'
+    public void setBorda(int cor ) {
+        if ( cor > 0 && cor < 256) {
+            setBorda((short)cor);
+        }
+    }
+
+    private void setBorda(short cor) {
+        borda.setCor(cor);
+        borda.setFundo(cor);
+    }
+
+    public void setJanela(int cor) {
+        if ( cor > 0 && cor < 256) {
+            setJanela((short)cor);
+        }
+    }
+
+    private void setJanela(short cor) {
+        janela.setCor(cor);
+        janela.setFundo(cor);
+        texto_primario.setFundo(cor);
+        texto_secundario.setFundo(cor);
+    }
+
+    public void setTextoPrimario(int cor) {
+        if ( cor > 0 && cor < 256) {
+            setTextoPrimario((short)cor);
+        }
+    }
+
+    private void setTextoPrimario(short cor) {
+        texto_primario.setCor(cor);
+        texto_primario.setFundo(cor);
+    }
+
+    public void setTextoSecundario(int cor) {
+        if ( cor > 0 && cor < 256) {
+            setTextoSecundario((short)cor);
+        }
+    }
+
+    private void setTextoSecundario(short cor) {
+        texto_secundario.setCor(cor);
     }
 
     //Instanciando uma caixa
@@ -56,8 +102,13 @@ public class ASCIInterface {
     //Caixa 1: largura,altura e texto.
     public String caixa(int largura, int altura, String texto) {
 
-        String resp = "";
-        if ( texto.length() < largura && encaixa(largura,altura) ) {
+        String resp    = "";
+        String[] array = null;
+        
+        if(texto.length() > largura ) {
+            array = getStringArray(texto,largura);
+        }
+        else if ( texto.length() < largura && encaixa(largura,altura) ) {
             resp = caixa((short)largura,(short)altura,texto);
         }
         else {
@@ -145,5 +196,19 @@ public class ASCIInterface {
     private boolean encaixa(int largura, int altura) {
 
         return (largura > 0 && altura > 2 && largura < LARGURA_MAX && altura < ALTURA_MAX);
+    }
+
+    private String[] getStringArray(String entrada,int largura) {
+
+        String[] resp = null;
+        String[] aux  = null;
+        if (entrada.contains("\n")) {
+            resp = entrada.split("\n");
+        }
+        else {
+
+        }
+
+        return resp;
     }
 }
