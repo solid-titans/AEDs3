@@ -20,7 +20,8 @@ class PerguntasCRUD {
     {
         try {
             this.ids = new Crud<>("Ids",  CelulaIDs.class.getConstructor());
-            this.perguntas = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
+			this.perguntas = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
+			
         } catch (Exception e) {}
 
 	}
@@ -35,11 +36,23 @@ class PerguntasCRUD {
 		return p;
 	}
 	
-	//Adicionar uma nova pergunta aos CRUDS
+	/** Adicionar uma nova pergunta ao usuário
+	 * 
+	 * @param p         Objeto que contem a pergunta feita pelo usuario
+	 * @param IdUsuario Id do usuario que fez a pergunta
+	 * @return          Retornar a id do objeto no banco de dados
+	 */
 	public int novaPergunta(Pergunta p,int IdUsuario) {
 		int resp = -1;
-		resp = perguntas.create(p);
-		novoParId(IdUsuario,resp);
+		Pergunta inserir = new Pergunta();
+
+		try {
+			inserir.fromByteArray(p.toByteArray());
+			inserir.setIdUsuario(IdUsuario);
+
+		}catch (Exception e) { e.printStackTrace(); }
+
+		resp = perguntas.create(inserir);
 		return resp;
 
 	}
