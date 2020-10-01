@@ -58,7 +58,14 @@ public class ADMUsuario {
             }
             else {
 
-                System.out.println("\nO email inserido não é válido ou não existe no banco de dados\nTeste novamente!\nN° de tentativas: " + tentativas + "\n");
+                if(email.equals("")) {
+                    tentativas = 0;
+                    System.out.println("\nProcesso cancelado!\nVoltando ao menu...");
+                }
+                else {
+                    tentativas --;
+                    System.out.println("\nO email inserido não é válido ou não existe no banco de dados\nTeste novamente!\nN° de tentativas: " + tentativas + "\n");
+                }
             }
         } while( tentativas != 0  && id == -1);
 
@@ -91,7 +98,7 @@ public class ADMUsuario {
 
         do {
             System.out.println(graficos.caixa(5,"Vamos criar um novo usuário!"));
-            System.out.println("NOVO USUÁRIO\n\nEmail: ");
+            System.out.print("NOVO USUÁRIO\n\nEmail: ");
 
             email = Sistema.lerEntrada();
                 
@@ -175,11 +182,11 @@ public class ADMUsuario {
             }
             else {
 
-                System.out.println("Processo cancelado!\nVoltando para o menu...\n");
+                System.out.println("Processo cancelado!\nVoltando para o menu...");
             }
         }
         else {
-            System.err.println("O email inserido é inválido!\nVoltando ao menu...\n\n");
+            System.err.println("O email inserido é inválido!\nVoltando ao menu...\n");
         }
 
         return resp;

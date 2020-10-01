@@ -25,8 +25,8 @@ public class Menu {
 
         char opcao;
 
-        boolean sucesso   = false;
-        int idSucesso     = -1;
+        boolean sucesso       = false;
+        int     idSucesso     = -1;
 
         do {
 

@@ -39,6 +39,8 @@ class Selecao {
                "0) Retornar ao menu anterior\n\n"+
                "Opção: ";
     }
+
+    //Tela Inicial do programa
     public static char Acesso() {
 
         //limpar a tela
@@ -60,6 +62,7 @@ class Selecao {
         return opcao;
     }
 
+    //Tela quando o usuario acessa o programa com sucesso
     public static String Inicio(byte menuIndex, byte notificacoes) {
 
             String opcao = "";

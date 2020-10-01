@@ -9,8 +9,6 @@ import java.io.RandomAccessFile;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-// Funções secundarias
-
 public class Sistema {
     
     //Variaveis para leitura do teclado
@@ -171,13 +169,26 @@ public class Sistema {
         String entrada = "";
         char resp = 'B';
 
-        try {
-          entrada = br.readLine();
-        } catch(IOException e ) {System.err.println("Erro na leitura!");}
+        entrada = lerEntrada();
 
         if(!entrada.equals("")) {
           resp = entrada.charAt(0);
         }
         return resp;       
+    }
+    
+    public static int lerInt() {
+    
+    	int resp = -1;
+    	String entrada = "";
+    	
+    	entrada = lerEntrada();
+    	
+    	if(!entrada.equals("") && entrada.matches("[0-9]+")) {
+          resp = Integer.parseInt(entrada);
+      }
+
+      return resp;
+    
     }
 }
