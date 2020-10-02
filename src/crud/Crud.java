@@ -29,14 +29,10 @@ public class Crud <T extends Registro> {
 
     // Montar um Crud
     public Crud(String nomeArquivo, Constructor<T> constructor) throws IOException {
-        File d                 = new File(this.diretorio);
         String enderecoArquivo = this.diretorio + "/" + nomeArquivo;
         
         // Atribuindo o construtor
         this.constructor = constructor;
-
-        // Verificar se o directorio de dados existe, caso nao exista crie-o
-        if(!d.exists()) d.mkdir();
         
         // Abrindo arquivo para leitura
         try {

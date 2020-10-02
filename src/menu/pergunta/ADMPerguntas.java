@@ -32,17 +32,35 @@ public class ADMPerguntas {
         *	string. Caso não tenha nada, a String de resposta irá retornar
         *	um aviso de erro.
         */
-        public String listarPerguntas(int IdUsuario) {
+        public String listarPerguntas(int idUsuario) {
 
             String resp = "";
 
-            Pergunta[] array = null;
-            array = perguntasCRUD.getPerguntaArray(IdUsuario);
+            int[] ids = this.perguntasCRUD.ids.read(idUsuario);
+
+            if(ids == null)
+                return  "Ops.. parece que você não tem nenhuma pergunta...\n";
+
+			Pergunta[] array  = new Pergunta[ids.length];
+
+            int contador = 0;
+            for (int i : ids) {
+                try {
+                    Pergunta temp = this.perguntasCRUD.perguntas.read(i);
+                    if(temp == null)
+                        continue;
+
+                    array[contador] = temp; 
+                    contador++;
+                }catch(Exception e) { e.printStackTrace(); }
+            }
+
             if ( array == null ) {
                 resp = "Ops.. parece que você não tem nenhuma pergunta...\n";
-            }
-            else {
+            
+            } else {
                 resp = listarPerguntas(array);
+            
             }
 
             return resp;
@@ -56,13 +74,16 @@ public class ADMPerguntas {
 
             resp += graficos.caixa(3,"MINHAS PERGUNTAS");
 
-            for (byte i = 0; i < array.length; i++,contador++) {
-                if(array[i].getAtiva() == false) {
+           
+            for (Pergunta i : array) {
+                if(i.getAtiva() == false) {
                     resp += "\n(Arquivada)";
                 }
-                resp += "\n" + contador + ".\n";
-                resp += array[i].getData() + "\n" + array[i].getPergunta() + "\n";
 
+                resp += "\n" + contador + ".\n";
+                resp += i.getData() + "\n" + i.getPergunta() + "\n";
+                contador++;
+                
             }
     
             return resp;
@@ -76,7 +97,7 @@ public class ADMPerguntas {
         *	ele confirme então será passado para o banco de dados, o
         *	conteúdo que será registrado
         */
-        public int novaPergunta(int IdUsuario) {
+        public int novaPergunta(int idUsuario) {
     
             int idResp       = -1;
             String pergunta  = "";
@@ -103,11 +124,11 @@ public class ADMPerguntas {
                 if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
     
                     System.out.println("Certo! a sua pergunta foi criada!");                  
-                    p = new Pergunta(IdUsuario,pergunta);                
+                    p = new Pergunta(idUsuario,pergunta);                
 
-                    idResp = perguntasCRUD.novaPergunta(p,IdUsuario);
+                    idResp = perguntasCRUD.novaPergunta(p,idUsuario);
                     p.setId(idResp);
-                                     
+                    this.perguntasCRUD.ids.create(idUsuario, idResp);
                 }
                 else {
     

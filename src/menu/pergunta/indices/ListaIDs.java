@@ -1,4 +1,4 @@
-package crud.arvores;
+package menu.pergunta.indices;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -11,10 +11,11 @@ public class ListaIDs {
 
     public ListaIDs(String path) {
         try {
-            this.arquivo  = new RandomAccessFile(path + ".lst", "rw");   // Criando o banco de dados no disco
+            this.arquivo  = new RandomAccessFile(path + ".lst",   "rw"); // Criando o banco de dados no disco
             this.pilhaIds = new RandomAccessFile(path + ".lstID", "rw"); // Criando uma pilha de ids de perguntas
 
         } catch (Exception e) { e.printStackTrace(); }
+
     }
 
     /** Metodo create de id de perguntas
@@ -116,15 +117,32 @@ public class ListaIDs {
         return inserido;
     }
 
-    /** Retornar todas as ids de perguntas de um usuario
+    
+ /** Retornar todas as ids de perguntas de um usuario
      * 
      * @param idUsuario ID do usuario que se quer todas as perguntas
      * @return Vetor de int contendo todas as ids das perguntas
      *  Possível retorno de erro:
-     *  vetor[0] = -1 usuário nunca fez uma pergunta 
+     *  Null -> usuário nunca fez uma pergunta 
      */
-    public int[] read(int idUsuario) {
-        int[] idsPerguntas = {-1};
+    public int[] read(int idUsuario)
+    {
+        int[] resposta = null;
+        try
+        {
+            if(this.arquivo.length() != 0)
+                resposta = this.readP(idUsuario);  
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        return resposta;
+    }
+
+    private int[] readP(int idUsuario) {
+        int[] idsPerguntas = null;
         
         try {
             int posPerguntasUsuario = idUsuario * this.TAMDADOSARQUIVO;  // Descobrir a posição das perguntas do usuário
