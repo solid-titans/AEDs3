@@ -1,4 +1,4 @@
-package crud.arvores;
+//package crud.arvores;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -46,6 +46,20 @@ public class ListaIDs {
                 this.pilhaIds.write(blocoPilha.toByteArray()); //Transformando em um array de bytes para escrever em disco
 
                 inserido = true;
+
+            }else if(this.arquivo.length() == posInsercao) {
+                // Preciso aumentar o arquivo usando o novo objeto
+                // Basicamente escrever algo novo no final do arquivo
+                this.arquivo.seek(posInsercao);
+
+                // Escrever a primeira pergunta do usuário
+                this.arquivo.writeInt(1);
+                this.arquivo.writeLong(this.pilhaIds.length()); // Escrever a posição de inserção do novo objeto
+            
+                // Deslocar na pilha até a nova posição
+                this.pilhaIds.seek(posInsercao);
+                this.pilhaIds.write(new Bloco(idPergunta).toByteArray()); // Escrever o bloco com a nova pergunta do usuário no disco
+
             } else {
 
                 // Há duas opções de encontrar o item
