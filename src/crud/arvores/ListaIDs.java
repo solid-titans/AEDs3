@@ -77,30 +77,17 @@ public class ListaIDs {
                 // Descobrir a posicao de inicio da pilha para posterior inserção
                 long posicaoAtual = this.arquivo.readLong(); // Ler o long dessa posicao
                 
-                // Verificar se ainda nao existe uma pilha desse usuario
+                // Algum usuário com id maior que esse escreveu no banco de dados antes
                 if(posicaoAtual == -1) {
-                    this.arquivo.seek(this.arquivo.getFilePointer() - this.TAMDADOSARQUIVO); // Voltar a leitura para a sobreescrita
+                    this.arquivo.seek(this.arquivo.getFilePointer() - 8); // voltar o ponteiro do arquivo para sobreescreve-lo com o valor correto
+                    this.arquivo.writeLong(this.pilhaIds.length());       // Escrever o endereço de onde será escrito o novo item da pilha
 
-                    // Escrever  a primeira pergunta do usuario
-                    this.arquivo.writeInt(1);
-                    // Escrever o elemento no final da pilha
-                    this.arquivo.writeLong(this.pilhaIds.length());
-                    // Indo ate o final do arquivo de pilha
-                    this.pilhaIds.seek(this.pilhaIds.length());
+                    this.pilhaIds.seek(this.pilhaIds.length()); // Ir até o final do arquivo para escrever o novo bloco
 
-                    // Criando o bloco para encaixar na pilha
-                    Bloco blocoPilha = new Bloco(idPergunta);
-
-                    // Escrevendo o novo bloco no disco
-                    this.pilhaIds.write(blocoPilha.toByteArray());
-
-                    inserido = true;
-
-                // Deslocar a pilha ate encontrar a posicao de inserir o novo elemento
                 } else {
                     // Deslocando a pilha
                     this.pilhaIds.seek(posicaoAtual);  // Deslocando ate a posicao do primeiro bloco da pilha
-
+    
                     // Deslocar a pilha ate o final
                     Bloco blocoLer = new Bloco();
                     blocoLer.lerBloco();
@@ -110,22 +97,20 @@ public class ListaIDs {
                         blocoLer.lerBloco();
                     
                     }
-
                     // Voltar o bloco
                     this.pilhaIds.seek(this.pilhaIds.getFilePointer() - blocoLer.TAMBLOCO + 4); // Voltar o tamanho do bloco mas ignorar o id do elemento
-                
+                    
                     // Escrevendo o long do endereço onde a entidade vai ser escrita
                     this.pilhaIds.writeLong(this.pilhaIds.length());
                     this.pilhaIds.seek(this.pilhaIds.length());
-
-                    // Serializando o objeto
-                    Bloco escrever = new Bloco(idPergunta);
-                    this.pilhaIds.write(escrever.toByteArray()); // Escrevendo o objeto no disco
-
-                    inserido = true;
                 }
-            }
 
+                // Serializando o objeto e escreve-lo na posição correta
+                this.pilhaIds.write(new Bloco(idPergunta).toByteArray()); // Escrevendo o objeto no disco
+
+                inserido = true;
+        
+            }
         } catch(Exception e) { e.printStackTrace(); }
 
         return inserido;
@@ -178,6 +163,9 @@ public class ListaIDs {
                         // Ler o próximo bloco
                         bloco.lerBloco();
                     }
+
+                    // Adicionar a ultima pergunta que não entrou no while
+                    idsPerguntas[perguntasLidas] = bloco.idPergunta;
                 }
             }
         } catch(Exception e) { e.printStackTrace(); }
