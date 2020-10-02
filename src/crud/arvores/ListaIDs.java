@@ -1,14 +1,13 @@
 package crud.arvores;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.RandomAccessFile;
 
 public class ListaIDs {
-    private RandomAccessFile arquivo;  // Banco de dados no disco
-    private RandomAccessFile pilhaIds; // Banco de dados de id das perguntas do usuario
+    private RandomAccessFile arquivo;              // Banco de dados no disco
+    private RandomAccessFile pilhaIds;             // Banco de dados de id das perguntas do usuario
+    private final int        TAMDADOSARQUIVO = 12; // Tamanho dos objeto inseriodos no arquivo
 
     public ListaIDs(String path) {
         try {
@@ -28,16 +27,18 @@ public class ListaIDs {
         boolean inserido = false;
 
         try {
-            int posInsercao = idUsuario * 8; // Deslocar para a posicao de insercao do primeiro item da pilha
+            int posInsercao = idUsuario * this.TAMDADOSARQUIVO; // Deslocar para a posicao de insercao do primeiro item da pilha
 
             if(this.arquivo.length() < posInsercao) {
                 // Escrever -1 no disco para todo id que ainda nao escreveram nenhuma pergunta no disco
                 while(this.arquivo.length() < posInsercao) {
+                    this.arquivo.writeInt(0);    // Escrever o numero de perguntas que o usuario possui no banco de dados
                     this.arquivo.writeLong(-1);  // Escrever um valor vazio para deixar esse espaço vazio para posterior insercao
                     
                 }
                 
                 // Salvando a posicao para a insercao do elemento na pilha
+                this.arquivo.writeInt(1);  // Usuario escrendo a primeira pergunta
                 this.arquivo.writeLong(this.pilhaIds.length());
                 // Escrever um bloco de id
                 Bloco blocoPilha = new Bloco(idUsuario);
@@ -51,13 +52,23 @@ public class ListaIDs {
                 // Ele pode estar com -1, quer dizer que alguma id apos ela ja foi escrita mas essa id ainda não foi
                 // Ter um long, sendo o endereco do primerio elemento da pilha
 
+                // Ir ate a posicao de insercao da nova pergunta
                 this.arquivo.seek(posInsercao);
-                long posicaoAtual = this.arquivo.readLong();  // Ler o long dessa posicao
+                
+                // Somar no contador de perguntas a nova pergunta feita pelo usuario
+                int numPerguntas  = this.arquivo.readInt();  // Ler o numero de perguntas feitas pelo usuario
+                this.arquivo.seek(this.arquivo.getFilePointer() - 4);
+                this.arquivo.writeInt(numPerguntas + 1);
+
+                // Descobrir a posicao de inicio da pilha para posterior inserção
+                long posicaoAtual = this.arquivo.readLong(); // Ler o long dessa posicao
                 
                 // Verificar se ainda nao existe uma pilha desse usuario
                 if(posicaoAtual == -1) {
-                    this.arquivo.seek(this.arquivo.getFilePointer() - 8); // Voltar a leitura par aa sobreescrita
+                    this.arquivo.seek(this.arquivo.getFilePointer() - this.TAMDADOSARQUIVO); // Voltar a leitura para a sobreescrita
 
+                    // Escrever  a primeira pergunta do usuario
+                    this.arquivo.writeInt(1);
                     // Escrever o elemento no final da pilha
                     this.arquivo.writeLong(this.pilhaIds.length());
                     // Indo ate o final do arquivo de pilha
@@ -66,7 +77,7 @@ public class ListaIDs {
                     // Criando o bloco para encaixar na pilha
                     Bloco blocoPilha = new Bloco(idPergunta);
 
-                    // Escrevendo o novo bloco na memoria
+                    // Escrevendo o novo bloco no disco
                     this.pilhaIds.write(blocoPilha.toByteArray());
 
                     inserido = true;
@@ -87,7 +98,7 @@ public class ListaIDs {
                     }
 
                     // Voltar o bloco
-                    this.pilhaIds.seek(this.pilhaIds.getFilePointer() - blocoLer.TAMBLOCO + 4); // Voltar o tamanho do bloco mas ignorar o int
+                    this.pilhaIds.seek(this.pilhaIds.getFilePointer() - blocoLer.TAMBLOCO + 4); // Voltar o tamanho do bloco mas ignorar o id do elemento
                 
                     // Escrevendo o long do endereço onde a entidade vai ser escrita
                     this.pilhaIds.writeLong(this.pilhaIds.length());
@@ -106,6 +117,63 @@ public class ListaIDs {
         return inserido;
     }
 
+    /** Retornar todas as ids de perguntas de um usuario
+     * 
+     * @param idUsuario ID do usuario que se quer todas as perguntas
+     * @return Vetor de int contendo todas as ids das perguntas
+     *  Possível retorno de erro:
+     *  vetor[0] = -1 usuário nunca fez uma pergunta 
+     */
+    public int[] read(int idUsuario) {
+        int[] idsPerguntas = {-1};
+        
+        try {
+            int posPerguntasUsuario = idUsuario * this.TAMDADOSARQUIVO;  // Descobrir a posição das perguntas do usuário
+
+            if(this.arquivo.length() < posPerguntasUsuario);  // Prevenir erro de deslocamento para uma região do arquivo que não existe
+            
+            // Se a região do arquivo existe deslocar até ela
+            else {
+                // Ir até a posição no arquivo
+                this.arquivo.seek(posPerguntasUsuario);
+                int numPerguntas = this.arquivo.readInt();  // Ler o numero de perguntas feitas pelo usuario
+                
+                if(numPerguntas > 0) {
+                    // O usuario possui alguma pergunta
+
+                    idsPerguntas = new int[numPerguntas]; // Criando um vetor com o tamanho igual ao numero de perguntas que ele tem no banco de dados
+
+                    // Pegar a posição da pilha onde começa as perguntas desse usuario
+                    long posPergunta = this.arquivo.readLong();
+                    this.pilhaIds.seek(posPergunta); // Deslocar até a pergunta inicial do usuário
+
+                    // Começar a retornar os valores do banco de dados
+                    Bloco bloco = new Bloco();
+                    bloco.lerBloco();
+
+                    // Ler todos os itens da pilha até desempilhar por completo
+                    int perguntasLidas = 0;
+                    while(bloco.posItemPilha != -1) {
+                        // Lendo as IDs
+                        idsPerguntas[perguntasLidas] = bloco.idPergunta; // Adicionar no vetor o novo ID de pergunta lido
+                        perguntasLidas++;
+
+                        // Deslocar para a próxima pergunta do usuário
+                        this.pilhaIds.seek(bloco.posItemPilha);
+
+                        // Ler o próximo bloco
+                        bloco.lerBloco();
+                    }
+                }
+            }
+        } catch(Exception e) { e.printStackTrace(); }
+
+        return idsPerguntas;
+    }
+
+    /**
+     * Classe privada para leitura rápida de um bloco de elementos do disco
+     */
     private class Bloco {
         private int  idPergunta;         // Id da pergunta do usuario
         private long posItemPilha;       // Posicao do próximo item da pilha
@@ -155,20 +223,6 @@ public class ListaIDs {
             } catch (Exception e) { e.printStackTrace(); }
 
             return byteArray.toByteArray();
-        }
-
-        /**
-         * Serializar objeto
-         */
-        public void fromByteArray(byte[] byteObjeto) {
-            ByteArrayInputStream byteArray = new ByteArrayInputStream(byteObjeto);
-            DataInputStream      data      = new DataInputStream(byteArray);
-
-            try{
-                this.idPergunta   = data.readInt();
-                this.posItemPilha = data.readLong();
-
-            } catch (Exception e) { e.printStackTrace(); }
         }
     }
 }
