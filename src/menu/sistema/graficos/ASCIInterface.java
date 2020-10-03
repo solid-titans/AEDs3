@@ -8,16 +8,17 @@ package menu.sistema.graficos;
 
 public class ASCIInterface {
 
-
+    //Classe
     private final StringManipulation s = new StringManipulation();
+
     //Definindo a altura e largura maxima dos elementos
     private final short ALTURA_MAX       = 1000;
     private final short LARGURA_MAX      = 1000;
 
-    private final byte LARGURA_SEGURANCA = 5;
-    private final byte ALTURA_SEGURANCA  = 4;
+    private final byte LARGURA_SEGURANCA;
+    private final byte ALTURA_SEGURANCA;
 
-    private final byte LARGURA_PADRAO    = 30;
+    private final byte LARGURA_PADRAO;
 
     //Declarando os elementos que guardam as informações de texto
     /*
@@ -37,10 +38,46 @@ public class ASCIInterface {
     public ASCIInterface () {
 
         //Iniciando todos os objetos
-        borda = new ANSILibrary(1,1);                   
-        janela = new ANSILibrary(255,255);  
-        texto_primario = new ANSILibrary(232,255);
-        texto_secundario = new ANSILibrary(1,255);
+        borda             = new ANSILibrary(1,1);                   
+        janela            = new ANSILibrary(255,255);  
+        texto_primario    = new ANSILibrary(232,255);
+        texto_secundario  = new ANSILibrary(1,255);
+
+        //Configurar as dimensões
+        LARGURA_PADRAO    = 30;
+        LARGURA_SEGURANCA = 5;
+        ALTURA_SEGURANCA  = 4;
+
+    }
+
+    public ASCIInterface(int larguraPadrao, int larguraSeguranca, int alturaSeguranca) {
+    
+        //Iniciando todos os objetos
+        borda             = new ANSILibrary(1,1);                   
+        janela            = new ANSILibrary(255,255);  
+        texto_primario    = new ANSILibrary(232,255);
+        texto_secundario  = new ANSILibrary(1,255);
+
+        //Configurar as dimensões
+        LARGURA_PADRAO    = (byte)larguraPadrao;
+        LARGURA_SEGURANCA = (byte)larguraSeguranca; 
+        ALTURA_SEGURANCA  = (byte)alturaSeguranca;
+
+    }
+
+    public ASCIInterface(int corBorda, int corJanela, int corTexto,int corTextoSecundario) {
+    
+        //Iniciando todos os objetos
+        borda             = new ANSILibrary(corBorda,corBorda);                   
+        janela            = new ANSILibrary(corJanela,corJanela);  
+        texto_primario    = new ANSILibrary(corTexto,corJanela);
+        texto_secundario  = new ANSILibrary(corTextoSecundario,corJanela);
+        
+        //Configurar as dimensões
+        LARGURA_PADRAO    = 30;
+        LARGURA_SEGURANCA = 5; 
+        ALTURA_SEGURANCA  = 4;
+
     }
 
     //Funções 'set'

@@ -12,7 +12,7 @@ public class Menu {
     private ADMPerguntas minhasPerguntas = new ADMPerguntas();
     private ADMUsuario   meusUsuarios    = new ADMUsuario();
 
-    public static ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
+    public ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
 
     public Menu() {
 

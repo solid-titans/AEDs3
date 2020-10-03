@@ -65,6 +65,8 @@ class Selecao {
     //Tela quando o usuario acessa o programa com sucesso
     public static String Inicio(byte menuIndex, byte notificacoes) {
 
+            graficos.setBorda(155);     
+
             String opcao = "";
 
             //Imprimir uma caixa com o titulo

@@ -7,11 +7,16 @@ import menu.sistema.graficos.*;
 
 public class ADMUsuario {
     
-    private static ASCIInterface graficos = new ASCIInterface(); // Interface grafica feita em ASCII
-    private UsuarioCRUD usuariosCRUD       = null;
+    private static ASCIInterface graficos; // Interface grafica feita em ASCII
+    private static ANSILibrary   destaque;
+    private static ANSILibrary   destaque2;
+    private UsuarioCRUD usuariosCRUD;
 
     public ADMUsuario () {
         usuariosCRUD = new UsuarioCRUD();
+        graficos     = new ASCIInterface(202, 231 , 232, 184);
+        destaque     = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
+        destaque2    = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
     }
 
     //Menu 0
@@ -139,7 +144,7 @@ public class ADMUsuario {
                 if (Sistema.verificarSenha(senha) <= 2)
                 {
                     graficos.limparTela();
-                    System.out.println(graficos.caixa(5,"Não recomendamos que use esta senha!"));
+                    System.out.println(graficos.caixa("Não recomendamos que use esta senha!"));
                     System.out.println("Considere as recomendações abaixo para uma boa senha:\n" +
                                        "*   -> Ter mais de 8 dígitos\n" +
                                        "*   -> Ter algum caractere em minusculo\n" +
@@ -150,18 +155,18 @@ public class ADMUsuario {
                                        "\nPressione enter para continuar...");
                     Sistema.lerEntrada();
                     graficos.limparTela();
-                    System.out.println(graficos.caixa(5,"Digite outra senha!"));
+                    System.out.println(graficos.caixa("Digite outra senha!"));
 
                 }
 
             } while (Sistema.verificarSenha(senha) <= 2);
 
             graficos.limparTela();
-            System.out.println(graficos.caixa(5,"Vamos então verificar os seus dados!"));
+            System.out.println(graficos.caixa("Vamos então verificar os seus dados!"));
             System.out.print("\n" +
-                               "Email:           " + email     + "\n" +
-                               "Nome de usuário: " + usuario   + "\n" +
-                               "Senha:           " + senha     + "\n" +
+                               destaque.imprimir("Email:           ") + destaque2.imprimir(email)     + "\n\n" +
+                               destaque.imprimir("Nome de usuário: ") + destaque2.imprimir(usuario)   + "\n\n" +
+                               destaque.imprimir("Senha:           ") + destaque2.imprimir(senha)     + "\n\n" +
                                "\nEstá tudo de acordo?(s/n) : "       );
 
             confirmar = Sistema.lerEntrada();
@@ -213,7 +218,7 @@ public class ADMUsuario {
 
         //byte forca = -1;
 
-        System.out.println(graficos.caixa(5,"Vamos resetar sua senha"));
+        System.out.println(graficos.caixa("Vamos resetar sua senha"));
         System.out.print("\nPor favor insira o seu email\n\nEmail: ");
 
         //Fazendo leitura do teclado
@@ -265,7 +270,7 @@ public class ADMUsuario {
 
         byte forca            = -1;
 
-        System.out.println(graficos.caixa(5,"Vamos resetar sua senha"));
+        System.out.println(graficos.caixa("Vamos resetar sua senha"));
         System.out.print("\nPor favor insira a sua senha atual.\nSenha: ");
 
         user = usuariosCRUD.acharUsuario(IdUsuario);
@@ -277,7 +282,7 @@ public class ADMUsuario {
         if(user.getSenha().equals(new GFG().senhaHasheada(confirmarSenha))) {
 
             do {
-                System.out.println(graficos.caixa(5,"Redefinindo senha!"));
+                System.out.println(graficos.caixa("Redefinindo senha!"));
 
                 System.out.println("Nova senha: ");
 
