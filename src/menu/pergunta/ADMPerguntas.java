@@ -12,13 +12,18 @@ import menu.sistema.Sistema;
 public class ADMPerguntas {
 	
 		//Atributos
-    	public static ASCIInterface graficos  = new ASCIInterface(); // Interface grafica feita em ASCII
+        private static ASCIInterface graficos; // Interface grafica feita em ASCII
+        private static ANSILibrary   destaque;
+        private static ANSILibrary   destaque2;
     	private PerguntasCRUD perguntasCRUD;						 // Classe para interação com o banco de dados
 
 		//Construtor
         public ADMPerguntas() 
         {
             perguntasCRUD = new PerguntasCRUD();
+            graficos     = new ASCIInterface(199, 231 , 232, 184);
+            destaque     = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
+            destaque2    = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
         }
 
          //Menu 2
@@ -60,7 +65,7 @@ public class ADMPerguntas {
                 if(array[i].getAtiva() == false) {
                     resp += "\n(Arquivada)";
                 }
-                resp += "\n" + contador + ".\n";
+                resp += "\n" + destaque.imprimir(contador + ".") + "\n";
                 resp += array[i].getData() + "\n" + array[i].getPergunta() + "\n";
 
             }
@@ -94,7 +99,7 @@ public class ADMPerguntas {
             if(!pergunta.equals("")) {
     
                 System.out.println(graficos.caixa(5,"Vamos conferir a sua pergunta"));
-                System.out.print("\nPergunta: " + pergunta + "\n\nEssa é a sua pergunta?(s/n) : ");
+                System.out.print("\nPergunta: " + destaque2.imprimir(pergunta) + "\n\nEssa é a sua pergunta?(s/n) : ");
     
                 confirmar = Sistema.lerEntrada();
     
@@ -158,7 +163,7 @@ public class ADMPerguntas {
                 if(!pergunta.equals("")) {
         
                     System.out.println(graficos.caixa(5,"Vamos conferir a sua pergunta"));
-                    System.out.print("\nPergunta: " + pergunta + "\n\nEssa é a sua pergunta?(s/n) : ");
+                    System.out.print("\nPergunta: " + destaque2.imprimir(pergunta) + "\n\nEssa é a sua pergunta?(s/n) : ");
         
                     entrada = Sistema.lerEntrada();
         
@@ -204,7 +209,7 @@ public class ADMPerguntas {
         
             if( p != null  &&  p.getAtiva() != false) {
         
-                System.out.println("Sucesso! Pergunta encontrada!\nVamos imprimir essa pergunta:\n\n"+ p.getPergunta()  + "\n\nConfirme se essa é a pergunta?(s/n): ");
+                System.out.println("Sucesso! Pergunta encontrada!\nVamos imprimir essa pergunta:\n\n"+ destaque2.imprimir(p.getPergunta())  + "\n\nConfirme se essa é a pergunta?(s/n): ");
         
                 entrada = Sistema.lerEntrada();
 

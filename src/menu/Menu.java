@@ -65,6 +65,7 @@ public class Menu {
                         Sistema.lerChar();
 
                         graficos.limparTela();
+                        Selecao.graficos.setBorda(135); 
 
                         AcessoGarantido();
                 
