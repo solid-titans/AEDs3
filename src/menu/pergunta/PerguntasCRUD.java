@@ -99,5 +99,12 @@ class PerguntasCRUD {
 		return resp;
 	}
 
+	public Pergunta[] getPerguntasPalavrasChave(String[] palavrasChave) {
+
+		Pergunta[] resp = null;
+
+		return resp;
+	}
+
 }
    

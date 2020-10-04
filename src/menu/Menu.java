@@ -170,7 +170,12 @@ public class Menu {
                     break;
 
                 case "21": // Indo para a tela de consultar/responder perguntas
-                    System.out.println("Vamos consultar/responder perguntas");
+                    minhasPerguntas.consultarPerguntas();
+
+                    System.out.print("Pressione \"Enter\" para continuar...");
+
+                    Sistema.lerEntrada();
+                    graficos.limparTela();
                     break;
 
                 case "31": // Verificar suas notificacoes
