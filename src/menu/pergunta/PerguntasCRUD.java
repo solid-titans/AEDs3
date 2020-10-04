@@ -57,7 +57,6 @@ class PerguntasCRUD {
 
 		resp = perguntas.create(inserir);
 		return resp;
-
 	}
 
 	//Atualizar alguma pergunta

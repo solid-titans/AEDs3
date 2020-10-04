@@ -189,7 +189,7 @@ public class ASCIInterface {
 
         if(texto.length() > LARGURA_PADRAO) {
             array = texto.split(" ");
-            largura = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
+            largura = LARGURA_PADRAO + LARGURA_SEGURANCA + 3;
             altura  = s.calcularTamanho(array, largura) + ALTURA_SEGURANCA;
             
             if(encaixa(largura,altura)) {
@@ -257,7 +257,7 @@ public class ASCIInterface {
                     caixa += borda.imprimir("■");
                 }
                 else {
-                    if ( textoIndex < texto.length  && i > 1 && j > 1 && j + texto[textoIndex].length() < largura ) {
+                    if ( textoIndex < texto.length  && i > 1 && j >= 1 && j + texto[textoIndex].length() < largura ) {
                         texto[textoIndex] += " ";
                         caixa += texto_primario.imprimir(texto[textoIndex]);
                         j += texto[textoIndex].length() -1 ;
