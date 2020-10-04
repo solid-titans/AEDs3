@@ -15,10 +15,12 @@ public class ASCIInterface {
     private final short ALTURA_MAX       = 1000;
     private final short LARGURA_MAX      = 1000;
 
-    private byte LARGURA_SEGURANCA;
-    private byte ALTURA_SEGURANCA;
+    //Espaço que fica entre o texto para 
+    private short LARGURA_SEGURANCA;
+    private short ALTURA_SEGURANCA;
 
-    private byte LARGURA_PADRAO;
+    //Espaço antes que o texto se divida em linhas
+    private short LARGURA_PADRAO;
 
     //Declarando os elementos que guardam as informações de texto
     /*
@@ -81,6 +83,18 @@ public class ASCIInterface {
     }
 
     //Funções 'set'
+    public void setLarguraPadrao(int largura) {
+        LARGURA_PADRAO = (short)largura;
+    }
+
+    public void setLarguraSeguranca(int largura) {
+        LARGURA_SEGURANCA = (short)largura;
+    }
+
+    public void setAlturaSeguranca(int altura) {
+        ALTURA_SEGURANCA = (short)altura;
+    }
+
     public void setBorda(int cor) {
         borda.setCor(cor);
         borda.setFundo(cor);
@@ -197,7 +211,7 @@ public class ASCIInterface {
             }
         }
         else { 
-            largura = texto.length() + LARGURA_SEGURANCA + 1;
+            largura = texto.length() + LARGURA_SEGURANCA ;
             altura = ALTURA_SEGURANCA + 1;
 
             if (encaixa(largura,altura) ) {
@@ -229,7 +243,7 @@ public class ASCIInterface {
                     caixa += borda.imprimir("■");
                 }
                 else {
-                    if ( !textoInserido && i == altura/2 && j > largura - texto.length() - j - 1) {
+                    if ( !textoInserido && i >= altura/2 && j > largura - texto.length() - j - 2) {
                         caixa += texto_primario.imprimir(texto);
                         j += texto.length() - 1;
                         textoInserido = true;

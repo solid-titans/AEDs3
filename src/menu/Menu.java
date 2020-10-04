@@ -201,7 +201,7 @@ public class Menu {
                     break;
 
                 case "12": // Listando as perguntas do usuario atual
-                    System.out.print(minhasPerguntas.listarPerguntas(IdUsuario) + "\n\nPressione qualquer tecla para continuar...");
+                    System.out.print(minhasPerguntas.listarPerguntas(IdUsuario) + "\nPressione qualquer tecla para continuar...");
                     Sistema.lerEntrada();
                     graficos.limparTela();
                     break;
