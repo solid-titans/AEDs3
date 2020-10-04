@@ -73,22 +73,29 @@ class PerguntasCRUD {
 	*	resultado do 'Split', a partir do '-' para pesquisar
 	*	dentro do CRUD de perguntas as perguntas do usuario
 	*/
-	public Pergunta[] getPerguntaArray(int IdUsuario) {
+	public Pergunta[] getPerguntaArray(int idUsuario) {
 		    
 		Pergunta[] resp  = null;
-		int[]      tmp   = null;
+		int[] ids = this.ids.read(idUsuario);
 
-		// Criar um vetor de ids das perguntas
-		tmp = this.ids.read(IdUsuario);
-
-		// Caso o usuário tenha alguma pergunta no banco de dados
-		if(tmp != null) {
-			resp = new Pergunta[tmp.length];
-			
-			for (byte i = 0; i < tmp.length; i++) 
-				resp[i] = acharPergunta(tmp[i]);
-			
+        if(ids == null)
+			return  null;
+		else {
+			resp = new Pergunta[ids.length];
 		}
+
+		int contador = 0;
+        for (int i : ids) {
+            try {
+                Pergunta temp = this.perguntas.read(i);
+                if(temp == null)
+                    continue;
+
+                resp[contador] = temp; 
+                contador++;
+            }catch(Exception e) { e.printStackTrace(); }
+        }
+
 
 		return resp;
 	}

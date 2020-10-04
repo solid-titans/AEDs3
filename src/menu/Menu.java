@@ -8,11 +8,11 @@ import menu.usuario.*;
 public class Menu {
 
     //Id do Usuario que usar o sistema
-    private int IdUsuario             = - 1;
+    private int IdUsuario                = - 1;
     private ADMPerguntas minhasPerguntas = new ADMPerguntas();
     private ADMUsuario   meusUsuarios    = new ADMUsuario();
 
-    public static ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
+    public ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
 
     public Menu() {
 
@@ -65,6 +65,7 @@ public class Menu {
                         Sistema.lerChar();
 
                         graficos.limparTela();
+                        Selecao.graficos.setBorda(135); 
 
                         AcessoGarantido();
                 

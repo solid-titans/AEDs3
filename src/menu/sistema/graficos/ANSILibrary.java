@@ -9,14 +9,7 @@
 
 package menu.sistema.graficos;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class ANSILibrary{
-
-    //Utilizando REGEX para controlar a entrada de parametros
-    Pattern p;
-    Matcher m;
 
     //  Variavel para resetar 
     public final String ANSI_RESETAR                = "\u001B[0m";
@@ -37,9 +30,6 @@ public class ANSILibrary{
         fundo = cor = -1;
         destaque = "";
 
-        //Configurando o padrão que será utilizado pelo programa
-        //para verificar expressões.
-        p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
     }
     
     public ANSILibrary(int cor) { 
@@ -47,10 +37,6 @@ public class ANSILibrary{
 		setCor(cor);
         fundo    = -1;
         destaque = "";
-
-        //Configurando o padrão que será utilizado pelo programa
-        //para verificar expressões.
-        p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
     }
     
     public ANSILibrary(int cor,int fundo) { 
@@ -58,10 +44,6 @@ public class ANSILibrary{
     	setCor(cor);
     	setFundo(fundo);
         destaque = "";
-
-        //Configurando o padrão que será utilizado pelo programa
-        //para verificar expressões.
-        p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
     }
     
     public ANSILibrary(int cor,int fundo,String destaque) { 
@@ -69,10 +51,6 @@ public class ANSILibrary{
     	setCor(cor);
     	setFundo(fundo);
         setDestaque(destaque);
-
-        //Configurando o padrão que será utilizado pelo programa
-        //para verificar expressões.
-        p = Pattern.compile("^\u001B\\[\\d{1,2}m", Pattern.CASE_INSENSITIVE);
     }
 
     //  Funções de 'set'
@@ -166,9 +144,7 @@ public class ANSILibrary{
 
         boolean resp = false;
 
-        m = p.matcher(entrada);
-
-        if(m.find()) {
+        if(entrada.matches("^\u001B\\[\\d{1,2}m")) {
 
             resp = true;
         }

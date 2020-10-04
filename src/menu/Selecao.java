@@ -5,7 +5,7 @@ import menu.sistema.graficos.*;
 
 class Selecao {
     
-    private static ASCIInterface graficos = new ASCIInterface(); // Interface grafica feita em ASCII
+    public static ASCIInterface graficos = new ASCIInterface(); // Interface grafica feita em ASCII
 
     //String com as interfaces dos diferentes menu
 
@@ -63,7 +63,7 @@ class Selecao {
     }
 
     //Tela quando o usuario acessa o programa com sucesso
-    public static String Inicio(byte menuIndex, byte notificacoes) {
+    public static String Inicio(byte menuIndex, byte notificacoes) {    
 
             String opcao = "";
 
