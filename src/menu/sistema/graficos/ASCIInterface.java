@@ -15,10 +15,10 @@ public class ASCIInterface {
     private final short ALTURA_MAX       = 1000;
     private final short LARGURA_MAX      = 1000;
 
-    private final byte LARGURA_SEGURANCA;
-    private final byte ALTURA_SEGURANCA;
+    private byte LARGURA_SEGURANCA;
+    private byte ALTURA_SEGURANCA;
 
-    private final byte LARGURA_PADRAO;
+    private byte LARGURA_PADRAO;
 
     //Declarando os elementos que guardam as informações de texto
     /*
@@ -44,7 +44,7 @@ public class ASCIInterface {
         texto_secundario  = new ANSILibrary(1,255);
 
         //Configurar as dimensões
-        LARGURA_PADRAO    = 30;
+        LARGURA_PADRAO    = 40;
         LARGURA_SEGURANCA = 5;
         ALTURA_SEGURANCA  = 4;
 
@@ -74,7 +74,7 @@ public class ASCIInterface {
         texto_secundario  = new ANSILibrary(corTextoSecundario,corJanela);
         
         //Configurar as dimensões
-        LARGURA_PADRAO    = 30;
+        LARGURA_PADRAO    = 40;
         LARGURA_SEGURANCA = 5; 
         ALTURA_SEGURANCA  = 4;
 
@@ -189,7 +189,7 @@ public class ASCIInterface {
 
         if(texto.length() > LARGURA_PADRAO) {
             array = texto.split(" ");
-            largura = LARGURA_PADRAO + LARGURA_SEGURANCA + 3;
+            largura = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
             altura  = s.calcularTamanho(array, largura) + ALTURA_SEGURANCA;
             
             if(encaixa(largura,altura)) {
@@ -257,7 +257,7 @@ public class ASCIInterface {
                     caixa += borda.imprimir("■");
                 }
                 else {
-                    if ( textoIndex < texto.length  && i > 1 && j >= 1 && j + texto[textoIndex].length() < largura ) {
+                    if ( textoIndex < texto.length  && i > 1 && j + texto[textoIndex].length() < largura -1 ) {
                         texto[textoIndex] += " ";
                         caixa += texto_primario.imprimir(texto[textoIndex]);
                         j += texto[textoIndex].length() -1 ;

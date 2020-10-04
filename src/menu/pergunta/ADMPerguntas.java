@@ -112,7 +112,6 @@ public class ADMPerguntas {
     
                     System.out.println("Certo! a sua pergunta foi criada!");                  
                     p = new Pergunta(idUsuario,pergunta);                
-
                     idResp = perguntasCRUD.novaPergunta(p,idUsuario);
                     p.setId(idResp);
                     this.perguntasCRUD.ids.create(idUsuario, idResp);
