@@ -124,7 +124,6 @@ public class ADMPerguntas {
                         System.out.println("Certo! a sua pergunta foi criada!");                                 
                         idResp = perguntasCRUD.novaPergunta(p,idUsuario);
                         p.setId(idResp);
-                        this.perguntasCRUD.ids.create(idUsuario, idResp);
                     }
                     else {
         
@@ -149,12 +148,14 @@ public class ADMPerguntas {
         */
         public int alterarPergunta(int idUsuario) {
     
-            int IdResposta        = -1;
-            String entrada        = "";
-            String palavrasChave = "";
-            String pergunta       = "";
+            int IdResposta          = -1;
+            String entrada          = "";
+            String palavrasChave    = "";
+            String pergunta         = "";
     
-            Pergunta p = null;
+            String palavrasChaveAux = "";
+
+            Pergunta p              = null;
     
             System.out.println(graficos.caixa("Vamos alterar uma pergunta"));
 
@@ -162,6 +163,8 @@ public class ADMPerguntas {
         
             if( p != null && p.getAtiva() != false) {
         
+                palavrasChaveAux = p.getPalavrasChave();
+
                 System.out.print("Sucesso! Pergunta encontrada!\nVamos alterar a sua pergunta, pressione enter para continuar...");
                 Sistema.lerEntrada();
 
@@ -199,7 +202,7 @@ public class ADMPerguntas {
                         if(entrada.length() == 0 || entrada.toLowerCase().equals("s")) {
             
                             System.out.println("Certo! a sua pergunta foi criada!");
-                            perguntasCRUD.atualizarPergunta(p);
+                            perguntasCRUD.atualizarPergunta(p,palavrasChaveAux);
                             IdResposta = p.getId();
                         } 
                         else {
@@ -254,7 +257,7 @@ public class ADMPerguntas {
                     System.out.println("Certo! Vamos desativar essa pergunta");
                     p.setAtiva(false);
         
-                    perguntasCRUD.atualizarPergunta(p);
+                    perguntasCRUD.desativarPergunta(p);
 
                     IdResposta = p.getId();
                             
@@ -264,7 +267,57 @@ public class ADMPerguntas {
                 System.out.println("Ok! Voltando menu...");
             }
 
-        return IdResposta;
+            return IdResposta;
+        }
+
+        //Função para consultar as perguntas no sistema a partir das palavras-chave
+        public void consultarPerguntas(int idUsuario) {
+
+            String entrada    = "";
+            Pergunta[] lista  = null;
+            Pergunta tmp      = null;
+
+            byte opcao        = -1;
+
+            System.out.println(graficos.caixa("Vamos consultar por perguntas"));
+            System.out.println(graficos.caixa(3,"Busque as perguntas por palavra chave separadas por espaço em branco"));
+            System.out.print(destaque.imprimir("Ex: política Brasil eleições") + "\nPalavras chave: ");
+
+            entrada = Pergunta.consertarPalavrasChave(Sistema.lerEntrada());
+
+            lista = perguntasCRUD.getPerguntasPalavrasChave(entrada.split(" "),idUsuario);
+
+            graficos.limparTela();
+
+            if(lista != null) {
+
+                System.out.println("Um total de " + lista.length + " foi/foram encontrado(s)");
+
+                tmp = escolherPergunta(lista);
+
+                graficos.limparTela();
+                if ( tmp != null) {
+
+                    System.out.println(graficos.caixa("Vamos imprimir a pergunta selecionada!"));
+
+                    System.out.println(tmp.toString());
+                    System.out.println("\n" + graficos.caixa("COMENTÁRIOS"));
+                    System.out.println("\n" + graficos.caixa("RESPOSTAS"));
+                    System.out.print(destaque.imprimir("Escolha uma das opções abaixo: ") +"\n\n" +
+                                                       "1) Responder\n"                           +
+                                                       "2) Comentar\n"                            +
+                                                       "3) Avaliar\n\n"                           +
+                                                       "0) Retornar\n\n"                          +
+                                                       "Opção: ");
+                    
+                    opcao = (byte)Sistema.lerInt();
+
+                }
+            }
+            else {
+                System.out.println("Erro! Nenhuma pergunta encontrada com as palavras-chave inserida!");
+            }
+      
         }
 
 		//Função intermediária: escolher uma pergunta
@@ -293,17 +346,16 @@ public class ADMPerguntas {
 
         private Pergunta escolherPergunta(Pergunta[] array) {
 
-            Pergunta resp         = null;
-            byte       entrada    = -1;
-            byte indexSelecionado = -1;
+            Pergunta resp             = null;
+            byte     entrada          = -1;
+            byte     indexSelecionado = -1;
 
             System.out.println(listarPerguntas(array));
         
             System.out.print("\nEscolha uma das suas perguntas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
             entrada = (byte)Sistema.lerInt();
         
-            graficos.limparTela();
-            System.out.println(entrada);               
+            graficos.limparTela();           
 
             if (array.length > entrada - 1 && entrada - 1 >= 0) {
 
@@ -318,52 +370,6 @@ public class ADMPerguntas {
             }
 
             return resp; 
-        }
-
-        //Função para consultar as perguntas no sistema a partir das palavras-chave
-        public void consultarPerguntas() {
-
-            String entrada    = "";
-            Pergunta[] lista  = null;
-            Pergunta tmp      = null;
-
-            byte opcao        = -1;
-
-            System.out.println(graficos.caixa("Vamos consultar por perguntas"));
-            System.out.println(graficos.caixa(3,"Busque as perguntas por palavra chave separadas por espaço em branco"));
-            System.out.print(destaque.imprimir("Ex: política Brasil eleições") + "\nPalavras chave: ");
-
-            entrada = Pergunta.consertarPalavrasChave(Sistema.lerEntrada());
-
-            lista = perguntasCRUD.getPerguntasPalavrasChave(entrada.split(" "));
-
-            if(lista != null) {
-
-                System.out.println("Um total de +" + lista.length + " foi/foram encontrado(s)");
-
-                tmp = escolherPergunta(lista);
-                if ( tmp != null) {
-
-                    System.out.println(graficos.caixa("Vamos imprimir a pergunta selecionada!"));
-
-                    System.out.println(tmp.toString());
-                    System.out.println("\n" + graficos.caixa("COMENTÁRIOS"));
-                    System.out.println("\n" + graficos.caixa("RESPOSTAS"));
-                    System.out.print(destaque.imprimir("Escolha uma das opções abaixo: ") +"\n\n" +
-                                                       "1) Responder\n"                           +
-                                                       "2) Comentar\n"                            +
-                                                       "3) Avaliar\n\n"                           +
-                                                       "0) Retornar\n\n"                          +
-                                                       "Opção: ");
-                    
-                    opcao = (byte)Sistema.lerInt();
-
-                }
-            }
-            else {
-                System.out.println("Erro! Nenhuma pergunta encontrada com as palavras-chave inserida!");
-            }
-      
         }
 
 }

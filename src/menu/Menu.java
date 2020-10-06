@@ -170,7 +170,7 @@ public class Menu {
                     break;
 
                 case "21": // Indo para a tela de consultar/responder perguntas
-                    minhasPerguntas.consultarPerguntas();
+                    minhasPerguntas.consultarPerguntas(IdUsuario);
 
                     System.out.print("Pressione \"Enter\" para continuar...");
 
