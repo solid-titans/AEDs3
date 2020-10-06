@@ -10,9 +10,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import menu.sistema.graficos.*;
 import crud.Registro;
 
 public class Pergunta implements Registro {
+
+	//Atributos
+    private static ASCIInterface graficos  = new ASCIInterface(199, 231 , 232, 184);
+    private static ANSILibrary   destaque = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
 
     private int idPergunta;
     private int idUsuario;
@@ -20,25 +25,28 @@ public class Pergunta implements Registro {
     private boolean ativa;
     private long criacao;
     private String pergunta;
+    private String palavrasChave;
 
     //Construtor de uma pergunta vazia
     public Pergunta(){
-        this.idPergunta = -1;
-        this.idUsuario  = -1;
-        this.nota       = 0;
-        this.ativa      = false;
-        this.criacao    = -1;
-        this.pergunta   = "";
+        this.idPergunta    = -1;
+        this.idUsuario     = -1;
+        this.nota          = 0;
+        this.ativa         = false;
+        this.criacao       = -1;
+        this.pergunta      = "";
+        this.palavrasChave = "";
     }
 
     //Construtor de uma pergunta
-    public Pergunta(int idUsuario, long criacao, String pergunta) {
-        this.idPergunta = -1;
-        this.idUsuario  = idUsuario;
-        this.nota       = 0;
-        this.ativa      = true;
-        this.criacao    = criacao;
-        this.pergunta   = pergunta;
+    public Pergunta(int idUsuario,String pergunta,String palavrasChaves) {
+        this.idPergunta    = -1;
+        this.idUsuario     = idUsuario;
+        this.nota          = 0;
+        this.ativa         = true;
+        this.criacao       = new Date().getTime();
+        this.pergunta      = pergunta;
+        this.palavrasChave = consertarPalavrasChave(palavrasChaves);
     }
 
     //Funções 'set'
@@ -60,6 +68,10 @@ public class Pergunta implements Registro {
 
     public void setPergunta(String pergunta) {
         this.pergunta = pergunta;
+    }
+
+    public void setPalavrasChave(String palavrasChave) {
+        this.palavrasChave = palavrasChave;
     }
 
     public void setAtiva(boolean ativa) {
@@ -91,8 +103,18 @@ public class Pergunta implements Registro {
         return this.pergunta;
     }
 
+    public String getPalavrasChave() {
+        return this.palavrasChave;
+    }
+
     public boolean getAtiva() {
         return this.ativa;
+    }
+
+    public String toString() {
+        return        destaque.imprimir(getData()) + 
+               "\n" + graficos.caixa(getPergunta()) + 
+               "Palavras-chave: " + destaque.imprimir(getPalavrasChave()) + "\n";
     }
 
     // Serializar objeto
@@ -111,6 +133,7 @@ public class Pergunta implements Registro {
         data.writeShort((int)this.nota); //O unico jeito de escrever short é usando int
         data.writeLong(this.criacao);
         data.writeUTF(this.pergunta);
+        data.writeUTF(this.palavrasChave);
 
         return byteArray.toByteArray();
     }
@@ -125,16 +148,22 @@ public class Pergunta implements Registro {
         ByteArrayInputStream byteArray = new ByteArrayInputStream(arrayObjeto);
         DataInputStream      data      = new DataInputStream(byteArray);
 
-        this.idPergunta = data.readInt();
-        this.idUsuario  = data.readInt();
-        this.ativa      = data.readBoolean();
-        this.nota       = data.readShort();
-        this.criacao    = data.readLong();
-        this.pergunta   = data.readUTF();
+        this.idPergunta    = data.readInt();
+        this.idUsuario     = data.readInt();
+        this.ativa         = data.readBoolean();
+        this.nota          = data.readShort();
+        this.criacao       = data.readLong();
+        this.pergunta      = data.readUTF();
+        this.palavrasChave = data.readUTF();
     }
 
     public String getData() {
-        return ofLongToStringData(this.criacao);
+        String   resp = "";
+        String[] array = null;
+
+        array = ofLongToStringData(this.criacao).split(" ");
+        resp += "Data: " + array[0] + " às " + array[1];
+        return resp;
     }
     /** ofLongToStringData - a contribution by Homecas
      *  
@@ -155,6 +184,25 @@ public class Pergunta implements Registro {
                 
         
         return dataFormatada.format(SistemaData);
+    }
+
+    public static String consertarPalavrasChave(String palavrasChaves) {
+
+        String resp = palavrasChaves.trim().toLowerCase();
+
+        resp = resp.replaceAll("\\s+"," ");
+
+        resp = resp.replaceAll("[áàãâ]","a");
+        resp = resp.replaceAll("[éèẽê]","e");
+        resp = resp.replaceAll("[íìĩî]","i");
+        resp = resp.replaceAll("[óòõô]","o");
+        resp = resp.replaceAll("[úùũû]","u");
+
+        resp = resp.replaceAll("[ńǹñ]","n");
+        resp = resp.replaceAll("[ĺ]","l");
+        resp = resp.replaceAll("ç","c");
+
+        return resp;
     }
 
 } 

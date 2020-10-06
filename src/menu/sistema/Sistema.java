@@ -1,4 +1,4 @@
-package menu;
+package menu.sistema;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-// Funções secundarias
 
 public class Sistema {
     
@@ -159,25 +157,38 @@ public class Sistema {
         }
     }
   
-      public static String lerEntrada() {
-          String resp = "";
-          try {
-              resp = br.readLine();
-          } catch(IOException e ) {System.err.println("Erro na leitura!");}
-          return resp;
+    public static String lerEntrada() {
+        String resp = "";
+        try {
+            resp = br.readLine();
+        } catch(IOException e ) {System.err.println("Erro na leitura!");}
+        return resp;
       }
 
-      public static char lerChar() {
-           String entrada = "";
-           char resp = 'B';
+    public static char lerChar() {
+        String entrada = "";
+        char resp = 'B';
 
-           try {
-              entrada = br.readLine();
-           } catch(IOException e ) {System.err.println("Erro na leitura!");}
+        entrada = lerEntrada();
 
-           if(!entrada.equals("")) {
-             resp = entrada.charAt(0);
-           }
-          return resp;       
+        if(!entrada.equals("")) {
+          resp = entrada.charAt(0);
+        }
+        return resp;       
+    }
+    
+    public static int lerInt() {
+    
+    	int resp = -1;
+    	String entrada = "";
+    	
+    	entrada = lerEntrada();
+    	
+    	if(!entrada.equals("") && entrada.matches("[0-9]+")) {
+          resp = Integer.parseInt(entrada);
       }
+
+      return resp;
+    
+    }
 }
