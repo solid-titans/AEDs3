@@ -130,7 +130,7 @@ class PerguntasFrontEnd {
         }
 
         public static String toStringSimplificada(Pergunta p) {
-            return destaque.imprimir(p.getTitulo()) + "\n";
+            return "Título: " + destaque.imprimir(p.getTitulo()) + "\n";
         }
 
 }
