@@ -9,6 +9,8 @@ import java.io.RandomAccessFile;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import menu.sistema.graficos.*;
+
 public class Sistema {
     
     //Variaveis para leitura do teclado
@@ -191,4 +193,61 @@ public class Sistema {
       return resp;
     
     }
+
+    public static byte lerByte() {
+
+      int  aux  = -1;
+      byte resp = -1;
+
+      aux = lerInt();
+
+      if ( aux >= -128 && aux <= 127)
+        resp = (byte)aux;
+
+      return resp;
+    }
+
+    public static String inserir(ASCIInterface graficos,String titulo,int tamanhoMinimoDaEntrada) {
+      String entradaDoUsuario = "";
+
+      do { 
+          
+          System.out.print(graficos.caixa(titulo) + 
+                             "\n-> ");
+
+          entradaDoUsuario = lerEntrada();
+
+          ASCIInterface.limparTela();
+
+          if(entradaDoUsuario.length() < tamanhoMinimoDaEntrada) {
+              System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
+              lerEntrada();
+          }
+
+      } while(entradaDoUsuario.length() < tamanhoMinimoDaEntrada);
+
+      return entradaDoUsuario;
+  }
+
+  public static String inserir(ASCIInterface graficos,String titulo,String observacao, int tamanhoMinimoDaEntrada) {
+    String entradaDoUsuario = "";
+
+    do { 
+        
+        System.out.print(graficos.caixa(titulo)     + 
+                           observacao + "\n\n-> ");
+
+        entradaDoUsuario = lerEntrada();
+
+        ASCIInterface.limparTela();
+
+        if(entradaDoUsuario.length() < tamanhoMinimoDaEntrada) {
+            System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
+            lerEntrada();
+        }
+
+    } while(entradaDoUsuario.length() < tamanhoMinimoDaEntrada);
+
+    return entradaDoUsuario;
+}
 }

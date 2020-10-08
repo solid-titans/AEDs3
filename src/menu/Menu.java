@@ -1,34 +1,33 @@
 package menu;
 
-import menu.pergunta.*;
 import menu.sistema.graficos.*;
-import menu.sistema.Sistema;
-import menu.usuario.*;
+import menu.sistema.*;
 
 public class Menu {
 
     //Id do Usuario que usar o sistema
-    private int IdUsuario                = - 1;
-    private ADMPerguntas minhasPerguntas = new ADMPerguntas();
-    private ADMUsuario   meusUsuarios    = new ADMUsuario();
+    private static int         idUsuario;
+    private CrudAPI            minhaAPI;
+    private CodigoDeProtocolo  requisicao;
 
     public ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
 
+    public static void setId(int id) {
+        idUsuario = id;
+    }
+
     public Menu() {
 
-        IdUsuario       = -1;
-        minhasPerguntas = new ADMPerguntas();
-        meusUsuarios    = new ADMUsuario();
+        idUsuario      = -1;
+        minhaAPI        = new CrudAPI();
     }
 
     public void Inicio() {
 
         char opcao;
 
-        boolean sucesso       = false;
-        int     idSucesso     = -1;
-
         do {
+            ASCIInterface.limparTela();
 
             opcao = Selecao.Acesso();
             //Fazendo a interação com o acesso
@@ -52,89 +51,59 @@ public class Menu {
             //Menu Acesso
 
                 case '0': //Saindo do programa
-                    System.out.println("Obrigado por usar o programa!\nTenha um excelente dia!\n");
+                    System.out.println("Obrigado por usar o Pergunta 1.0\nTenha um bom dia!");
                     break;
 
                 case '1': // Acessando o sistema usando credenciais existentes
-                    idSucesso = meusUsuarios.acessoAoSistema();
-
-                    if(idSucesso != -1) {
-
-                        IdUsuario = idSucesso;
-                        System.out.println("\nSucesso! Login aprovado!\nSeja bem vindo usuário!\n\nPressione \"Enter\" para continuar...");
-                        Sistema.lerChar();
-
-                        graficos.limparTela();
-                        Selecao.graficos.setBorda(135); 
-
-                        AcessoGarantido();
-                
-                        opcao = '0';
-                    }
-                    else {
-                        System.err.println("\nERRO! Login não aprovado!\nTente novamente!\n");
-                    }
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.ACESSOAOSISTEMA;
                     break;
 
                 case '2': // Criando um novo usuario
-                    sucesso = meusUsuarios.criandoUsuario();
-            
-                    if(sucesso) {
-                        System.out.println("\nSucesso! Novo usuário criado! Agora faça login!\n");
-                    }
-                    else {
-                        System.err.println("\nERRO! Criação de usuário deu errado!\nTente novamente!\n");
-                    }
-
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.CRIARNOVOUSUARIO;
                     break;
 
                 case '3': // Resentando a senha
-                    sucesso = meusUsuarios.senhaTemporaria();
-
-                    if (sucesso) {
-
-                        System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
-                    }
-                    else {
-                        System.out.println("\nERRO! Não foi possível fazer a operação de mudança de senha!\nTente novamente!\n");
-                    }
-
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.CRIARSENHATEMPORARIA;
                     break;
 
                 //Operacao Invalida
-
                 default:
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
             }
 
+            if(opcao != '0') {
+
+                requisicao = minhaAPI.verificarRequisicaoEmAcesso(requisicao);
+                if(requisicao == CodigoDeProtocolo.ERRO) {
+                    System.out.println("Operação terminou com erro!");
+                    esperarUsuario();
+                }
+                else if (requisicao == CodigoDeProtocolo.SUCESSO) {
+                    System.out.println("Operação terminada com sucesso!");
+                    esperarUsuario();
+                }
+                else if(requisicao == CodigoDeProtocolo.MUDARUSUARIO) {
+                    System.out.println("Seja bem vindo usuário!");
+                    Selecao.graficos.setBorda(117);
+                    esperarUsuario();
+                    acessoGarantido();
+                }
+            }
+
         } while (opcao != '0');
     }
 
-    private void AcessoGarantido() {
+    private void acessoGarantido() {
 
         String opcao = "";
 
         byte menuIndex    = 1;
         byte notificacoes = 0;
-    
-        boolean sucesso   = false;
-        int idSucesso     = -1;
 
         //Loop do menu
         do {
+            ASCIInterface.limparTela();
 
             opcao = Selecao.Inicio(menuIndex,notificacoes);
             //System.out.println(opcao);
@@ -163,6 +132,7 @@ public class Menu {
 
                 case "01": // Saindo do programa
                     System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
+                    Selecao.graficos.setBorda(1);
                     break;
 
                 case "11": // Indo para a tela de criacao de perguntas
@@ -170,33 +140,15 @@ public class Menu {
                     break;
 
                 case "21": // Indo para a tela de consultar/responder perguntas
-                    minhasPerguntas.consultarPerguntas(IdUsuario);
-
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.CONSULTARPERGUNTAS;
                     break;
 
                 case "31": // Verificar suas notificacoes
-                    System.out.println("Olha so as notificacoes");
+                    requisicao = CodigoDeProtocolo.OLHARNOTIFICACOES;
                     break;
 
                 case "41": 
-                    sucesso = meusUsuarios.novaSenha(IdUsuario);
-
-                    if (sucesso) {
-
-                        System.out.println("\nSucesso! A senha da sua conta foi alterada!\nVoltando ao menu...");
-                    }
-                    else {
-                        System.out.println("\nERRO! Não foi possível fazer a operação de mudança de senha!\nTente novamente!\n");
-                    }
-
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.NOVASENHA;
                     break;                       
 
                 //Menu Criacao de Perguntas
@@ -206,60 +158,19 @@ public class Menu {
                     break;
 
                 case "12": // Listando as perguntas do usuario atual
-                    System.out.print(minhasPerguntas.listarPerguntas(IdUsuario) + "\nPressione qualquer tecla para continuar...");
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.LISTARPERGUNTAS;
                     break;
 
                 case "22": // Incluindo uma nova pergunta
-                    idSucesso = minhasPerguntas.novaPergunta(IdUsuario);
-
-                    if (idSucesso != -1) {
-
-                        System.out.println("\nSucesso! Sua pergunta foi registrada...");
-                    }
-                    else {
-                        System.out.println("\nERRO! Não foi possível fazer a operação de criar pergunta!\nTente novamente!\n");
-                    }
-
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.NOVAPERGUNTA;
                     break;
 
                 case "32": // Alterando uma pergunta atual
-                    idSucesso = minhasPerguntas.alterarPergunta(IdUsuario);
-
-                    if (idSucesso != -1) {
-
-                        System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
-                    }
-                    else {
-                        System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
-                    }
-
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.ALTERARPERGUNTA;
                     break;
 
                 case "42": // Arquivando as perguntas
-                    idSucesso = minhasPerguntas.arquivarPergunta(IdUsuario);
-
-                    if (idSucesso != -1) {
-
-                        System.out.println("\nSucesso! Sua pergunta foi alterada com sucesso...");
-                    }
-                    else {
-                        System.out.println("\nERRO! Não foi possível fazer a operação de alterar pergunta!\nTente novamente!\n");
-                    }
-
-                    System.out.print("Pressione \"Enter\" para continuar...");
-
-                    Sistema.lerEntrada();
-                    graficos.limparTela();
+                    requisicao = CodigoDeProtocolo.ARQUIVARPERGUNTA;
                     break;
 
                 //Operacao Invalida
@@ -267,10 +178,28 @@ public class Menu {
                 default:
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
+            }
+
+            if(!opcao.equals("01") && !opcao.equals("11") && !opcao.equals("02")) {
+
+                requisicao = minhaAPI.verificarRequisicaoDoUsuario(requisicao,idUsuario);
+                if(requisicao == CodigoDeProtocolo.ERRO) {
+                    System.out.println("Operação terminou com erro!");
+                    esperarUsuario();
                 }
+                else if (requisicao == CodigoDeProtocolo.SUCESSO) {
+                    System.out.println("Operação terminada com sucesso!");
+                    esperarUsuario();
+                }
+            }
 
         }while (!opcao.equals("01"));
 
+    }
+
+    public void esperarUsuario() {
+        System.out.print("\nPressione \'Enter\' para continuar...");
+        Sistema.lerEntrada();
     }
 
 }

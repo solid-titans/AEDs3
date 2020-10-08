@@ -298,7 +298,7 @@ public class ASCIInterface {
     *   Em WINDOWS ele tentará executar o código
     *   'cls' no terminal
     */
-    public void limparTela(){
+    public static void limparTela(){
 
         String OS = System.getProperty("os.name").toLowerCase();
         //String clear;
