@@ -3,7 +3,7 @@ package menu;
 import menu.sistema.Sistema;
 import menu.sistema.graficos.*;
 
-class Selecao {
+public class Selecao {
     
     public static ASCIInterface graficos = new ASCIInterface(); // Interface grafica feita em ASCII
 
@@ -40,24 +40,32 @@ class Selecao {
                "Opção: ";
     }
 
+    public static String navegarPelaPergunta() {
+        return "Escolha uma das opções abaixo: \n\n"  +
+               "1) Responder\n"                       +
+               "2) Comentar\n"                        +
+               "3) Avaliar\n\n"                       +
+               "0) Retornar\n\n"                      +
+               "Opção: ";
+    }
+
     //Tela Inicial do programa
     public static char Acesso() {
 
         //limpar a tela
-        graficos.limparTela();
+        ASCIInterface.limparTela();
 
         char opcao = 'B';
 
         //Imprimir uma caixa com o titulo
-        System.out.println(graficos.caixa(5,"PERGUNTAS 1.0"));
-
+        System.out.println(graficos.caixa("PERGUNTAS 1.0"));
         System.out.print(acessoString());
 
         //Fazendo leitura do teclado
         opcao = Sistema.lerChar();
 
         //limpando a tela
-        graficos.limparTela();   
+        ASCIInterface.limparTela();   
 
         return opcao;
     }
@@ -99,9 +107,26 @@ class Selecao {
             }
 
             //limpando a tela
-            graficos.limparTela();
+            ASCIInterface.limparTela();
 
             return opcao;
+    }
+
+    public static byte interagirComPergunta(String perguntaSelecionada) {
+
+        byte opcao = -1;
+
+        System.out.println(graficos.caixa("Vamos imprimir a pergunta selecionada!"));
+        System.out.println(perguntaSelecionada);
+
+        System.out.println(navegarPelaPergunta());
+
+        opcao = Sistema.lerByte();
+    
+        //limpando a tela
+        ASCIInterface.limparTela();
+
+        return opcao;
     }
 
 }
