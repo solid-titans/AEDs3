@@ -51,6 +51,7 @@ public class Menu {
             //Menu Acesso
 
                 case '0': //Saindo do programa
+                    requisicao = CodigoDeProtocolo.NULL;
                     System.out.println("Obrigado por usar o Pergunta 1.0\nTenha um bom dia!");
                     break;
 
@@ -68,11 +69,12 @@ public class Menu {
 
                 //Operacao Invalida
                 default:
+                    requisicao = CodigoDeProtocolo.NULL;
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
             }
 
-            if(opcao != '0') {
+            if(requisicao != CodigoDeProtocolo.NULL) {
 
                 requisicao = minhaAPI.verificarRequisicaoEmAcesso(requisicao);
                 if(requisicao == CodigoDeProtocolo.ERRO) {
@@ -131,11 +133,13 @@ public class Menu {
                 //Menu Inicio
 
                 case "01": // Saindo do programa
+                    requisicao = CodigoDeProtocolo.NULL;
                     System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
                     Selecao.graficos.setBorda(1);
                     break;
 
                 case "11": // Indo para a tela de criacao de perguntas
+                    requisicao = CodigoDeProtocolo.NULL;
                     menuIndex = 2;
                     break;
 
@@ -154,6 +158,7 @@ public class Menu {
                 //Menu Criacao de Perguntas
 
                 case "02": // Voltando a tela de Inicio
+                    requisicao = CodigoDeProtocolo.NULL;
                     menuIndex = 1;
                     break;
 
@@ -176,11 +181,12 @@ public class Menu {
                 //Operacao Invalida
 
                 default:
+                    requisicao = CodigoDeProtocolo.NULL;
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
             }
 
-            if(!opcao.equals("01") && !opcao.equals("11") && !opcao.equals("02")) {
+            if(requisicao != CodigoDeProtocolo.NULL) {
 
                 requisicao = minhaAPI.verificarRequisicaoDoUsuario(requisicao,idUsuario);
                 if(requisicao == CodigoDeProtocolo.ERRO) {

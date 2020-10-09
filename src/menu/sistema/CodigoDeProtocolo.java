@@ -15,6 +15,7 @@ public enum CodigoDeProtocolo {
 
     SUCESSO                 ("111"),
     ERRO                    ("000"),
+    NULL                    ("-1"),
 
     MUDARUSUARIO            ("222");
 

@@ -12,7 +12,9 @@ import menu.sistema.Sistema;
 class PerguntasFrontEnd {
 	
 		//Atributos
-        private static ANSILibrary   destaque = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
+        private static ANSILibrary destaqueData = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
+        private static ANSILibrary destaqueTitulo = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
+        private static ANSILibrary destaquePalavrasChave = new ANSILibrary(135, 154, ANSILibrary.TEXTO_SUBLINHADO);
 
         //Função que retornar todas as perguntas inseridas em uma String
         public static String listarPerguntas(Pergunta[] array) {
@@ -28,7 +30,7 @@ class PerguntasFrontEnd {
                     resp += "\n(Arquivada)";
                 }
 
-                resp += "\n" + destaque.imprimir(contador + ".") + "\n";
+                resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
                 resp += toString(i);
                 contador++;
                 
@@ -51,7 +53,7 @@ class PerguntasFrontEnd {
                     resp += "\n(Arquivada)";
                 }
 
-                resp += "\n" + destaque.imprimir(contador + ".") + "\n";
+                resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
                 resp += toStringSimplificada(i);
                 contador++;
                 
@@ -116,21 +118,22 @@ class PerguntasFrontEnd {
         }
 
         public static String toString(Pergunta p) {
-            return destaque.imprimir(p.getData()) + "\n"                        + 
-                   p.getTitulo()                                                +
-                   "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())          + 
-                   "Palavras-chave: " + destaque.imprimir(p.getPalavrasChave()) + "\n";
+            return destaqueData.imprimir(p.getData()) + "\n"                                 + 
+                   destaqueTitulo.imprimir(p.getTitulo())                                    +
+                   "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                       + 
+                   "Palavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
         }
 
         public static String toString(Pergunta p,String nome) {
-            return p.getTitulo()                                                           +
-                   "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                     +            
-                   "Pergunta criada por \'"+nome+"\' em "+ destaque.imprimir(p.getData())  +
-                   "\nPalavras-chave: " + destaque.imprimir(p.getPalavrasChave())    + "\n";
+            return p.getTitulo()                                                               +
+                   "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                         +            
+                   "Pergunta criada por \'"+nome+"\' em "+ destaqueData.imprimir(p.getData())  +
+                   "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
         }
 
         public static String toStringSimplificada(Pergunta p) {
-            return "Título: " + destaque.imprimir(p.getTitulo()) + "\n";
+            return "Título: " + destaqueTitulo.imprimir(p.getTitulo()) + "\n" +
+                   "Data:   " + destaqueData.imprimir(p.getData())     + "\n";
         }
 
 }
