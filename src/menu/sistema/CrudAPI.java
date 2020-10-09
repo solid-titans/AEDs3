@@ -188,12 +188,20 @@ public class CrudAPI {
 		int resp = -1;
 
 		resp = perguntas.create(p);
+		p.setId(resp);
 		ids.create(idUsuario,resp);
-		try {
-			lista.create(p.getPalavrasChave(),resp);
-
-		} catch(Exception e) {e.printStackTrace();}
+		inserirPalavrasChave(p);
 		return resp;
+	}
+
+	public void inserirPalavrasChave(Pergunta p) {
+	
+		String[] palavras_chave = p.getPalavrasChave().split(" ");
+
+		try {
+			for ( String s : palavras_chave )
+				lista.create(s,p.getId());
+		} catch(Exception e) {e.printStackTrace();}
 	}
 
 	//Atualizar alguma pergunta

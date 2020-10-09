@@ -55,10 +55,10 @@ public class UsuarioAPI {
         novoUsuario           = new Usuario(nome,email,senha);
         confirmarOperacao     = UsuariosFrontEnd.verificar(novoUsuario);
 
-        if(confirmarOperacao) {
-
-            novoUsuario.setSenha(new GFG().senhaHasheada(senha));
+        if(!confirmarOperacao) {
+            return null;
         }
+        novoUsuario.setSenha(new GFG().senhaHasheada(senha));
 
         return novoUsuario;
     }

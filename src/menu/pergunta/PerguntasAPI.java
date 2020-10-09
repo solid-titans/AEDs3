@@ -19,7 +19,7 @@ public class PerguntasAPI {
 
         confirmarAcao = PerguntasFrontEnd.verificar(novaPergunta);
         if(!confirmarAcao) {
-            novaPergunta = null;
+            return null;
         }
 
         return novaPergunta;
