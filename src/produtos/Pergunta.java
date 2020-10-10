@@ -159,6 +159,10 @@ public class Pergunta implements Registro {
         this.palavrasChave = data.readUTF();
     }
 
+    /**
+     * Função que pega o conteúdo de ofLongToStringData e o ajusta 
+     * @return a Data de criação da pergunta
+     */
     public String getData() {
         String   resp = "";
         String[] array = null;
@@ -167,10 +171,12 @@ public class Pergunta implements Registro {
         resp += array[0] + " às " + array[1];
         return resp;
     }
-    /** ofLongToStringData - a contribution by Homecas
-     *  
-     * @param data
-     * @return
+    /** 
+     * Função para converter o horário de milisegundos para o formato: dia/mes/ano - hora:minutos em uma String
+     * Obrigado a Homenique Vieira por ter feito essa função
+     * 
+     * @param data é os mililisegundos em long
+     * @return uma String contendo a data representada por data
      */
     private String ofLongToStringData(long data){
 
@@ -188,6 +194,11 @@ public class Pergunta implements Registro {
         return dataFormatada.format(SistemaData);
     }
 
+    /**
+     * Função para ajustar Strings a um formato de palavras-chave reconhecido pelo sistema
+     * @param palavrasChaves é a String contendo todas as palavras-chave separada por espaço em branco ' '
+     * @return a String inserida porém com todos os desvio do padrão consertada
+     */
     public static String consertarPalavrasChave(String palavrasChaves) {
 
         String resp = palavrasChaves.trim().toLowerCase();

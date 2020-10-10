@@ -5,11 +5,20 @@ import menu.*;
 import menu.sistema.*;
 import menu.sistema.graficos.*;
 
+/**
+ * Classe para gerenciar todas as funções de controle de perguntas
+ * @author MysteRys337 ( Gustavo Lopes )
+ */
 public class PerguntasAPI {
 
-    public static ASCIInterface graficos = new ASCIInterface(199, 231 , 232, 184);
-    private static final byte TAMANHO_MINIMO_PERGUNTA   = 3;
+    public static ASCIInterface graficos = new ASCIInterface(199, 231 , 232, 184); //interface grafica
+    private static final byte TAMANHO_MINIMO_PERGUNTA   = 3;                       //Tamanho minimo para as perguntas
 
+    /**
+     * Função para criar uma nova pergunta e registrar na ID do usuario que foi recebido
+     * @param idUsuario é o número que corresponde a ID do usuario que quer registrar uma pergunta
+     * @return a Pergunta que foi registrada
+     */
     public static Pergunta criarPergunta(int idUsuario) {
 
         Pergunta novaPergunta  = null;
@@ -25,6 +34,11 @@ public class PerguntasAPI {
         return novaPergunta;
     }
 
+    /**
+     * Função para alternar uma pergunta já existente para o usuário
+     * @param idUsuario é o numero correspondente a ID do usuário que gostaria de trocar a pergunta
+     * @return a Pergunta que será alterada
+     */
     public static Pergunta alterarPergunta(int idUsuario) {
 
         Pergunta perguntaAlterada  = null;
@@ -54,6 +68,11 @@ public class PerguntasAPI {
         return perguntaAlterada;
     }
 
+    /**
+     * Função para arquivar uma pergunta do usuario 
+     * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de arquivar uma pergunta
+     * @return a Pergunta que será registrada
+     */
     public static Pergunta arquivarPergunta(int idUsuario) {
 
         Pergunta perguntaAlterada  = null;
@@ -79,6 +98,11 @@ public class PerguntasAPI {
         return perguntaAlterada;
     }
 
+    /**
+     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
+     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias perguntas
+     * @return a Pergunta que foi propriamente escolhida
+     */
     private static Pergunta escolherPergunta(int idUsuario) {
 
         Pergunta resp         = null;
@@ -99,6 +123,11 @@ public class PerguntasAPI {
         return resp; 
     }
 
+    /**
+     * Função que permite um usuário consultar as perguntas no banco de dados com base nas palavras-chave
+     * @param idUsuario é o número da ID do usuário que está acessando essa função
+     * @return um Codigo de Protocolo que representa o resultado da operação
+     */
     public static CodigoDeProtocolo consultarPerguntas(int idUsuario) {
 
         Pergunta tmp              = null;
@@ -120,6 +149,7 @@ public class PerguntasAPI {
 
                 case 0:
                     System.out.println("Ok.. vamos voltar ao menu");
+                    sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
                     break;
 
                 case 1:
@@ -144,7 +174,11 @@ public class PerguntasAPI {
         return sucesso;
     }
 
-    //Função para consultar as perguntas no sistema a partir das palavras-chave
+    /**
+     * Função que irá permitir o usuário encontrar uma perguntas com base na palavras-chave
+     * @param idUsuario é o número da ID do usuário que está acessando essa função
+     * @return a Pergunta que o usuário escolheu
+     */
     public static Pergunta encontrarPergunta(int idUsuario) {
 
         String entrada    = "";
@@ -177,6 +211,11 @@ public class PerguntasAPI {
         return resp;
     }
 
+    /**
+     * Função que serve para listar as perguntas de um usuário com base na ID do usuário
+     * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de ver as perguntas
+     * @return um Codigo de Protocolo que representa o resultado da operação
+     */
     public static CodigoDeProtocolo listarPerguntas(int idUsuario) {
 
         CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
@@ -193,6 +232,11 @@ public class PerguntasAPI {
         return resp;
     }
 
+    /**
+     * Função genérica para inserir dados de uma pergunta
+     * @param idUsuario é o numero que corresponde a ID do usuário que será dono da pergunta inserida
+     * @return a Pergunta que foi formada
+     */
     private static Pergunta inserirDados(int idUsuario) {
 
         String titulo         = "";

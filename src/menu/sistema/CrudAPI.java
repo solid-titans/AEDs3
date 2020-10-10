@@ -12,14 +12,17 @@ import menu.pergunta.indices.*;
 public class CrudAPI {
 
 	// Path dos Cruds
-	private final String path = "Dados";
+	private final String          path = "Dados";
 
 	//Cruds
     private static ListaIDs       ids;
     private static Crud<Pergunta> perguntas;
     private static Crud<Usuario>  usuarios;
     private static ListaInvertida lista;
-    
+	
+	/**
+	 * 	Construtor 1: iniciar todos os bancos de dados que o programa precisa
+	 */
     public CrudAPI() {
         
         try {
@@ -31,15 +34,20 @@ public class CrudAPI {
         } catch(Exception e) { e.printStackTrace(); }
 	}
 	
+	/**
+	 * Função para verificar o pedido do usuário enquanto ele estiver na tela de Acesso
+	 * @param cdp é o Codigo referente a ação que o usuário quer
+	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
+	 */
 	public CodigoDeProtocolo verificarRequisicaoEmAcesso(CodigoDeProtocolo cdp ) {
 
-		CodigoDeProtocolo resultado = CodigoDeProtocolo.ERRO;
-		int id 					  = -1;
-		Usuario tmp			      = null;
+		CodigoDeProtocolo  resultado 	= CodigoDeProtocolo.ERRO;
+		int                id			= -1;
+		Usuario            tmp			= null;
 
 		switch(cdp) {
 
-			case ACESSOAOSISTEMA: // Indo para a tela de consultar/responder perguntas
+			case ACESSOAOSISTEMA: //Pedir para acessar o sistema
 				id = UsuarioAPI.acessarAoSistema();
 				if(id != -1) {
 					Menu.setId(id);
@@ -48,11 +56,11 @@ public class CrudAPI {
 
 				break;
 
-			case CRIARNOVOUSUARIO: // Verificar suas notificacoes
+			case CRIARNOVOUSUARIO: // Criar um novo usuário no banco de dados
 				tmp = UsuarioAPI.criarNovoUsuario();
 				if(tmp != null) {
-					resultado = CodigoDeProtocolo.SUCESSO;
 					inserirNovoUsuarioNoCrud(tmp);
+					resultado = CodigoDeProtocolo.SUCESSO;
 				}
 				break;
 
@@ -73,11 +81,17 @@ public class CrudAPI {
 		return resultado;
 	}
 
+	/**
+	 * Função para verificar o pedido do usuário enquanto ele estiver logado no programa
+	 * @param cdp é o Codigo referente a ação que o usuário quer
+	 * @param idUsuario é o codigo do usuário que fez a requisição
+	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
+	 */
 	public CodigoDeProtocolo verificarRequisicaoDoUsuario(CodigoDeProtocolo cdp, int idUsuario) {
 
-		CodigoDeProtocolo resultado = CodigoDeProtocolo.ERRO;
-		Usuario usuarioAtual 	  = null;
-		Pergunta pergunta         = null;
+		CodigoDeProtocolo resultado 	 = CodigoDeProtocolo.ERRO;
+		Usuario           usuarioAtual 	 = null;
+		Pergunta          pergunta       = null;
 
 		switch(cdp) {
 
@@ -138,11 +152,25 @@ public class CrudAPI {
 		return resultado;
 	}
 
+	/*
+	*	Funções do CRUD de usuário
+	*/
+
+	/**
+	 * Função para inserir um novo usuário no CRUD
+	 * @param u é o usuário que é para ser registrado
+	 * @return um numero inteiro correspondendo ao ID do novo usuário
+	 */
     public int inserirNovoUsuarioNoCrud(Usuario u) {
 
         return usuarios.create(u);
     }
 
+	/**
+	 * Função para encontrar um usuário a partir do email
+	 * @param email é a String contendo o email
+	 * @return o usuário caso ele foi encontrado
+	 */
     public static Usuario acharUsuario(String email) {
 
         Usuario resp = null;
@@ -154,6 +182,11 @@ public class CrudAPI {
         return resp;
     }
 
+	/**
+	 * Função para encontrar um usuário a partir do ID
+	 * @param idUsuario é o numero inteiro que corresponde ao ID do usuário a ser procurado
+	 * @return o usuário caso ele foi encontrado
+	 */
     public static Usuario acharUsuario(int idUsuario) {
 
         Usuario resp = null;
@@ -165,24 +198,23 @@ public class CrudAPI {
         return resp;
     }
 
+	/**
+	 * Atualizar as credenciais de um usuário no CRUD
+	 * @param u é o usuário a ser atualizado
+	 */
     public void atualizarCredenciaisDoUsuario(Usuario u) {
         usuarios.update(u, u.getId());  
-    }
-	//Encontrar uma pergunta no CRUD a partir do ID 
-	public static Pergunta acharPergunta(int id) {
-
-		Pergunta p = null;
-		try {
-			p = perguntas.read(id);
-		} catch(Exception e ) { e.printStackTrace(); }
-		return p;
 	}
 	
-	/** Adicionar uma nova pergunta ao usuário
-	 * 
+	/*
+	*	Funções do CRUD de pergunta
+	*/
+
+	/** 
+	 * Função para adicionar uma nova pergunta ao usuário
 	 * @param p         Objeto que contem a pergunta feita pelo usuario
 	 * @param IdUsuario Id do usuario que fez a pergunta
-	 * @return          Retornar a id do objeto no banco de dados
+	 * @return          Retornar a id da pergunta que foi registrada
 	 */
 	public int novaPergunta(Pergunta p, int idUsuario) {
 		int resp = -1;
@@ -194,71 +226,60 @@ public class CrudAPI {
 		return resp;
 	}
 
-	public void inserirPalavrasChave(Pergunta p) {
-	
-		String[] palavras_chave = p.getPalavrasChave().split(" ");
+	/**
+	 * Função para achar uma pergunta no banco de dados a partir da ID
+	 * @param id que é a ID da pergunta
+	 * @return a pergunta correspondente a ID (caso ela exista)
+	 */
+	public static Pergunta acharPergunta(int id) {
 
+		Pergunta p = null;
 		try {
-			for ( String s : palavras_chave )
-				lista.create(s,p.getId());
-		} catch(Exception e) {e.printStackTrace();}
+			p = perguntas.read(id);
+		} catch(Exception e ) { e.printStackTrace(); }
+		return p;
 	}
 
-	//Atualizar alguma pergunta
+	/**
+	 * Função para atualizar uma pergunta no banco de dados
+	 * @param novo é a pergunta que será atualizada
+	 */
 	public void atualizarPergunta(Pergunta novo) {
 
 		Pergunta antiga = acharPergunta(novo.getId());
-		String[] split = antiga.getPalavrasChave().split(" ");
 
-		try {
-			for (byte i = 0;i < split.length; i++) {
-				lista.delete(split[i],novo.getId());
-			}
+		removerPalavrasChave(antiga);
+		inserirPalavrasChave(novo);
 
-		} catch(Exception e) {e.printStackTrace();}
-
-		split = novo.getPalavrasChave().split(" ");
-
-		try {
-			for (byte i = 0;i < split.length; i++) {
-				lista.create(split[i],novo.getId());
-			}
-
-		} catch(Exception e) {e.printStackTrace();}
 		perguntas.update(novo,novo.getId());
 	}
 
+	/**
+	 * Função para desativar uma pergunta
+	 * @param p é a pergunta a ser desativada
+	 */
 	public void desativarPergunta(Pergunta p) {
 
-		String[] split = p.getPalavrasChave().split(" ");
-
-		try {
-			for (byte i = 0;i < split.length; i++) {
-				lista.delete(split[i],p.getId());
-			}
-
-		} catch(Exception e) {e.printStackTrace();}
+		removerPalavrasChave(p);
 		perguntas.update(p,p.getId());
 	}
 
-	//Armazenar as perguntas do usuário em um array e voltar
-	/*
-	*	A partir do ID Usuario, o programa irá acessar o CRUD
-	*	de IDs e pegar a String de IDs de perguntas que o usuário
-	*	tem. se o resultado der positivo, então ele irá pegar o 
-	*	resultado do 'Split', a partir do '-' para pesquisar
-	*	dentro do CRUD de perguntas as perguntas do usuario
-	*/
+	/**
+	 * Função para pegar um array de perguntas com base na Id de um usuário no banco de dados
+	 * @param idUsuario que for mandada
+	 * @return array de perguntas do idUsuario(se ele tiver registrado)
+	 */
 	public static Pergunta[] getPerguntaArray(int idUsuario) {
 		    
-		Pergunta[] resp  = null;
-		int[] idsPerguntas = ids.read(idUsuario);
+		Pergunta[]   resp  		     = null;
+		int[] 	     idsPerguntas    = null;
+		
+		idsPerguntas = ids.read(idUsuario);
 
         if(idsPerguntas == null)
 			return  null;
-		else {
-			resp = new Pergunta[idsPerguntas.length];
-		}
+		
+		resp = new Pergunta[idsPerguntas.length];
 
 		int contador = 0;
         for (int i : idsPerguntas) {
@@ -272,24 +293,15 @@ public class CrudAPI {
             }catch(Exception e) { e.printStackTrace(); }
         }
 
-
 		return resp;
 	}
 
-	public void inserirPalavrasChave(String palavrasChave, int idPergunta) {
-
-		String[] split = palavrasChave.split(" ");
-
-		try {
-			for(String i : split) {
-				lista.create(i,idPergunta);
-			}
-
-		}
-		catch(Exception e) {e.printStackTrace();}
-
-	}
-
+	/**
+	 * Função para recuperar as perguntas com base nas palavras-chave recebida
+	 * @param palavrasChave que deverá ser usada como base para recuperar as palavras-chave
+	 * @param idUsuario que é a ID do usuário que fez o pedido para pesquisar
+	 * @return um array de perguntas com as palavrasChave enviada
+	 */
 	public static Pergunta[] getPerguntasPalavrasChave(String[] palavrasChave,int idUsuario) {
 
 		ArrayList<Pergunta> array = new ArrayList<>();
@@ -318,6 +330,36 @@ public class CrudAPI {
 		}
 
 		return resp;
+	}
+
+	/**
+	 * Função para inserir as palavras-chave da pergunta P 
+	 * @param p é a Pergunta de onde será retirada as palavras-chave
+	 */
+	public void inserirPalavrasChave(Pergunta p) {
+	
+		String[] palavras_chave = p.getPalavrasChave().split(" ");
+
+		try {
+			for ( String s : palavras_chave )
+				lista.create(s,p.getId());
+
+		} catch(Exception e) {e.printStackTrace();}
+	}
+
+	/**
+	 * Função para remover todas as palavras-chave da pergunta registrada na lista invertida
+	 * @param p é a Pergunta de onde será retirada as palavras-chave
+	 */
+	public void removerPalavrasChave(Pergunta p) {
+		String[] palavras_chave = p.getPalavrasChave().split(" ");
+
+		try {
+			for ( String s : palavras_chave) 
+				lista.delete(s,p.getId());
+
+		} catch(Exception e) {e.printStackTrace();}
+
 	}
 
 }

@@ -5,17 +5,25 @@ import menu.sistema.*;
 import menu.sistema.graficos.*;
 import seguranca.GFG;
 
+/**
+ * Classe para gerenciar todas as funções de controle de Usuário
+ * @author MysteRys337 ( Gustavo Lopes )
+ */
 public class UsuarioAPI {
 
-    public static ASCIInterface graficos             = new ASCIInterface(202, 231 , 232, 184);
-    private static final byte TAMANHO_MINIMO_EMAIL   = 10;
-    private static final byte TAMANHO_MINIMO_NOME    = 3;
+    public static ASCIInterface graficos               = new ASCIInterface(202, 231 , 232, 184);
+    private static final byte   TAMANHO_MINIMO_EMAIL   = 10;
+    private static final byte   TAMANHO_MINIMO_NOME    = 3;
 
+    /**
+     * Função para tentar ao acessar o sistema
+     * @return o ID do usuário que tentar acessar(Se o usuário conseguir acertar)
+     */
     public static int acessarAoSistema() {
         int sucesso           = -1;
         String email          = "";
-        String senha          = "";
 
+        boolean acertouAsenha = false;
         Usuario usuarioAcesso = null;
 
         email = Sistema.inserir(graficos,"INSIRA SEU E-MAIL",TAMANHO_MINIMO_EMAIL);
@@ -24,15 +32,22 @@ public class UsuarioAPI {
             return -1;
         }
         usuarioAcesso = CrudAPI.acharUsuario(email);
-        senha = new GFG().senhaHasheada(Sistema.inserir(graficos,"INSIRA SUA SENHA",0));
 
-        if(senha.equals(usuarioAcesso.getSenha()));
-            sucesso = usuarioAcesso.getId();
-
+        acertouAsenha = UsuariosFrontEnd.inserirSenha(usuarioAcesso.getSenha(),3);
+        if(!acertouAsenha) {
+            System.err.println("Erro! Você passou todas as suas tentativas");
+            return -1;
+        }
+        
+        sucesso = usuarioAcesso.getId();
         return sucesso;
 
     }
 
+    /**
+     * Função para a criação de um novo usuário ao CRUD
+     * @return O novo usuário criado(Se o próprio usuário não cancelar o processo)
+     */
     public static Usuario criarNovoUsuario() {
 
         String email                = "";
@@ -42,15 +57,15 @@ public class UsuarioAPI {
         Usuario novoUsuario         = null;
 
         //Criando novo usuario
-        email                 = Sistema.inserir(graficos,"INSIRA O SEU E-MAIL",TAMANHO_MINIMO_EMAIL);
+        email                 = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL);
 
-        if(!Sistema.verificarEmail(email) && CrudAPI.acharUsuario(email) == null) {
-            System.err.println("Erro! E-mail inválido");
+        if(CrudAPI.acharUsuario(email) != null) {
+            System.err.println("Erro! Esse email já possui uma conta registrada");
             return null;
         }
 
-        nome                  = Sistema.inserir(graficos,"INSIRA UM NOME",TAMANHO_MINIMO_NOME); 
-        senha                 = UsuariosFrontEnd.novaSenha("CRIANDO SENHA");
+        nome                  = Sistema.inserir(graficos,"Insira o nome do usuário",TAMANHO_MINIMO_NOME); 
+        senha                 = UsuariosFrontEnd.novaSenha();
 
         novoUsuario           = new Usuario(nome,email,senha);
         confirmarOperacao     = UsuariosFrontEnd.verificar(novoUsuario);
@@ -63,6 +78,10 @@ public class UsuarioAPI {
         return novoUsuario;
     }
 
+    /**
+     * Função para registrar uma senha temporária ao usuário com um email que o mesmo inserir
+     * @return o usuário que precisa ter a nova senha temporará registrada
+     */
     public static Usuario criarSenhaTemporaria() {
         String email           = "";
         String senhaTemporaria = "";
@@ -79,26 +98,30 @@ public class UsuarioAPI {
         senhaTemporaria = Sistema.gerarSenha();
         usuario = CrudAPI.acharUsuario(email);
         Sistema.escreverEmail(senhaTemporaria, usuario.getNome());
-        usuario.setSenha(new GFG().senhaHasheada(Sistema.gerarSenha()));
+        usuario.setSenha(new GFG().senhaHasheada(senhaTemporaria));
 
         System.out.println("Um email foi enviado a você com a sua senha temporaria\n(Obs: Olhe a pasta do projeto)");
 
         return usuario;
     }
 
+    /**
+     * Função para o usuário registrar uma nova senha para ele mesmo
+     * @return O usuário com a nova senha integrada
+     */
     public static Usuario criarNovaSenha(int idUsuario) {
-        String senhaAtual      = "";
         String novaSenha       = "";
+        boolean acertouAsenha = false;
 
         Usuario usuarioAtual   = CrudAPI.acharUsuario(idUsuario);
-        senhaAtual = new GFG().senhaHasheada(Sistema.inserir(graficos,"INSIRA SUA SENHA ATUAL",0));
+        acertouAsenha = UsuariosFrontEnd.inserirSenha(usuarioAtual.getSenha(),3);
 
-        if(!senhaAtual.equals(usuarioAtual.getSenha())) {
+        if(!acertouAsenha) {
             System.err.println("Erro! Senhas não se correspondem!");
             return null;
         }
 
-        novaSenha = UsuariosFrontEnd.novaSenha("CRIANDO SENHA");
+        novaSenha = UsuariosFrontEnd.novaSenha();
         usuarioAtual.setSenha(new GFG().senhaHasheada(novaSenha));
 
         return usuarioAtual;

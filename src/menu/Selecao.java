@@ -3,12 +3,20 @@ package menu;
 import menu.sistema.Sistema;
 import menu.sistema.graficos.*;
 
+/**
+ * Classe para armazenar todos os menus de seleção do programa
+ * @author MysteRys337( Gustavo Lopes )
+ */
 public class Selecao {
     
     public static ASCIInterface graficos = new ASCIInterface(); // Interface grafica feita em ASCII
 
     //String com as interfaces dos diferentes menu
 
+    /**
+     * Função com o menu de acesso
+     * @return uma String com todas as opções do menu de acesso
+     */
     private static String acessoString() {
         return "ACESSO\n\n" +
                "1) Acesso ao sistema\n" +
@@ -18,7 +26,11 @@ public class Selecao {
                "Opção: ";
     }
 
-    //Menu 1 : Tela de Inicio
+    /**
+     * Função com a tela de início od programa
+     * @param notificacoes é o numero de notificações que o usuário possui
+     * @return uma String com todas as opções do menu inicial
+     */
     public static String inicioString(byte notificacoes) {
         return "INÍCIO\n\n" +
                "1) Criação de perguntas\n" +
@@ -29,7 +41,10 @@ public class Selecao {
                "Opção: ";
     }
 
-    //Menu 2 : Tela de criacaoDePerguntas
+    /**
+     * Função com a tela de criação de Perguntas
+     * @return uma String com todas as opções do menu de criação de perguntas
+     */
     public static String criacaoDePerguntasString() {
         return "INÍCIO > CRIAÇÃO DE PERGUNTAS\n\n" +
                "1) Listar\n" +
@@ -40,6 +55,10 @@ public class Selecao {
                "Opção: ";
     }
 
+    /**
+     * Função com a tela de navegação pela pergunta selecionada pelo usuário
+     * @return uma String com todas as opções do menu de interação com pergunta
+     */
     public static String navegarPelaPergunta() {
         return "Escolha uma das opções abaixo: \n\n"  +
                "1) Responder\n"                       +
@@ -49,7 +68,10 @@ public class Selecao {
                "Opção: ";
     }
 
-    //Tela Inicial do programa
+    /**
+     * Função com interação a tela de acesso ao sistema
+     * @return um char com a opção escolhida pelo usuário
+     */
     public static char Acesso() {
 
         //limpar a tela
@@ -70,7 +92,12 @@ public class Selecao {
         return opcao;
     }
 
-    //Tela quando o usuario acessa o programa com sucesso
+    /**
+     * Função com interação a tela inicial do programa
+     * @param menuIndex é o menu atual na qual o usuário está dentro do programa
+     * @param notificacoes é o numero de notificações que o atual usuário tem
+     * @return uma String que corresponde a opção escolhida pelo usuário
+     */
     public static String Inicio(byte menuIndex, byte notificacoes) {    
 
             String opcao = "";
@@ -112,6 +139,11 @@ public class Selecao {
             return opcao;
     }
 
+    /**
+     * Função de interação com a pergunta selecionada pelo usuário atual
+     * @param perguntaSelecionada é a string contendo informações da pergunta selecionada
+     * @return o byte correspondendo a opção escolhida pelo usuário
+     */
     public static byte interagirComPergunta(String perguntaSelecionada) {
 
         byte opcao = -1;

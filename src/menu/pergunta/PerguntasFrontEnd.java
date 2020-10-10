@@ -1,22 +1,25 @@
-// Classe de interface gráfica da administração das perguntas
-/*
-*	Criada por: Gustavo Lopes(MysteRys337)
-*	Versão : 	0.0.1
-*/
 package menu.pergunta;
 
 import produtos.*;
 import menu.sistema.graficos.*;
 import menu.sistema.Sistema;
 
+/**
+ * Classe para administrar casos específicos da admnistração visual das Perguntas
+ * @author MysteRys337 (Gustavo Lopes)
+ */
 class PerguntasFrontEnd {
 	
 		//Atributos
-        private static ANSILibrary destaqueData = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
-        private static ANSILibrary destaqueTitulo = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
-        private static ANSILibrary destaquePalavrasChave = new ANSILibrary(135, 154, ANSILibrary.TEXTO_SUBLINHADO);
+        private static ANSILibrary destaqueData             = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
+        private static ANSILibrary destaqueTitulo           = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
+        private static ANSILibrary destaquePalavrasChave    = new ANSILibrary(135, 154, ANSILibrary.TEXTO_SUBLINHADO);
 
-        //Função que retornar todas as perguntas inseridas em uma String
+        /**
+         * Função para retornar todas as perguntas em um array em formato String
+         * @param array é o array de perguntas que foi enviado
+         * @return a String correspondente a listagem das perguntas
+         */
         public static String listarPerguntas(Pergunta[] array) {
 
             String  resp     = "";
@@ -39,7 +42,11 @@ class PerguntasFrontEnd {
             return resp;
         }
 
-        //Função que retornar todas as perguntas inseridas em uma String
+        /**
+         * Função para retornar todas as perguntas em um array em formato String de forma simplificada
+         * @param array é o array de perguntas que foi enviado
+         * @return a String correspondente a listagem das perguntas
+         */
         public static String listarPerguntasSimplificado(Pergunta[] array) {
 
             String  resp     = "";
@@ -62,13 +69,18 @@ class PerguntasFrontEnd {
             return resp;
         }
 
-        public static boolean verificar(Pergunta novaPergunta) {
+        /**
+         * Função para fazer a confirmação com o usuário se essa é a pergunta que será registrada/alterada/arquivada
+         * @param p é a pergunta que foi recebida seja qual for a operação
+         * @return true ou false se o usuário confirmou ou não a operação
+         */
+        public static boolean verificar(Pergunta p) {
 
             String confirmar             = "";
             boolean confirmarVerificacao = false;
 
             System.out.println(PerguntasAPI.graficos.caixa("Vamos conferir a sua pergunta") + "\n");
-            System.out.print(toString(novaPergunta) + 
+            System.out.print(toString(p) + 
                             "\nEssa é a sua pergunta?(s/n) : ");
 
             confirmar = Sistema.lerEntrada();
@@ -87,13 +99,11 @@ class PerguntasFrontEnd {
             return confirmarVerificacao;
         }
 
-		//Função intermediária: escolher uma pergunta
-		/*
-		*	Essa função serve como intermediário para que
-		*	seja enviado uma ID de usuario, listar as perguntas
-		*	do tal usuário e então escolher entre uma delas
-		*/
-
+        /**
+         * Função intermediaria para escolher uma pergunta em um determinado array
+         * @param array que é o array de perguntas na qual o usuário terá que fazer uma escolha
+         * @return o Id da pergunta que o usuário escolheu
+         */
         public static int escolherPergunta(Pergunta[] array) {
 
             byte     entrada          = -1;
@@ -108,7 +118,6 @@ class PerguntasFrontEnd {
             if (array.length > entrada - 1 && entrada - 1 >= 0) {
 
                     indexSelecionado = array[entrada -1].getId();
-                    System.out.println(indexSelecionado);
             }
             else {
                 System.err.println("ERRO! Entrada inválida!");
@@ -117,6 +126,11 @@ class PerguntasFrontEnd {
             return indexSelecionado; 
         }
 
+        /**
+         * Função retornar uma String com o conteúdo da pergunta P formatado
+         * @param p é a pergunta que foi recebida
+         * @return uma String com o conteúdo da Pergunta
+         */
         public static String toString(Pergunta p) {
             return destaqueData.imprimir(p.getData()) + "\n"                                 + 
                    destaqueTitulo.imprimir(p.getTitulo())                                    +
@@ -124,6 +138,12 @@ class PerguntasFrontEnd {
                    "Palavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
         }
 
+        /**
+         * Função para retornar uma String com o conteúdo da pergunta P formatado
+         * @param p é a pergunta que foi recebida
+         * @param nome é o nome do usuário que registrou a pergunta
+         * @return uma String com o conteúdo da Pergunta
+         */
         public static String toString(Pergunta p,String nome) {
             return p.getTitulo()                                                               +
                    "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                         +            
@@ -131,6 +151,11 @@ class PerguntasFrontEnd {
                    "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
         }
 
+        /**
+         * Função para retornar uma String com o conteúdo da pergunta P formatado de forma simplificada
+         * @param p é a pergunta que foi recebida
+         * @return uma String com o conteúdo da Pergunta
+         */
         public static String toStringSimplificada(Pergunta p) {
             return "Título:         " + destaqueTitulo.imprimir(p.getTitulo()) + "\n" +
                    "Palavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";

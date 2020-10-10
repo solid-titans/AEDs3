@@ -3,15 +3,21 @@ package menu;
 import menu.sistema.graficos.*;
 import menu.sistema.*;
 
+/**
+ * Classe para gerenciar as escolhas do usuário e a comunicação com a CrudAPI
+ * @author  MysteRys337
+ * @version 0.0.1
+ */
 public class Menu {
 
-    //Id do Usuario que usar o sistema
-    private static int         idUsuario;
-    private CrudAPI            minhaAPI;
-    private CodigoDeProtocolo  requisicao;
+    private static int         idUsuario;                  //Id do Usuario que usar o sistema
+    private CrudAPI            minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
+    private CodigoDeProtocolo  requisicao;                 //Variavel para 
 
-    public ASCIInterface graficos   = new ASCIInterface(); // Interface grafica feita em ASCII
-
+    /**
+     * Configura a id do usuário que vai acessar o programa
+     * @param id
+     */
     public static void setId(int id) {
         idUsuario = id;
     }
@@ -22,6 +28,9 @@ public class Menu {
         minhaAPI        = new CrudAPI();
     }
 
+    /**
+     * Função que dará acesso inicial ao programa
+     */
     public void Inicio() {
 
         char opcao;
@@ -77,18 +86,9 @@ public class Menu {
             if(requisicao != CodigoDeProtocolo.NULL) {
 
                 requisicao = minhaAPI.verificarRequisicaoEmAcesso(requisicao);
-                if(requisicao == CodigoDeProtocolo.ERRO) {
-                    System.out.println("Operação terminou com erro!");
-                    esperarUsuario();
-                }
-                else if (requisicao == CodigoDeProtocolo.SUCESSO) {
-                    System.out.println("Operação terminada com sucesso!");
-                    esperarUsuario();
-                }
-                else if(requisicao == CodigoDeProtocolo.MUDARUSUARIO) {
-                    System.out.println("Seja bem vindo usuário!");
-                    Selecao.graficos.setBorda(117);
-                    esperarUsuario();
+                CodigoDeProtocolo.verificarCodigo(requisicao);
+                if(requisicao == CodigoDeProtocolo.MUDARUSUARIO) {
+                    Selecao.graficos.setBorda(63);
                     acessoGarantido();
                 }
             }
@@ -96,6 +96,9 @@ public class Menu {
         } while (opcao != '0');
     }
 
+    /**
+     * Função onde o usuário terá acesso ao programa em si
+     */
     private void acessoGarantido() {
 
         String opcao = "";
@@ -106,19 +109,16 @@ public class Menu {
         //Loop do menu
         do {
             ASCIInterface.limparTela();
-
             opcao = Selecao.Inicio(menuIndex,notificacoes);
-            //System.out.println(opcao);
 
             //Fazendo a mudança do menu
             /*
             *   Eis aqui uma explicacao de como o sistema de menu funciona
-            *   Primeiro o programa faz a leitura do teclado na linha
-            *   55(opcao = br.readLine();), apos isso, ele soma o valor
-            *   da variavel 'menuIndex' com o que foi lido. O resultado
-            *   Disso era uma String de 2 caracteres, sendo o primeiro
-            *   a opcao escolhida pelo usuario, e a segunda o menu na
-            *   qual ele esta atualmente.
+            *   Primeiro o programa faz a leitura do teclado , 
+            *   apos isso, ele soma o valor da variavel 'menuIndex' 
+            *   com o que foi lido. O resultado disso era uma String 
+            *   de 2 caracteres, sendo o primeiro a opcao escolhida 
+            *   pelo usuario, e a segunda o menu na qual ele esta atualmente.
             *
             *   Lista de menus:
             *
@@ -189,23 +189,11 @@ public class Menu {
             if(requisicao != CodigoDeProtocolo.NULL) {
 
                 requisicao = minhaAPI.verificarRequisicaoDoUsuario(requisicao,idUsuario);
-                if(requisicao == CodigoDeProtocolo.ERRO) {
-                    System.out.println("Operação terminou com erro!");
-                    esperarUsuario();
-                }
-                else if (requisicao == CodigoDeProtocolo.SUCESSO) {
-                    System.out.println("Operação terminada com sucesso!");
-                    esperarUsuario();
-                }
+                CodigoDeProtocolo.verificarCodigo(requisicao);
             }
 
         }while (!opcao.equals("01"));
 
-    }
-
-    public void esperarUsuario() {
-        System.out.print("\nPressione \'Enter\' para continuar...");
-        Sistema.lerEntrada();
     }
 
 }
