@@ -70,13 +70,14 @@ public class CrudAPI {
 					atualizarCredenciaisDoUsuario(tmp);
 					resultado = CodigoDeProtocolo.SUCESSO;
 				}
-
 				break;                       
 
 			default:
 				System.err.println("Erro! Entrada inválida, tente novamente.");
 				break;
-			}
+		}
+		
+		CodigoDeProtocolo.verificarCodigo(resultado);
 
 		return resultado;
 	}
@@ -147,7 +148,9 @@ public class CrudAPI {
 			default:
 				System.err.println("Erro! Entrada inválida, tente novamente.");
 				break;
-			}
+		}
+
+		CodigoDeProtocolo.verificarCodigo(resultado);
 
 		return resultado;
 	}

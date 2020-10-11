@@ -12,7 +12,12 @@ import menu.sistema.graficos.*;
 public class PerguntasAPI {
 
     public static ASCIInterface graficos = new ASCIInterface(199, 231 , 232, 184); //interface grafica
+
+    private static final byte TAMANHO_MINIMO_TITULO     = 3;                       //Tamanho minimo para as perguntas
+    private static final byte TAMANHO_MAXIMO_TITULO     = 25;                      //Tamanho maximo para as perguntas
+
     private static final byte TAMANHO_MINIMO_PERGUNTA   = 3;                       //Tamanho minimo para as perguntas
+    private static final byte TAMANHO_MAXIMO_PERGUNTA   = 100;                     //Tamanho maximo para as perguntas
 
     /**
      * Função para criar uma nova pergunta e registrar na ID do usuario que foi recebido
@@ -187,7 +192,7 @@ public class PerguntasAPI {
         int idPergunta    = -1;
     
         entrada = Sistema.inserir(graficos,"Busque as perguntas por palavra chave separadas por espaço em branco",
-                                           "Ex: política Brasil eleições",TAMANHO_MINIMO_PERGUNTA);
+                                           "Ex: política Brasil eleições",TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
 
         entrada = Pergunta.consertarPalavrasChave(entrada);
 
@@ -245,9 +250,9 @@ public class PerguntasAPI {
 
         Pergunta p            = null;
 
-        titulo         = Sistema.inserir(graficos,"Insira o título da pergunta",                                             TAMANHO_MINIMO_PERGUNTA);
-        pergunta       = Sistema.inserir(graficos,"Insira a pergunta",                                                       TAMANHO_MINIMO_PERGUNTA);
-        palavras_chave = Sistema.inserir(graficos,"Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",TAMANHO_MINIMO_PERGUNTA);
+        titulo         = Sistema.inserir(graficos,"Insira o título da pergunta",                                             TAMANHO_MINIMO_TITULO,TAMANHO_MAXIMO_TITULO,true);
+        pergunta       = Sistema.inserir(graficos,"Insira a pergunta",                                                       TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+        palavras_chave = Sistema.inserir(graficos,"Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
 
         p = new Pergunta(idUsuario,titulo,pergunta,palavras_chave);
 

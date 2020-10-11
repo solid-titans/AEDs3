@@ -12,8 +12,12 @@ import seguranca.GFG;
 public class UsuarioAPI {
 
     public static ASCIInterface graficos               = new ASCIInterface(202, 231 , 232, 184);
-    private static final byte   TAMANHO_MINIMO_EMAIL   = 10;
-    private static final byte   TAMANHO_MINIMO_NOME    = 3;
+
+    private static final byte   TAMANHO_MINIMO_EMAIL   = 10;    //Tamanho mínimo do email
+    private static final byte   TAMANHO_MAXIMO_EMAIL   = 50;    //Tamanho máximo do email
+
+    private static final byte   TAMANHO_MINIMO_NOME    = 3;     //Tamanho mínimo do nome
+    private static final byte   TAMANHO_MAXIMO_NOME    = 25;    //Tamanho máximo do nome
 
     /**
      * Função para tentar ao acessar o sistema
@@ -26,7 +30,7 @@ public class UsuarioAPI {
         boolean acertouAsenha = false;
         Usuario usuarioAcesso = null;
 
-        email = Sistema.inserir(graficos,"INSIRA SEU E-MAIL",TAMANHO_MINIMO_EMAIL);
+        email = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,false);
         if(CrudAPI.acharUsuario(email) == null) {
             System.err.println("Erro! E-mail inválido");
             return -1;
@@ -57,14 +61,18 @@ public class UsuarioAPI {
         Usuario novoUsuario         = null;
 
         //Criando novo usuario
-        email                 = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL);
+        email                 = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,true);
 
-        if(CrudAPI.acharUsuario(email) != null) {
+        if(CrudAPI.acharUsuario(email) != null ) {
             System.err.println("Erro! Esse email já possui uma conta registrada");
             return null;
         }
+        else if(!Sistema.verificarEmail(email)) {
+            System.err.println("Erro! Esse email é inválido");
+            return null;
+        }
 
-        nome                  = Sistema.inserir(graficos,"Insira o nome do usuário",TAMANHO_MINIMO_NOME); 
+        nome                  = Sistema.inserir(graficos,"Insira o nome do usuário",TAMANHO_MINIMO_NOME,TAMANHO_MAXIMO_NOME,true); 
         senha                 = UsuariosFrontEnd.novaSenha();
 
         novoUsuario           = new Usuario(nome,email,senha);
@@ -88,7 +96,7 @@ public class UsuarioAPI {
 
         Usuario usuario = null;
 
-        email = Sistema.inserir(graficos,"INSIRA SEU E-MAIL",TAMANHO_MINIMO_EMAIL);
+        email = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,false);
 
         if(CrudAPI.acharUsuario(email) == null) {
             System.err.println("Erro! E-mail inválido");

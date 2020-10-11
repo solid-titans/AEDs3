@@ -143,6 +143,7 @@ public class ListaIDs {
 
     private int[] readP(int idUsuario) {
         int[] idsPerguntas = null;
+        int numPerguntas   = -1;
         
         try {
             int posPerguntasUsuario = idUsuario * this.TAMDADOSARQUIVO;  // Descobrir a posição das perguntas do usuário
@@ -151,9 +152,13 @@ public class ListaIDs {
             
             // Se a região do arquivo existe deslocar até ela
             else {
-                // Ir até a posição no arquivo
-                this.arquivo.seek(posPerguntasUsuario);
-                int numPerguntas = this.arquivo.readInt();  // Ler o numero de perguntas feitas pelo usuario
+
+                if(posPerguntasUsuario < this.arquivo.length()) {
+                    
+                    this.arquivo.seek(posPerguntasUsuario); // Ir até a posição no arquivo
+
+                    numPerguntas = this.arquivo.readInt();  // Ler o numero de perguntas feitas pelo usuario
+                }
                 
                 if(numPerguntas > 0) {
                     // O usuario possui alguma pergunta

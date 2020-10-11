@@ -14,6 +14,9 @@ public class UsuariosFrontEnd {
     //Variaveis de controle de grafico
     private static ANSILibrary   destaque  = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
     private static ANSILibrary   destaque2 = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
+    
+    private static final byte   TAMANHO_MINIMO_SENHA   = 3;
+    private static final byte   TAMANHO_MAXIMO_SENHA   = 50;
 
     /**
      * Função para dar n tentativas ao usuário de inserir a senha
@@ -26,7 +29,8 @@ public class UsuariosFrontEnd {
         boolean sucesso         = false;
   
         do {         
-            entradaDoUsuario = new GFG().senhaHasheada(Sistema.inserir(UsuarioAPI.graficos,"Insira a senha","Numero de tentativas : " + tentativas,0));
+            entradaDoUsuario = new GFG().senhaHasheada(Sistema.inserir(UsuarioAPI.graficos,"Insira a senha","\nNumero de tentativas : " + tentativas,
+                                                                                                        TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,false));
   
             ASCIInterface.limparTela();
             if(!entradaDoUsuario.equals(senhaDoUsuario)) {
@@ -56,8 +60,8 @@ public class UsuariosFrontEnd {
         boolean senhasIguais  = false;
 
         do {
-            senha          = Sistema.inserir(UsuarioAPI.graficos, "Criando senha",3);
-            confirmarSenha = Sistema.inserir(UsuarioAPI.graficos, "Confirmar senha",3);
+            senha          = Sistema.inserir(UsuarioAPI.graficos, "Criando senha",TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,true);
+            confirmarSenha = Sistema.inserir(UsuarioAPI.graficos, "Confirmar senha",TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,false);
 
             ASCIInterface.limparTela();
             forcaDaSenha = Sistema.verificarSenha(senha);
@@ -96,7 +100,7 @@ public class UsuariosFrontEnd {
         boolean sucesso = false;
         String  confirmar = "";
 
-        System.out.println(UsuarioAPI.graficos.caixa("Vamos então verificar os seus dados!") + "\n" + 
+        System.out.print(UsuarioAPI.graficos.caixa("Vamos então verificar os seus dados!") + "\n" + 
                                            imprimirUsuario(novoUsuario)                  +
                                            "\nEstá tudo de acordo?(s/n) : "       );
 

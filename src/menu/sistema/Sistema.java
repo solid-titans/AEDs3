@@ -19,10 +19,13 @@ import menu.sistema.graficos.*;
 public class Sistema {
     
     //Variaveis para leitura do teclado
-    public static InputStream is            = System.in;
-    public static InputStreamReader isr     = new InputStreamReader(is);
-    public static BufferedReader br         = new BufferedReader(isr);
-
+    public static InputStream         is                    = System.in;
+    public static InputStreamReader   isr                   = new InputStreamReader(is);
+    public static BufferedReader      br                    = new BufferedReader(isr);
+    //Tipos de destaque
+    private static ANSILibrary        destaqueObservacao    = new ANSILibrary(15, 130, ANSILibrary.TEXTO_SUBLINHADO);
+    private static ANSILibrary        destaqueTamanhoMinimo = new ANSILibrary(15, 34, ANSILibrary.TEXTO_SUBLINHADO);
+    private static ANSILibrary        destaqueTamanhoMaximo = new ANSILibrary(15, 196, ANSILibrary.TEXTO_SUBLINHADO);
 
     /**
      * Recebe uma senha e retorna a força dela de 0 a 5
@@ -190,22 +193,26 @@ public class Sistema {
      * Cria uma interface de interação com o usuário para pegar o input do teclado
      * @param graficos é o padrão de interface que será utilizado
      * @param titulo é o título dentro da caixa gerada pelo padrão de interface
-     * @param tamanhoMinimoDaEntrada é o tamanho mínimo da entrada que será feita pelo usuário
+     * @param tamanhoMinimoEntrada é o tamanho mínimo da entrada que será feita pelo usuário
+     * @param tamanhoMaximoEntrada é o tamanho máximo da entrada que será feita pelo usuário
+     * @param imprimirRestricoes é o booleano que define se as limitacoes da String devem ser imprimidas
      * @return a String que o usuário inseriu
      */
-    public static String inserir(ASCIInterface graficos,String titulo,int tamanhoMinimoDaEntrada) {
+    public static String inserir(ASCIInterface graficos,String titulo,int tamanhoMinimoEntrada, int tamanhoMaximoEntrada,boolean imprimirRestricoes) {
       String entradaDoUsuario = "";
 
       do {         
-          System.out.print(graficos.caixa(titulo) + "\n-> ");
+          System.out.print(graficos.caixa(titulo) + "\n");
+          System.out.print((imprimirRestricoes == true) ? imprimirTamanhoMinMax(tamanhoMinimoEntrada, tamanhoMaximoEntrada) + "\n\n->" : "->");
+
           entradaDoUsuario = lerEntrada();
 
           ASCIInterface.limparTela();
-          if(entradaDoUsuario.length() < tamanhoMinimoDaEntrada) {
+          if(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada)) {
               System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
               lerEntrada();
           }
-      } while(entradaDoUsuario.length() < tamanhoMinimoDaEntrada);
+      } while(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada));
 
       return entradaDoUsuario;
     }
@@ -215,26 +222,29 @@ public class Sistema {
      * @param graficos é o padrão de interface que será utilizado
      * @param titulo é o título dentro da caixa gerada pelo padrão de interface
      * @param observacao é a String adicional que contenha qualquer observação que seja pertinente informar ao usuário
-     * @param tamanhoMinimoDaEntrada é o tamanho mínimo da entrada que será feita pelo usuário
+     * @param tamanhoMinimoEntrada é o tamanho mínimo da entrada que será feita pelo usuário
+     * @param tamanhoMaximoEntrada é o tamanho máximo da entrada que será feita pelo usuário
+     * @param imprimirRestricoes é o booleano que define se as limitacoes da String devem ser imprimidas
      * @return
      */
-    public static String inserir(ASCIInterface graficos,String titulo,String observacao, int tamanhoMinimoDaEntrada) {
+    public static String inserir(ASCIInterface graficos,String titulo,String observacao, int tamanhoMinimoEntrada, int tamanhoMaximoEntrada,boolean imprimirRestricoes) {
         String entradaDoUsuario = "";
 
         do { 
-            System.out.print(graficos.caixa(titulo) + observacao + "\n\n-> ");
+            System.out.print(graficos.caixa(titulo) + destaqueObservacao.imprimir(observacao)  + "\n"  );
+            System.out.print((imprimirRestricoes == true) ? imprimirTamanhoMinMax(tamanhoMinimoEntrada, tamanhoMaximoEntrada) + "\n\n->" : "\n->");
 
             entradaDoUsuario = lerEntrada();
 
             ASCIInterface.limparTela();
 
-            if(entradaDoUsuario.length() < tamanhoMinimoDaEntrada) {
+            if(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada)) {
                 System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
                 lerEntrada();
                 ASCIInterface.limparTela();
             }
 
-        } while(entradaDoUsuario.length() < tamanhoMinimoDaEntrada);
+        } while(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada));
 
         return entradaDoUsuario;
     }
@@ -245,5 +255,26 @@ public class Sistema {
     public static void esperarUsuario() {
         System.out.print("\nPressione \'Enter\' para continuar...");
         Sistema.lerEntrada();
+    }
+
+    /**
+     * Função para conferir se uma String está entre um espaço de menor até maior
+     * @param s é a String a ser conferida
+     * @param menor é o menor tamanho que a String pode ter
+     * @param maior é o maior tamanho que a String pode ter
+     * @return true or false se a String está no tamanho adequado
+     */
+    private static boolean temTamanhoAdequado(String s, int menor, int maior) {
+        return !(s.length() > menor && s.length() < maior);
+    }
+
+    /**
+     * Função para imprimir o tamanho maximo e minimo da entrada
+     * @param menor é o tamanho mínimo da entrada
+     * @param maior é o tamanho máximo da entrada
+     * @return é a String que será imprimida
+     */
+    private static String imprimirTamanhoMinMax(int menor, int maior) {
+        return destaqueTamanhoMinimo.imprimir("Tamanho mínimo: " + menor)+ ";" + destaqueTamanhoMaximo.imprimir("Tamanho máximo: " + maior);
     }
 }

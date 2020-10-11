@@ -84,13 +84,13 @@ public class Menu {
             }
 
             if(requisicao != CodigoDeProtocolo.NULL) {
-
                 requisicao = minhaAPI.verificarRequisicaoEmAcesso(requisicao);
-                CodigoDeProtocolo.verificarCodigo(requisicao);
                 if(requisicao == CodigoDeProtocolo.MUDARUSUARIO) {
                     Selecao.graficos.setBorda(63);
                     acessoGarantido();
+                    
                 }
+
             }
 
         } while (opcao != '0');
@@ -187,9 +187,8 @@ public class Menu {
             }
 
             if(requisicao != CodigoDeProtocolo.NULL) {
-
                 requisicao = minhaAPI.verificarRequisicaoDoUsuario(requisicao,idUsuario);
-                CodigoDeProtocolo.verificarCodigo(requisicao);
+
             }
 
         }while (!opcao.equals("01"));
