@@ -36,24 +36,25 @@ public class Sistema {
         byte forca = 5;
 
         if (!s.equals("")) {//Se a String recebida estiver vazia
-            if (s.length() < 8) {
+            if (s.length() < 8) 
                 forca--;
-            }
-            if(!s.matches(".*[a-z].*")) { //Verificando pela existencia de caracteres em minúsculo
+            
+            if(!s.matches(".*[a-z].*"))    //Verificando pela existencia de caracteres em minúsculo
                 forca--;
-            }
-            if(!s.matches(".*[A-Z].*")) { //Verificando pela existencia de caracteres em maiúsculo
+            
+            if(!s.matches(".*[A-Z].*"))    //Verificando pela existencia de caracteres em maiúsculo
                 forca--;
-            }
-            if(s.matches("[a-zA-Z0-9 ]*")) { //Verificando se a String possui algum caractere especial
+            
+            if(s.matches("[a-zA-Z0-9 ]*")) //Verificando se a String possui algum caractere especial
                 forca--;
-            }
-            if(!s.matches(".*\\d.*")) { //Verificando se possui algum numero
+            
+            if(!s.matches(".*\\d.*"))      //Verificando se possui algum numero
                 forca--;
-            }
+            
         } else { //Se a String estiver vazia
             forca = 0;
             System.out.println("Erro! Nenhuma senha inserida");
+
         }
         return forca;
     }
@@ -87,9 +88,11 @@ public class Sistema {
                   char a = (char)(r.nextInt(122 - 48) + 48);
                   s += a;
               }
+
               if ( verificarSenha(s) <= 2 ) {
                   s = "";
               }
+              
           } while(s.length() == 0);
           
       return s;

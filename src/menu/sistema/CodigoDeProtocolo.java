@@ -42,22 +42,27 @@ public enum CodigoDeProtocolo {
      * @param cdp é o Codigo de Protocolo recebido pelo usuário
      */
     public static void verificarCodigo(CodigoDeProtocolo cdp) {
-
+        
         switch(cdp) {
             case ERRO:
                 System.out.println("Operação terminou com erro!");
                 break;
+
             case SUCESSO:
                 System.out.println("Operação terminou com sucesso!");
                 break;
+
             case MUDARUSUARIO:
                 System.out.println("Seja bem vindo usuário!");
                 break;
+
             case OPERACAOCANCELADA:
                 System.out.println("Operação cancelada pelo usuário");
                 break;
+
             default:
                 System.out.println("Erro! Operação desconhecida");
+
         }
         Sistema.esperarUsuario();
     }

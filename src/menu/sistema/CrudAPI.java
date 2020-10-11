@@ -62,6 +62,7 @@ public class CrudAPI {
 					inserirNovoUsuarioNoCrud(tmp);
 					resultado = CodigoDeProtocolo.SUCESSO;
 				}
+
 				break;
 
 			case CRIARSENHATEMPORARIA: 
@@ -70,11 +71,13 @@ public class CrudAPI {
 					atualizarCredenciaisDoUsuario(tmp);
 					resultado = CodigoDeProtocolo.SUCESSO;
 				}
+
 				break;                       
 
 			default:
 				System.err.println("Erro! Entrada inválida, tente novamente.");
 				break;
+
 		}
 		
 		CodigoDeProtocolo.verificarCodigo(resultado);
@@ -123,6 +126,7 @@ public class CrudAPI {
 					novaPergunta(pergunta, idUsuario);
 					resultado = CodigoDeProtocolo.SUCESSO;
 				}
+
 				break;
 
 			case ALTERARPERGUNTA: // Alterando uma pergunta atual
@@ -165,8 +169,7 @@ public class CrudAPI {
 	 * @return um numero inteiro correspondendo ao ID do novo usuário
 	 */
     public int inserirNovoUsuarioNoCrud(Usuario u) {
-
-        return usuarios.create(u);
+		return usuarios.create(u);	
     }
 
 	/**
@@ -179,8 +182,9 @@ public class CrudAPI {
         Usuario resp = null;
 
         try {
-            resp = usuarios.read(email);
-        } catch(Exception e) {}
+			resp = usuarios.read(email);
+			
+		} catch(Exception e) {}
 
         return resp;
     }
@@ -195,7 +199,8 @@ public class CrudAPI {
         Usuario resp = null;
 
         try {
-            resp = usuarios.read(idUsuario);
+			resp = usuarios.read(idUsuario);
+			
         } catch(Exception e) {e.printStackTrace();}
 
         return resp;
