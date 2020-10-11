@@ -42,7 +42,7 @@ public class ListaIDs {
                 this.arquivo.writeInt(1);  // Usuario escrendo a primeira pergunta
                 this.arquivo.writeLong(this.pilhaIds.length());
                 // Escrever um bloco de id
-                Bloco blocoPilha = new Bloco(idUsuario);
+                Bloco blocoPilha = new Bloco(idPergunta);
                 this.pilhaIds.seek(this.pilhaIds.length()); // Indo para o final do arquivo inserir um item novo
                 this.pilhaIds.write(blocoPilha.toByteArray()); //Transformando em um array de bytes para escrever em disco
 
