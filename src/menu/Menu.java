@@ -25,7 +25,7 @@ public class Menu {
     public Menu() {
 
         idUsuario      = -1;
-        minhaAPI        = new CrudAPI();
+        minhaAPI       = new CrudAPI();
     }
 
     /**
