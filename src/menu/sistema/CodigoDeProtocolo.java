@@ -25,7 +25,7 @@ public enum CodigoDeProtocolo {
     ERRO                    ("000"),
     NULL                    ("-1"),
     MUDARUSUARIO            ("222"),
-    OPERACAOCANCELADA       ("333");
+    OPERACAOCANCELADA       ("-3");
 
     private String codigo;
 

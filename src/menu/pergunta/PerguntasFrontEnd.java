@@ -2,6 +2,7 @@ package menu.pergunta;
 
 import produtos.*;
 import menu.sistema.graficos.*;
+import menu.sistema.CodigoDeProtocolo;
 import menu.sistema.Sistema;
 
 /**
@@ -72,12 +73,12 @@ class PerguntasFrontEnd {
         /**
          * Função para fazer a confirmação com o usuário se essa é a pergunta que será registrada/alterada/arquivada
          * @param p é a pergunta que foi recebida seja qual for a operação
-         * @return true ou false se o usuário confirmou ou não a operação
+         * @return um codigo de protocolo referente ao resultado da verificacao
          */
-        public static boolean verificar(Pergunta p) {
+        public static CodigoDeProtocolo verificar(Pergunta p) {
 
-            String confirmar             = "";
-            boolean confirmarVerificacao = false;
+            String              confirmar   = "";
+            CodigoDeProtocolo   sucesso     = CodigoDeProtocolo.ERRO;
 
             System.out.println(PerguntasAPI.graficos.caixa("Vamos conferir a sua pergunta") + "\n");
             System.out.print(toString(p) + 
@@ -89,14 +90,13 @@ class PerguntasFrontEnd {
 
             if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
 
-                confirmarVerificacao = true;
-            }
-            else {
-
+                sucesso = CodigoDeProtocolo.SUCESSO;
+            } else {
+                sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
                 System.out.println("Processo cancelado!\nVoltando para o menu...\n");
             }
 
-            return confirmarVerificacao;
+            return sucesso;
         }
 
         /**
@@ -120,7 +120,10 @@ class PerguntasFrontEnd {
                     indexSelecionado = array[entrada -1].getId();
             }
             else {
-                System.err.println("ERRO! Entrada inválida!");
+                if ( entrada != 0 )
+                    System.err.println("ERRO! Entrada inválida!");
+                else
+                    indexSelecionado = -3; //Sinal para o programa que o usuário cancelou o processo
             }
             
             return indexSelecionado; 

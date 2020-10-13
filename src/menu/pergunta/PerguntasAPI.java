@@ -26,13 +26,18 @@ public class PerguntasAPI {
      */
     public static Pergunta criarPergunta(int idUsuario) {
 
-        Pergunta novaPergunta  = null;
-        boolean  confirmarAcao = false;
+        Pergunta           novaPergunta          = null;
+        CodigoDeProtocolo  confirmarOperacao     = CodigoDeProtocolo.ERRO;
 
-        novaPergunta  = inserirDados(idUsuario);
+        novaPergunta  = inserirDadosDaPergunta(idUsuario);
+        if(novaPergunta == null) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            return null;
+        }
 
-        confirmarAcao = PerguntasFrontEnd.verificar(novaPergunta);
-        if(!confirmarAcao) {
+        confirmarOperacao = PerguntasFrontEnd.verificar(novaPergunta);
+        if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return null;
         }
 
@@ -46,9 +51,9 @@ public class PerguntasAPI {
      */
     public static Pergunta alterarPergunta(int idUsuario) {
 
-        Pergunta perguntaAlterada  = null;
-        int idPerguntaAlterada     = -1;
-        boolean  confirmarAcao = false;
+        Pergunta             perguntaAlterada    = null;
+        int                  idPerguntaAlterada  = -1;
+        CodigoDeProtocolo    confirmar           = CodigoDeProtocolo.ERRO;
 
         perguntaAlterada = escolherPergunta(idUsuario);
         if(perguntaAlterada == null) {
@@ -60,14 +65,14 @@ public class PerguntasAPI {
             return null;
         }
 
-        confirmarAcao = PerguntasFrontEnd.verificar(perguntaAlterada);
-        if(!confirmarAcao) {
+        confirmar = PerguntasFrontEnd.verificar(perguntaAlterada);
+        if(confirmar == CodigoDeProtocolo.OPERACAOCANCELADA) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return null;
         }
-
         idPerguntaAlterada = perguntaAlterada.getId();
 
-        perguntaAlterada   = inserirDados(idUsuario);
+        perguntaAlterada   = inserirDadosDaPergunta(idUsuario);
         perguntaAlterada.setId(idPerguntaAlterada);
 
         return perguntaAlterada;
@@ -80,8 +85,8 @@ public class PerguntasAPI {
      */
     public static Pergunta arquivarPergunta(int idUsuario) {
 
-        Pergunta perguntaAlterada  = null;
-        boolean  confirmarAcao = false;
+        Pergunta              perguntaAlterada  = null;
+        CodigoDeProtocolo     confirmarOperacao = CodigoDeProtocolo.ERRO;
 
         perguntaAlterada = escolherPergunta(idUsuario);
         if(perguntaAlterada == null) {
@@ -93,8 +98,9 @@ public class PerguntasAPI {
             return null;
         }
 
-        confirmarAcao = PerguntasFrontEnd.verificar(perguntaAlterada);
-        if(!confirmarAcao) {
+        confirmarOperacao = PerguntasFrontEnd.verificar(perguntaAlterada);
+        if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return null;
         }
 
@@ -119,7 +125,12 @@ public class PerguntasAPI {
         if ( array != null ) {
             id   = PerguntasFrontEnd.escolherPergunta(array);
             if(id != -1)
-                resp = CrudAPI.acharPergunta(id);
+                if(id == -3) {
+                    CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+                }
+                else {
+                    resp = CrudAPI.acharPergunta(id);
+                }
 
         } else {
             System.err.println("ERRO! nenhuma pergunta encontrada!");
@@ -133,14 +144,12 @@ public class PerguntasAPI {
      * @param idUsuario é o número da ID do usuário que está acessando essa função
      * @return um Codigo de Protocolo que representa o resultado da operação
      */
-    public static CodigoDeProtocolo consultarPerguntas(int idUsuario) {
+    public static void consultarPerguntas(int idUsuario) {
 
         Pergunta tmp              = null;
         String   nome             = "";
         String   perguntaEmString = "";
-        byte opcao                = -1;
-
-        CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
+        byte     opcao            = -1;
 
         tmp = encontrarPergunta(idUsuario);
     
@@ -154,7 +163,7 @@ public class PerguntasAPI {
 
                 case 0:
                     System.out.println("Ok.. vamos voltar ao menu");
-                    sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
+                    CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
                     break;
 
                 case 1:
@@ -175,8 +184,6 @@ public class PerguntasAPI {
             }
 
         }
-
-        return sucesso;
     }
 
     /**
@@ -193,6 +200,10 @@ public class PerguntasAPI {
     
         entrada = Sistema.inserir(graficos,"Busque as perguntas por palavra chave separadas por espaço em branco",
                                            "Ex: política Brasil eleições",TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+        if(entrada.equals("")) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            return null;
+        }
 
         entrada = Pergunta.consertarPalavrasChave(entrada);
 
@@ -242,7 +253,7 @@ public class PerguntasAPI {
      * @param idUsuario é o numero que corresponde a ID do usuário que será dono da pergunta inserida
      * @return a Pergunta que foi formada
      */
-    private static Pergunta inserirDados(int idUsuario) {
+    private static Pergunta inserirDadosDaPergunta(int idUsuario) {
 
         String titulo         = "";
         String pergunta       = "";
@@ -250,9 +261,21 @@ public class PerguntasAPI {
 
         Pergunta p            = null;
 
-        titulo         = Sistema.inserir(graficos,"Insira o título da pergunta",                                             TAMANHO_MINIMO_TITULO,TAMANHO_MAXIMO_TITULO,true);
-        pergunta       = Sistema.inserir(graficos,"Insira a pergunta",                                                       TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
-        palavras_chave = Sistema.inserir(graficos,"Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+        titulo         = Sistema.inserir(graficos,"Insira o título da pergunta",                                             
+                                         TAMANHO_MINIMO_TITULO,TAMANHO_MAXIMO_TITULO,true);
+        if(titulo.equals("")){
+            return null;
+        }
+        pergunta       = Sistema.inserir(graficos,"Insira a pergunta",                                                       
+                                         TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+        if(pergunta.equals("")){
+            return null;
+        }
+        palavras_chave = Sistema.inserir(graficos,"Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",
+                                         TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+        if(palavras_chave.equals("")){
+            return null;
+        }
 
         p = new Pergunta(idUsuario,titulo,pergunta,palavras_chave);
 

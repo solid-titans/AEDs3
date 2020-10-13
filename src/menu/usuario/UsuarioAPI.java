@@ -27,19 +27,28 @@ public class UsuarioAPI {
         int sucesso           = -1;
         String email          = "";
 
-        boolean acertouAsenha = false;
-        Usuario usuarioAcesso = null;
+        CodigoDeProtocolo acertouAsenha = CodigoDeProtocolo.ERRO;
+        Usuario           usuarioAcesso = null;
 
         email = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,false);
-        if(CrudAPI.acharUsuario(email) == null) {
+        if(email.equals("")) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            return -1;
+        }
+        else if(CrudAPI.acharUsuario(email) == null) {
             System.err.println("Erro! E-mail inválido");
             return -1;
         }
+
         usuarioAcesso = CrudAPI.acharUsuario(email);
 
         acertouAsenha = UsuariosFrontEnd.inserirSenha(usuarioAcesso.getSenha(),3);
-        if(!acertouAsenha) {
+        if(acertouAsenha == CodigoDeProtocolo.ERRO) {
             System.err.println("Erro! Você passou todas as suas tentativas");
+            return -1;
+        }
+        else if ( acertouAsenha == CodigoDeProtocolo.OPERACAOCANCELADA) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return -1;
         }
         
@@ -54,33 +63,48 @@ public class UsuarioAPI {
      */
     public static Usuario criarNovoUsuario() {
 
-        String email                = "";
-        String nome                 = "";
-        String senha                = "";
-        boolean confirmarOperacao   = false;
+        String email                        = "";
+        String nome                         = "";
+        String senha                        = "";
+
+        CodigoDeProtocolo confirmarOperacao = CodigoDeProtocolo.ERRO;
+
         Usuario novoUsuario         = null;
 
-        //Criando novo usuario
         email                 = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,true);
+        if (email.equals("")) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            return null;
 
-        if(CrudAPI.acharUsuario(email) != null ) {
+        } else if(CrudAPI.acharUsuario(email) != null ) {
             System.err.println("Erro! Esse email já possui uma conta registrada");
             return null;
-        }
-        else if(!Sistema.verificarEmail(email)) {
+
+        } else if(!Sistema.verificarEmail(email)) {
             System.err.println("Erro! Esse email é inválido");
             return null;
         }
 
-        nome                  = Sistema.inserir(graficos,"Insira o nome do usuário",TAMANHO_MINIMO_NOME,TAMANHO_MAXIMO_NOME,true); 
+        nome                  = Sistema.inserir(graficos,"Insira o nome do usuário",TAMANHO_MINIMO_NOME,TAMANHO_MAXIMO_NOME,true);
+        if(nome.equals("")) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            return null;
+        } 
+
         senha                 = UsuariosFrontEnd.novaSenha();
+        if(senha.equals("")) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            return null;
+        } 
 
         novoUsuario           = new Usuario(nome,email,senha);
         confirmarOperacao     = UsuariosFrontEnd.verificar(novoUsuario);
 
-        if(!confirmarOperacao) {
+        if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return null;
         }
+
         novoUsuario.setSenha(new GFG().senhaHasheada(senha));
 
         return novoUsuario;
@@ -97,7 +121,10 @@ public class UsuarioAPI {
         Usuario usuario = null;
 
         email = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,false);
-
+        if (email.equals("")) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            return null;
+        }
         if(CrudAPI.acharUsuario(email) == null) {
             System.err.println("Erro! E-mail inválido");
             return null;
@@ -118,14 +145,18 @@ public class UsuarioAPI {
      * @return O usuário com a nova senha integrada
      */
     public static Usuario criarNovaSenha(int idUsuario) {
-        String novaSenha       = "";
-        boolean acertouAsenha = false;
+        String            novaSenha     = "";
+        CodigoDeProtocolo acertouAsenha = CodigoDeProtocolo.ERRO;
 
         Usuario usuarioAtual   = CrudAPI.acharUsuario(idUsuario);
         acertouAsenha = UsuariosFrontEnd.inserirSenha(usuarioAtual.getSenha(),3);
 
-        if(!acertouAsenha) {
+        if(acertouAsenha == CodigoDeProtocolo.ERRO) {
             System.err.println("Erro! Senhas não se correspondem!");
+            return null;
+        }
+        else if (acertouAsenha == CodigoDeProtocolo.OPERACAOCANCELADA) {
+            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return null;
         }
 
