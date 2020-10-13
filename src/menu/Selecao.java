@@ -71,6 +71,7 @@ class Selecao {
             System.out.println(graficos.caixa(5,"PERGUNTAS 1.0"));
 
             //Imprimindo o menu a ser exibido para o usuario
+            // TODO: trocar switch por object literal?
             switch(menuIndex) 
             {
 

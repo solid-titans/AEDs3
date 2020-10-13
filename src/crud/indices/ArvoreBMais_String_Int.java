@@ -186,7 +186,7 @@ public class ArvoreBMais_String_Int {
     
         
     // Busca recursiva por um elemento a partir da chave. Este metodo invoca 
-    // o método recursivo read1, passando a raiz como referência.
+    // o método recursivo readOne, passando a raiz como referência.
     public int read(String c) throws IOException {
         
         // Recupera a raiz da árvore
@@ -196,14 +196,14 @@ public class ArvoreBMais_String_Int {
         
         // Executa a busca recursiva
         if(raiz!=-1)
-            return read1(c,raiz);
+            return readOne(c,raiz);
         else
             return -1;
     }
     
     // Busca recursiva. Este método recebe a referência de uma página e busca
     // pela chave na mesma. A busca continua pelos filhos, se houverem.
-    private int read1(String chave, long pagina) throws IOException {
+    private int readOne(String chave, long pagina) throws IOException {
         
         // Como a busca é recursiva, a descida para um filho inexistente
         // (filho de uma página folha) retorna um valor negativo.
@@ -237,9 +237,9 @@ public class ArvoreBMais_String_Int {
         
         // Terceiro passo - ainda não é uma folha, continua a busca recursiva pela árvore
         if(i==pa.n || chave.compareTo(pa.chaves[i])<0)
-            return read1(chave, pa.filhos[i]);
+            return readOne(chave, pa.filhos[i]);
         else
-            return read1(chave, pa.filhos[i+1]);
+            return readOne(chave, pa.filhos[i+1]);
     }
         
     // Atualiza recursivamente um valor a partir da sua chave. Este metodo invoca 
@@ -332,7 +332,7 @@ public class ArvoreBMais_String_Int {
                 
         // Chamada recursiva para a inserção da chave e do valor
         // A chave e o valor não são passados como parâmetros, porque são globais
-        boolean inserido = create1(pagina);
+        boolean inserido = createOne(pagina);
         
         // Testa a necessidade de criação de uma nova raiz.
         if(cresceu) {
@@ -361,7 +361,7 @@ public class ArvoreBMais_String_Int {
     
     // Função recursiva de inclusão. A função passa uma página de referência.
     // As inclusões são sempre feitas em uma folha.
-    private boolean create1(long pagina) throws IOException {
+    private boolean createOne(long pagina) throws IOException {
         
         // Testa se passou para o filho de uma página folha. Nesse caso, 
         // inicializa as variáveis globais de controle.
@@ -397,9 +397,9 @@ public class ArvoreBMais_String_Int {
         // filho inexistente de uma página folha ser alcançado.
         boolean inserido;
         if(i==pa.n || chaveAux.compareTo(pa.chaves[i])<0)
-            inserido = create1(pa.filhos[i]);
+            inserido = createOne(pa.filhos[i]);
         else
-            inserido = create1(pa.filhos[i+1]);
+            inserido = createOne(pa.filhos[i+1]);
         
         // A partir deste ponto, as chamadas recursivas já foram encerradas. 
         // Assim, o próximo código só é executado ao retornar das chamadas recursivas.
@@ -567,7 +567,7 @@ public class ArvoreBMais_String_Int {
                 
         // Chama recursivamente a exclusão de registro (na chave1Aux e no 
         // chave2Aux) passando uma página como referência
-        boolean excluido = delete1(chave, pagina);
+        boolean excluido = deleteOne(chave, pagina);
         
         // Se a exclusão tiver sido possível e a página tiver reduzido seu tamanho,
         // por meio da fusão das duas páginas filhas da raiz, elimina essa raiz
@@ -594,7 +594,7 @@ public class ArvoreBMais_String_Int {
 
     // Função recursiva de exclusão. A função passa uma página de referência.
     // As exclusões são sempre feitas em folhas e a fusão é propagada para cima.
-    private boolean delete1(String chave, long pagina) throws IOException {
+    private boolean deleteOne(String chave, long pagina) throws IOException {
         
         // Declaração de variáveis
         boolean excluido=false;
@@ -654,10 +654,10 @@ public class ArvoreBMais_String_Int {
         // pode ter ficado com menos elementos do que o mínimo necessário.
         // Essa página será filha da página atual
         if(i==pa.n || chave.compareTo(pa.chaves[i])<0) {
-            excluido = delete1(chave, pa.filhos[i]);
+            excluido = deleteOne(chave, pa.filhos[i]);
             diminuido = i;
         } else {
-            excluido = delete1(chave, pa.filhos[i+1]);
+            excluido = deleteOne(chave, pa.filhos[i+1]);
             diminuido = i+1;
         }
         
@@ -876,12 +876,12 @@ public class ArvoreBMais_String_Int {
         arquivo.seek(0);
         raiz = arquivo.readLong();
         if(raiz!=-1)
-            print1(raiz);
+            printOne(raiz);
         System.out.println();
     }
     
     // Impressão recursiva
-    private void print1(long pagina) throws IOException {
+    private void printOne(long pagina) throws IOException {
         
         // Retorna das chamadas recursivas
         if(pagina==-1)
@@ -910,8 +910,8 @@ public class ArvoreBMais_String_Int {
         // Chama recursivamente cada filho, se a página não for folha
         if(pa.filhos[0] != -1) {
             for(i=0; i<pa.n; i++)
-                print1(pa.filhos[i]);
-            print1(pa.filhos[i]);
+                printOne(pa.filhos[i]);
+            printOne(pa.filhos[i]);
         }
     }
        
