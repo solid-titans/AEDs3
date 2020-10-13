@@ -12,13 +12,16 @@ import menu.pergunta.indices.*;
 public class CrudAPI {
 
 	// Path dos Cruds
-	private final String          path = "Dados";
+	private final String            path = "Dados";
 
 	//Cruds
-    private static ListaIDs       ids;
-    private static Crud<Pergunta> perguntas;
-    private static Crud<Usuario>  usuarios;
-    private static ListaInvertida lista;
+    private static ListaIDs         ids;
+    private static Crud<Pergunta>   perguntas;
+    private static Crud<Usuario>    usuarios;
+	private static ListaInvertida   lista;
+	
+	//Codigo de protocolo geral
+	public static CodigoDeProtocolo resultado = CodigoDeProtocolo.NULL;
 	
 	/**
 	 * 	Construtor 1: iniciar todos os bancos de dados que o programa precisa
@@ -40,10 +43,10 @@ public class CrudAPI {
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
 	 */
 	public CodigoDeProtocolo verificarRequisicaoEmAcesso(CodigoDeProtocolo cdp ) {
-
-		CodigoDeProtocolo  resultado 	= CodigoDeProtocolo.ERRO;
 		int                id			= -1;
 		Usuario            tmp			= null;
+
+		resultado 	= CodigoDeProtocolo.ERRO;
 
 		switch(cdp) {
 
@@ -92,15 +95,15 @@ public class CrudAPI {
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
 	 */
 	public CodigoDeProtocolo verificarRequisicaoDoUsuario(CodigoDeProtocolo cdp, int idUsuario) {
-
-		CodigoDeProtocolo resultado 	 = CodigoDeProtocolo.ERRO;
 		Usuario           usuarioAtual 	 = null;
 		Pergunta          pergunta       = null;
+
+		resultado 	 = CodigoDeProtocolo.ERRO;
 
 		switch(cdp) {
 
 			case CONSULTARPERGUNTAS: // Indo para a tela de consultar/responder perguntas
-				resultado = PerguntasAPI.consultarPerguntas(idUsuario);
+				PerguntasAPI.consultarPerguntas(idUsuario);
 				break;
 
 			case OLHARNOTIFICACOES: // Verificar suas notificacoes

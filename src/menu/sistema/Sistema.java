@@ -22,8 +22,9 @@ public class Sistema {
     public static InputStream         is                    = System.in;
     public static InputStreamReader   isr                   = new InputStreamReader(is);
     public static BufferedReader      br                    = new BufferedReader(isr);
+
     //Tipos de destaque
-    private static ANSILibrary        destaqueObservacao    = new ANSILibrary(15, 130, ANSILibrary.TEXTO_SUBLINHADO);
+    private static ANSILibrary        destaqueObservacao    = new ANSILibrary(15, 161, ANSILibrary.TEXTO_SUBLINHADO);
     private static ANSILibrary        destaqueTamanhoMinimo = new ANSILibrary(15, 34, ANSILibrary.TEXTO_SUBLINHADO);
     private static ANSILibrary        destaqueTamanhoMaximo = new ANSILibrary(15, 196, ANSILibrary.TEXTO_SUBLINHADO);
 
@@ -196,26 +197,28 @@ public class Sistema {
      * Cria uma interface de interação com o usuário para pegar o input do teclado
      * @param graficos é o padrão de interface que será utilizado
      * @param titulo é o título dentro da caixa gerada pelo padrão de interface
-     * @param tamanhoMinimoEntrada é o tamanho mínimo da entrada que será feita pelo usuário
-     * @param tamanhoMaximoEntrada é o tamanho máximo da entrada que será feita pelo usuário
-     * @param imprimirRestricoes é o booleano que define se as limitacoes da String devem ser imprimidas
+     * @param limMin é o tamanho mínimo da entrada que será feita pelo usuário
+     * @param limMax é o tamanho máximo da entrada que será feita pelo usuário
+     * @param printRestr é o booleano que define se as limitacoes da String devem ser imprimidas
      * @return a String que o usuário inseriu
      */
-    public static String inserir(ASCIInterface graficos,String titulo,int tamanhoMinimoEntrada, int tamanhoMaximoEntrada,boolean imprimirRestricoes) {
+    public static String inserir(ASCIInterface graficos,String titulo,int limMin, int limMax,boolean printRestr) {
       String entradaDoUsuario = "";
 
       do {         
           System.out.print(graficos.caixa(titulo) + "\n");
-          System.out.print((imprimirRestricoes == true) ? imprimirTamanhoMinMax(tamanhoMinimoEntrada, tamanhoMaximoEntrada) + "\n\n->" : "->");
+          System.out.println(destaqueObservacao.imprimir("OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo"));
+          System.out.print((printRestr) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n->" : "->");
 
           entradaDoUsuario = lerEntrada();
 
           ASCIInterface.limparTela();
-          if(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada)) {
+          if(temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals("") ) {
               System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
               lerEntrada();
+              ASCIInterface.limparTela();
           }
-      } while(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada));
+      } while(temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals("") );
 
       return entradaDoUsuario;
     }
@@ -225,29 +228,31 @@ public class Sistema {
      * @param graficos é o padrão de interface que será utilizado
      * @param titulo é o título dentro da caixa gerada pelo padrão de interface
      * @param observacao é a String adicional que contenha qualquer observação que seja pertinente informar ao usuário
-     * @param tamanhoMinimoEntrada é o tamanho mínimo da entrada que será feita pelo usuário
-     * @param tamanhoMaximoEntrada é o tamanho máximo da entrada que será feita pelo usuário
-     * @param imprimirRestricoes é o booleano que define se as limitacoes da String devem ser imprimidas
+     * @param limMin é o tamanho mínimo da entrada que será feita pelo usuário
+     * @param limMax é o tamanho máximo da entrada que será feita pelo usuário
+     * @param printRestr é o booleano que define se as limitacoes da String devem ser imprimidas
      * @return
      */
-    public static String inserir(ASCIInterface graficos,String titulo,String observacao, int tamanhoMinimoEntrada, int tamanhoMaximoEntrada,boolean imprimirRestricoes) {
+    public static String inserir(ASCIInterface graficos,String titulo,String observacao, int limMin, int limMax,boolean printRestr) {
         String entradaDoUsuario = "";
 
         do { 
-            System.out.print(graficos.caixa(titulo) + destaqueObservacao.imprimir(observacao)  + "\n"  );
-            System.out.print((imprimirRestricoes == true) ? imprimirTamanhoMinMax(tamanhoMinimoEntrada, tamanhoMaximoEntrada) + "\n\n->" : "\n->");
+            System.out.print(graficos.caixa(titulo) + destaqueObservacao.imprimir(observacao) + "\n" + 
+                                                      destaqueObservacao.imprimir("OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo")  + "\n"  );
+
+            System.out.print((printRestr == true) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n->" : "\n->");
 
             entradaDoUsuario = lerEntrada();
 
             ASCIInterface.limparTela();
 
-            if(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada)) {
+            if(temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals("")) {
                 System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
                 lerEntrada();
                 ASCIInterface.limparTela();
             }
 
-        } while(temTamanhoAdequado(entradaDoUsuario, tamanhoMinimoEntrada, tamanhoMaximoEntrada));
+        } while(temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals(""));
 
         return entradaDoUsuario;
     }

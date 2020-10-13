@@ -1,6 +1,7 @@
 package menu.usuario;
 
 import produtos.*;
+import menu.sistema.CodigoDeProtocolo;
 import menu.sistema.Sistema;
 import menu.sistema.graficos.*;
 import seguranca.GFG;
@@ -22,27 +23,33 @@ public class UsuariosFrontEnd {
      * Função para dar n tentativas ao usuário de inserir a senha
      * @param senhaDoUsuario é a senha que usuário precisa inserir
      * @param tentativas é a quantidade de tentativas que o loop irá permitir
-     * @return true or false se o usuário conseguiu acessar o sistema
+     * @return um codigo de protocolo referente ao resultado da verificacao
      */
-    public static boolean inserirSenha(String senhaDoUsuario,int tentativas) {
-        String entradaDoUsuario = "";
-        boolean sucesso         = false;
+    public static CodigoDeProtocolo inserirSenha(String senhaDoUsuario,int tentativas) {
+        String            entradaDoUsuario   = "";
+        CodigoDeProtocolo sucesso            = CodigoDeProtocolo.ERRO;
   
         do {         
-            entradaDoUsuario = new GFG().senhaHasheada(Sistema.inserir(UsuarioAPI.graficos,"Insira a senha","\nNumero de tentativas : " + tentativas,
-                                                                                                        TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,false));
+            entradaDoUsuario = Sistema.inserir(UsuarioAPI.graficos,"Insira a senha","\nNumero de tentativas : " + tentativas,TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,false);
+            if(entradaDoUsuario.equals("")) {
+                sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
+                return sucesso;
+            }
+
+            entradaDoUsuario = new GFG().senhaHasheada(entradaDoUsuario);
   
             ASCIInterface.limparTela();
             if(!entradaDoUsuario.equals(senhaDoUsuario)) {
+
                 tentativas--;
                 System.err.println("Erro! As senhas não são iguais!");
                 Sistema.esperarUsuario();
                 ASCIInterface.limparTela();
 
+            } else {
+                sucesso = CodigoDeProtocolo.SUCESSO;
             }
-            else {
-                sucesso = true;
-            }
+
         } while(!entradaDoUsuario.equals(senhaDoUsuario) && tentativas > 0);
   
         return sucesso;
@@ -61,7 +68,13 @@ public class UsuariosFrontEnd {
 
         do {
             senha          = Sistema.inserir(UsuarioAPI.graficos, "Criando senha",TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,true);
+            if(senha.equals("")) {
+                return "";
+            }
             confirmarSenha = Sistema.inserir(UsuarioAPI.graficos, "Confirmar senha",TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,false);
+            if(confirmarSenha.equals("")) {
+                return "";
+            }            
 
             ASCIInterface.limparTela();
             forcaDaSenha = Sistema.verificarSenha(senha);
@@ -94,11 +107,11 @@ public class UsuariosFrontEnd {
     /**
      * Função para verificar se o usuário a ser registrado é o desejado
      * @param novoUsuario é o usuário a ser conferido
-     * @return true or false se o usuário confirmou a operação
+     * @return um codigo de protocolo referente ao resultado da verificacao
      */
-    public static boolean verificar(Usuario novoUsuario) {
-        boolean sucesso = false;
-        String  confirmar = "";
+    public static CodigoDeProtocolo verificar(Usuario novoUsuario) {
+        CodigoDeProtocolo sucesso     = CodigoDeProtocolo.ERRO;
+        String            confirmar   = "";
 
         System.out.print(UsuarioAPI.graficos.caixa("Vamos então verificar os seus dados!") + "\n" + 
                                            imprimirUsuario(novoUsuario)                  +
@@ -109,10 +122,11 @@ public class UsuariosFrontEnd {
         ASCIInterface.limparTela();
         if(confirmar.equals("") || confirmar.toLowerCase().equals("s")) {
 
-            sucesso = true;
+            sucesso = CodigoDeProtocolo.SUCESSO;
             System.out.println("Usuário confirmou a operação");
 
         } else {
+            sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
             System.err.println("Processo cancelado!\nVoltando para o menu...");
         }
 

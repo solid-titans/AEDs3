@@ -66,6 +66,7 @@ public class Crud <T extends Registro> {
 
         // Retornando a id usada na criacao do objeto
         if(id != -1) this.create(objeto, id);
+
         return id;
     }
 
