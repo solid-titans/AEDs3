@@ -8,6 +8,7 @@ import menu.usuario.UsuarioAPI;
 import menu.Menu;
 import menu.pergunta.PerguntasAPI;
 import menu.pergunta.indices.*;
+import menu.resposta.RespostaAPI;
 import seguranca.GFG;
 
 public class CrudAPI {
@@ -42,10 +43,19 @@ public class CrudAPI {
     public CrudAPI() {
         
         try {
-            usuarios          = new Crud<>("Usuarios",  Usuario.class.getConstructor());
-            perguntasUsuario  = new ListaIDs(this.path + "/" + "IDs");
-			perguntas         = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
-            listaDeChaves     = new ListaInvertida(10,"Dados/indice.dict","Dados/indice.dictBlock");
+			//Usuarios
+            usuarios           = new Crud<>("Usuarios",  Usuario.class.getConstructor());
+			perguntasUsuario   = new ListaIDs(this.path + "/" + "perguntasUsuarioIDs");
+			
+			//Perguntas
+			perguntas          = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
+			listaDeChaves      = new ListaInvertida(10,"Dados/indice.dict","Dados/indice.dictBlock");
+			
+			//Respostas
+			respostas          = new Crud<>("Respostas",  Resposta.class.getConstructor());
+			respostasUsuario   = new ListaIDs(this.path + "/" + "respostasUsuarioIDs");
+			perguntasRespostas = new ListaIDs(this.path + "/" + "perguntasRespostasIDs");
+
             
         } catch(Exception e) { e.printStackTrace(); }
 	}
@@ -88,11 +98,9 @@ public class CrudAPI {
 					resultado = CodigoDeProtocolo.SUCESSO;
 				}
 
-				break;                       
-
+				break;   
 			default:
-				System.err.println("Erro! Entrada inválida, tente novamente.");
-				break;
+				break;                    
 
 		}
 		
@@ -111,12 +119,17 @@ public class CrudAPI {
 		Usuario           usuarioAtual 	 = null;
 		Pergunta          pergunta       = null;
 
-		resultado 	 = CodigoDeProtocolo.ERRO;
+		resultado 	                     = CodigoDeProtocolo.ERRO;
 
 		switch(cdp) {
 
 			case CONSULTARPERGUNTAS: // Indo para a tela de consultar/responder perguntas
-				PerguntasAPI.consultarPerguntas(idUsuario);
+				pergunta = PerguntasAPI.consultarPerguntaPelaPalavraChave(idUsuario);
+				if(pergunta != null) {
+					String nome = acharUsuario(pergunta.getIdUsuario()).getNome();
+					Menu.navegarPergunta(pergunta,nome);
+				}
+
 				break;
 
 			case OLHARNOTIFICACOES: // Verificar suas notificacoes
@@ -162,14 +175,66 @@ public class CrudAPI {
 				}
 
 				break;
-
-			//Operacao Invalida
-
 			default:
-				System.err.println("Erro! Entrada inválida, tente novamente.");
 				break;
+
 		}
 
+		CodigoDeProtocolo.verificarCodigo(resultado);
+
+		return resultado;
+	}
+
+	/**
+	 * Função para verificar o pedido do usuário enquanto ele estiver na tela de Consultar Pergunta
+	 * @param cdp é o Codigo referente a ação que o usuário quer
+	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
+	 */
+	public CodigoDeProtocolo verificarRequisicaoEmPergunta(CodigoDeProtocolo cdp, int idPergunta,int idUsuario) {
+		Resposta tmp		= null;
+
+		resultado 	= CodigoDeProtocolo.ERRO;
+
+		switch(cdp) {
+
+			case LISTARRESPOSTAS: //Pedir para acessar o sistema
+				System.out.println("Listar respostas");
+				resultado = RespostaAPI.listarRespostas(idPergunta,idUsuario);
+				break;
+
+			case INCLUIRRESPOSTA: // Criar um novo usuário no banco de dados
+				System.out.println("Incluir respostas");
+				tmp = RespostaAPI.criarResposta(idPergunta,idUsuario);
+				if(tmp != null) {
+					novaResposta(tmp, idPergunta);
+					resultado = CodigoDeProtocolo.SUCESSO;
+				}
+
+				break;
+
+			case ALTERARRESPOSTA: 
+				System.out.println("Alterar respostas");
+				tmp = RespostaAPI.alterarResposta(idPergunta,idUsuario);
+				if( tmp != null) {
+					atualizarResposta(tmp);
+					resultado = CodigoDeProtocolo.SUCESSO;
+				}
+
+				break;    
+
+			case ARQUIVARRESPOSTA: 
+				System.out.println("Arquivar respostas");
+				tmp = RespostaAPI.arquivarResposta(idPergunta,idUsuario);
+				if( tmp != null) {
+					atualizarResposta(tmp);
+					resultado = CodigoDeProtocolo.SUCESSO;
+				}
+
+				break;       
+			default:
+				break;              
+		}
+		
 		CodigoDeProtocolo.verificarCodigo(resultado);
 
 		return resultado;
@@ -397,7 +462,7 @@ public class CrudAPI {
 	public int novaResposta(Resposta r, int idPergunta) {
 		int idResposta = -1;
 
-		idResposta = resposta.create(r);
+		idResposta = respostas.create(r);
 		r.setId(idResposta);
 
 		respostasUsuario.create(r.getIdUsuario(),r.getId());
@@ -418,6 +483,50 @@ public class CrudAPI {
 			r = respostas.read(id);
 		} catch(Exception e ) { e.printStackTrace(); }
 		return r;
+	}
+
+	/**
+	 * Função para atualizar uma resposta
+	 * @param r é a pergunta a ser atualizada
+	 */
+	public void atualizarResposta(Resposta r) {
+		respostas.update(r,r.getId());
+	}
+
+	/**
+	 * Função para pegar um array de perguntas com base na Id de um usuário no banco de dados
+	 * @param idPergunta da pergunta
+	 * @param idUsuario do usuário que requisitou o processo
+	 * @return array de perguntas do idUsuario(se ele tiver registrado)
+	 */
+	public static Resposta[] getRespostaArrayOfUser(int idPergunta,int idUsuario) {
+		
+		ArrayList<Resposta> array    = new ArrayList<>();
+		Resposta[]   resp  		     = null;
+		int[] 	     idsRespostas    = null;
+		
+		idsRespostas = perguntasRespostas.read(idPergunta);
+
+        if(idsRespostas == null)
+			return  null;
+
+        for (int i : idsRespostas) {
+            try {
+                Resposta temp = respostas.read(i);
+                if(temp == null)
+					continue;
+				if(temp.getIdUsuario() != idUsuario) 
+					continue;
+
+                array.add(temp);
+            }catch(Exception e) { e.printStackTrace(); }
+		}
+		
+		resp = new Resposta[array.size()];
+		for(int i = 0; i < array.size(); i++) 
+			resp[i] = array.get(i);
+
+		return resp;
 	}
 
 }

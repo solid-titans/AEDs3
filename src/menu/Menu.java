@@ -2,6 +2,8 @@ package menu;
 
 import menu.sistema.graficos.*;
 import menu.sistema.*;
+import produtos.Pergunta;
+import menu.pergunta.PerguntasFrontEnd;
 
 /**
  * Classe para gerenciar as escolhas do usuário e a comunicação com a CrudAPI
@@ -10,9 +12,11 @@ import menu.sistema.*;
  */
 public class Menu {
 
+    private ASCIInterface              graficos;
+
     private static int         idUsuario;                  //Id do Usuario que usar o sistema
-    private CrudAPI            minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
-    private CodigoDeProtocolo  requisicao;                 //Variavel para 
+    private static CrudAPI            minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
+    private static CodigoDeProtocolo  requisicao;                 //Variavel para 
 
     /**
      * Configura a id do usuário que vai acessar o programa
@@ -26,6 +30,7 @@ public class Menu {
 
         idUsuario      = -1;
         minhaAPI       = new CrudAPI();
+        graficos       = new ASCIInterface();
     }
 
     /**
@@ -35,10 +40,13 @@ public class Menu {
 
         char opcao;
 
+        ASCIInterface.limparTela();
         do {
-            ASCIInterface.limparTela();
 
+            System.out.println(graficos.caixa("PERGUNTAS 1.0"));
             opcao = Selecao.Acesso();
+
+            requisicao = CodigoDeProtocolo.NULL;
             //Fazendo a interação com o acesso
             /*
             *   O acesso ao sistema funciona a partir de um
@@ -60,7 +68,6 @@ public class Menu {
             //Menu Acesso
 
                 case '0': //Saindo do programa
-                    requisicao = CodigoDeProtocolo.NULL;
                     System.out.println("Obrigado por usar o Pergunta 1.0\nTenha um bom dia!");
                     break;
 
@@ -78,7 +85,6 @@ public class Menu {
 
                 //Operacao Invalida
                 default:
-                    requisicao = CodigoDeProtocolo.NULL;
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
             }
@@ -86,13 +92,14 @@ public class Menu {
             if(requisicao != CodigoDeProtocolo.NULL) {
                 requisicao = minhaAPI.verificarRequisicaoEmAcesso(requisicao);
                 if(requisicao == CodigoDeProtocolo.MUDARUSUARIO) {
-                    Selecao.graficos.setBorda(63);
+                    graficos.setBorda(63);
                     acessoGarantido();
                     
                 }
 
             }
-
+            
+        ASCIInterface.limparTela();
         } while (opcao != '0');
     }
 
@@ -109,7 +116,11 @@ public class Menu {
         //Loop do menu
         do {
             ASCIInterface.limparTela();
-            opcao = Selecao.Inicio(menuIndex,notificacoes);
+
+            System.out.println(graficos.caixa("PERGUNTAS 1.0"));
+            opcao = Selecao.imprimirTela(menuIndex,notificacoes);
+
+            requisicao = CodigoDeProtocolo.NULL;
 
             //Fazendo a mudança do menu
             /*
@@ -133,13 +144,11 @@ public class Menu {
                 //Menu Inicio
 
                 case "01": // Saindo do programa
-                    requisicao = CodigoDeProtocolo.NULL;
                     System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
-                    Selecao.graficos.setBorda(1);
+                    graficos.setBorda(1);
                     break;
 
                 case "11": // Indo para a tela de criacao de perguntas
-                    requisicao = CodigoDeProtocolo.NULL;
                     menuIndex = 2;
                     break;
 
@@ -158,7 +167,6 @@ public class Menu {
                 //Menu Criacao de Perguntas
 
                 case "02": // Voltando a tela de Inicio
-                    requisicao = CodigoDeProtocolo.NULL;
                     menuIndex = 1;
                     break;
 
@@ -181,7 +189,6 @@ public class Menu {
                 //Operacao Invalida
 
                 default:
-                    requisicao = CodigoDeProtocolo.NULL;
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
             }
@@ -193,6 +200,80 @@ public class Menu {
 
         }while (!opcao.equals("01"));
 
+    }
+
+    public static CodigoDeProtocolo navegarPergunta(Pergunta p,String nome) {
+
+        Selecao.graficos.setBorda(220);
+        
+        String opcao = "";
+        
+        byte menuIndex = 3;
+
+        do {
+            ASCIInterface.limparTela();
+
+            System.out.println(PerguntasFrontEnd.toString(p, nome));
+
+            opcao = Selecao.imprimirTela(menuIndex,(byte)-1);
+
+            requisicao = CodigoDeProtocolo.NULL;
+
+            switch(opcao) {
+                case "03":
+                    System.out.println("Ok! Voltando ao menu...");
+                    break;
+
+                case "13":
+                    menuIndex = 4;
+                    break;
+                
+                case "23":
+                    menuIndex = 5;
+                    break;
+                
+                case "33":
+                    menuIndex = 6;
+                    break;
+
+                case "04":
+                    menuIndex = 3;
+                    break;
+
+                case "14":
+                    requisicao = CodigoDeProtocolo.LISTARRESPOSTAS;
+                    break;
+                
+                case "24":
+                    requisicao = CodigoDeProtocolo.INCLUIRRESPOSTA;
+                    break;
+                
+                case "34":
+                    requisicao = CodigoDeProtocolo.ALTERARRESPOSTA;
+                    break;
+                
+                case "44":
+                    requisicao = CodigoDeProtocolo.ARQUIVARRESPOSTA;
+                    break;
+
+                case "05":
+                    menuIndex = 3;
+                    break;
+
+                default:
+                    System.err.println("Erro! Entrada inválida, tente novamente.");
+                    break;
+            }
+
+            if(requisicao != CodigoDeProtocolo.NULL) {
+                requisicao = minhaAPI.verificarRequisicaoEmPergunta(requisicao,p.getId(),idUsuario);
+
+            }
+
+        } while(!opcao.equals("03"));
+
+
+        return requisicao;
     }
 
 }

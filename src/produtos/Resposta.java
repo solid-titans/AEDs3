@@ -37,7 +37,16 @@ public class Resposta implements Registro {
         this.resposta      = "";
     }
 
-    // Construtor de resposta com atributos
+    /**
+     * Construtor de resposta com todos atributos
+     * @param idResposta
+     * @param idPergunta
+     * @param idUsuario
+     * @param nota
+     * @param ativa
+     * @param criacao
+     * @param resposta
+     */
     public Resposta(int idResposta, int idPergunta, int idUsuario, short nota, boolean ativa, long criacao, String resposta){
         this.idResposta    = idResposta;
         this.idPergunta    = idPergunta;
@@ -46,6 +55,16 @@ public class Resposta implements Registro {
         this.ativa         = ativa;
         this.criacao       = criacao;
         this.resposta      = resposta;
+    }
+
+    /**
+     * Construtor de resposta com apenas alguns atributos
+     * @param idPergunta
+     * @param idUsuario
+     * @param resposta
+     */
+    public Resposta(int idPergunta,int idUsuario,String resposta) {
+        this(-1,idPergunta,idUsuario,(short)0,true,new Date().getTime(),resposta);
     }
 
     // Funções set

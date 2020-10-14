@@ -12,14 +12,24 @@ public enum CodigoDeProtocolo {
     ACESSOAOSISTEMA         ("1"),
     CRIARNOVOUSUARIO        ("2"),
     CRIARSENHATEMPORARIA    ("3"),
+
+    //Inicio
     CONSULTARPERGUNTAS      ("21"),
     OLHARNOTIFICACOES       ("31"),
     NOVASENHA               ("41"),
+
+    //Perguntas
     LISTARPERGUNTAS         ("12"),
     NOVAPERGUNTA            ("22"),
     ALTERARPERGUNTA         ("32"),
     ARQUIVARPERGUNTA        ("42"),
 
+    //Respostas
+    LISTARRESPOSTAS         ("14"),
+    INCLUIRRESPOSTA         ("24"),
+    ALTERARRESPOSTA         ("34"),
+    ARQUIVARRESPOSTA        ("44"),
+    
     //Possíveis resultados
     SUCESSO                 ("111"),
     ERRO                    ("000"),

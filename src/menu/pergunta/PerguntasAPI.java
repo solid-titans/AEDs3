@@ -1,7 +1,6 @@
 package menu.pergunta;
 
 import produtos.*;
-import menu.*;
 import menu.sistema.*;
 import menu.sistema.graficos.*;
 
@@ -13,11 +12,32 @@ public class PerguntasAPI {
 
     public static ASCIInterface graficos = new ASCIInterface(199, 231 , 232, 184); //interface grafica
 
-    private static final byte TAMANHO_MINIMO_TITULO     = 3;                       //Tamanho minimo para as perguntas
-    private static final byte TAMANHO_MAXIMO_TITULO     = 25;                      //Tamanho maximo para as perguntas
+    private static final byte TAM_MIN_TITULO     = 3;                       //Tamanho minimo para as perguntas
+    private static final byte TAM_MAX_TITULO     = 25;                      //Tamanho maximo para as perguntas
 
-    private static final byte TAMANHO_MINIMO_PERGUNTA   = 3;                       //Tamanho minimo para as perguntas
-    private static final byte TAMANHO_MAXIMO_PERGUNTA   = 100;                     //Tamanho maximo para as perguntas
+    private static final byte TAM_MIN_PERGUNTA   = 3;                       //Tamanho minimo para as perguntas
+    private static final byte TAM_MAX_PERGUNTA   = 100;                     //Tamanho maximo para as perguntas
+
+    /**
+     * Função que serve para listar as perguntas de um usuário com base na ID do usuário
+     * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de ver as perguntas
+     * @return um Codigo de Protocolo que representa o resultado da operação
+     */
+    public static CodigoDeProtocolo listarPerguntas(int idUsuario) {
+
+        CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
+        Pergunta[] array  = CrudAPI.getPerguntaArray(idUsuario);
+
+        if ( array == null ) {
+            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
+        
+        } else {
+            System.out.println(PerguntasFrontEnd.listarPerguntas(array));
+            resp = CodigoDeProtocolo.SUCESSO;
+        }
+
+        return resp;
+    }
 
     /**
      * Função para criar uma nova pergunta e registrar na ID do usuario que foi recebido
@@ -65,15 +85,16 @@ public class PerguntasAPI {
             return null;
         }
 
+        idPerguntaAlterada = perguntaAlterada.getId();
+
+        perguntaAlterada   = inserirDadosDaPergunta(idUsuario);
+        perguntaAlterada.setId(idPerguntaAlterada);
+
         confirmar = PerguntasFrontEnd.verificar(perguntaAlterada);
         if(confirmar == CodigoDeProtocolo.OPERACAOCANCELADA) {
             CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return null;
         }
-        idPerguntaAlterada = perguntaAlterada.getId();
-
-        perguntaAlterada   = inserirDadosDaPergunta(idUsuario);
-        perguntaAlterada.setId(idPerguntaAlterada);
 
         return perguntaAlterada;
     }
@@ -140,68 +161,21 @@ public class PerguntasAPI {
     }
 
     /**
-     * Função que permite um usuário consultar as perguntas no banco de dados com base nas palavras-chave
-     * @param idUsuario é o número da ID do usuário que está acessando essa função
-     * @return um Codigo de Protocolo que representa o resultado da operação
-     */
-    public static void consultarPerguntas(int idUsuario) {
-
-        Pergunta tmp               = null;
-
-        String   nome              = "";
-
-        byte     opcao             = -1;
-
-        Resposta respostaAoUsuario = null;
-
-        tmp = encontrarPergunta(idUsuario);
-    
-        if ( tmp != null) {
-            nome = CrudAPI.acharUsuario(tmp.getIdUsuario()).getNome();
-
-            opcao = Selecao.interagirComPergunta(PerguntasFrontEnd.toString(tmp,nome););
-
-            switch(opcao) {
-
-                case 0:
-                    System.out.println("Ok.. vamos voltar ao menu");
-                    CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-                    break;
-
-                case 1:
-                    System.out.println("Responder o usuario");
-                    break;
-
-                case 2:
-                    System.out.println("Comentar o usuario");
-                    break;
-
-                case 3:
-                    System.out.println("Avaliar a pergunta");
-                    break;
-
-                default:
-                    System.out.println("Erro! Entrada inválida!");
-                    break;
-            }
-
-        }
-    }
-
-    /**
      * Função que irá permitir o usuário encontrar uma perguntas com base na palavras-chave
      * @param idUsuario é o número da ID do usuário que está acessando essa função
      * @return a Pergunta que o usuário escolheu
      */
-    public static Pergunta encontrarPergunta(int idUsuario) {
+    public static Pergunta consultarPerguntaPelaPalavraChave(int idUsuario) {
 
         String entrada    = "";
+
         Pergunta[] lista  = null;
         Pergunta resp     = null;
+        
         int idPergunta    = -1;
     
         entrada = Sistema.inserir(graficos,"Busque as perguntas por palavra chave separadas por espaço em branco",
-                                           "Ex: política Brasil eleições",TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+                                           "Ex: política Brasil eleições",TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(entrada.equals("")) {
             CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
             return null;
@@ -230,27 +204,6 @@ public class PerguntasAPI {
     }
 
     /**
-     * Função que serve para listar as perguntas de um usuário com base na ID do usuário
-     * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de ver as perguntas
-     * @return um Codigo de Protocolo que representa o resultado da operação
-     */
-    public static CodigoDeProtocolo listarPerguntas(int idUsuario) {
-
-        CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
-        Pergunta[] array  = CrudAPI.getPerguntaArray(idUsuario);
-
-        if ( array == null ) {
-            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
-        
-        } else {
-            System.out.println(PerguntasFrontEnd.listarPerguntas(array));
-            resp = CodigoDeProtocolo.SUCESSO;
-        }
-
-        return resp;
-    }
-
-    /**
      * Função genérica para inserir dados de uma pergunta
      * @param idUsuario é o numero que corresponde a ID do usuário que será dono da pergunta inserida
      * @return a Pergunta que foi formada
@@ -264,17 +217,17 @@ public class PerguntasAPI {
         Pergunta p            = null;
 
         titulo         = Sistema.inserir(graficos,"Insira o título da pergunta",                                             
-                                         TAMANHO_MINIMO_TITULO,TAMANHO_MAXIMO_TITULO,true);
+                                         TAM_MIN_TITULO,TAM_MAX_TITULO,true);
         if(titulo.equals("")){
             return null;
         }
         pergunta       = Sistema.inserir(graficos,"Insira a pergunta",                                                       
-                                         TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+                                         TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(pergunta.equals("")){
             return null;
         }
         palavras_chave = Sistema.inserir(graficos,"Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",
-                                         TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+                                         TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(palavras_chave.equals("")){
             return null;
         }
