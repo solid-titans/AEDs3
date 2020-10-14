@@ -8,6 +8,7 @@ import menu.usuario.UsuarioAPI;
 import menu.Menu;
 import menu.pergunta.PerguntasAPI;
 import menu.pergunta.indices.*;
+import seguranca.GFG;
 
 public class CrudAPI {
 
@@ -22,6 +23,9 @@ public class CrudAPI {
 	
 	//Codigo de protocolo geral
 	public static CodigoDeProtocolo resultado = CodigoDeProtocolo.NULL;
+
+	//GFG para hashear a senha
+	public static GFG hasheador = new GFG(1000);
 	
 	/**
 	 * 	Construtor 1: iniciar todos os bancos de dados que o programa precisa
