@@ -3,8 +3,8 @@ package menu.usuario;
 import produtos.*;
 import menu.sistema.CodigoDeProtocolo;
 import menu.sistema.Sistema;
+import menu.sistema.CrudAPI;
 import menu.sistema.graficos.*;
-import seguranca.GFG;
 
 /**
  * Classe para administrar casos específicos da admnistração visual dos Usuários
@@ -35,11 +35,10 @@ public class UsuariosFrontEnd {
                 sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
                 return sucesso;
             }
-
-            entradaDoUsuario = new GFG().senhaHasheada(entradaDoUsuario);
   
             ASCIInterface.limparTela();
-            if(!entradaDoUsuario.equals(senhaDoUsuario)) {
+
+            if(!CrudAPI.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario)) {
 
                 tentativas--;
                 System.err.println("Erro! As senhas não são iguais!");
@@ -50,7 +49,7 @@ public class UsuariosFrontEnd {
                 sucesso = CodigoDeProtocolo.SUCESSO;
             }
 
-        } while(!entradaDoUsuario.equals(senhaDoUsuario) && tentativas > 0);
+        } while(!CrudAPI.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario) && tentativas > 0);
   
         return sucesso;
     }

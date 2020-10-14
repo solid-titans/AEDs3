@@ -3,7 +3,6 @@ package menu.usuario;
 import produtos.*;
 import menu.sistema.*;
 import menu.sistema.graficos.*;
-import seguranca.GFG;
 
 /**
  * Classe para gerenciar todas as funções de controle de Usuário
@@ -105,7 +104,7 @@ public class UsuarioAPI {
             return null;
         }
 
-        novoUsuario.setSenha(new GFG().senhaHasheada(senha));
+        novoUsuario.setSenha(CrudAPI.hasheador.hash(senha));
 
         return novoUsuario;
     }
@@ -133,7 +132,7 @@ public class UsuarioAPI {
         senhaTemporaria = Sistema.gerarSenha();
         usuario = CrudAPI.acharUsuario(email);
         Sistema.escreverEmail(senhaTemporaria, usuario.getNome());
-        usuario.setSenha(new GFG().senhaHasheada(senhaTemporaria));
+        usuario.setSenha(CrudAPI.hasheador.hash(senhaTemporaria));
 
         System.out.println("Um email foi enviado a você com a sua senha temporaria\n(Obs: Olhe a pasta do projeto)");
 
@@ -161,7 +160,7 @@ public class UsuarioAPI {
         }
 
         novaSenha = UsuariosFrontEnd.novaSenha();
-        usuarioAtual.setSenha(new GFG().senhaHasheada(novaSenha));
+        usuarioAtual.setSenha(CrudAPI.hasheador.hash(novaSenha));
 
         return usuarioAtual;
 
