@@ -146,18 +146,20 @@ public class PerguntasAPI {
      */
     public static void consultarPerguntas(int idUsuario) {
 
-        Pergunta tmp              = null;
-        String   nome             = "";
-        String   perguntaEmString = "";
-        byte     opcao            = -1;
+        Pergunta tmp               = null;
+
+        String   nome              = "";
+
+        byte     opcao             = -1;
+
+        Resposta respostaAoUsuario = null;
 
         tmp = encontrarPergunta(idUsuario);
     
         if ( tmp != null) {
             nome = CrudAPI.acharUsuario(tmp.getIdUsuario()).getNome();
-            perguntaEmString = PerguntasFrontEnd.toString(tmp,nome);
 
-            opcao = Selecao.interagirComPergunta(perguntaEmString);
+            opcao = Selecao.interagirComPergunta(PerguntasFrontEnd.toString(tmp,nome););
 
             switch(opcao) {
 
