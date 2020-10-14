@@ -15,11 +15,20 @@ public class CrudAPI {
 	// Path dos Cruds
 	private final String            path = "Dados";
 
-	//Cruds
-    private static ListaIDs         ids;
-    private static Crud<Pergunta>   perguntas;
-    private static Crud<Usuario>    usuarios;
-	private static ListaInvertida   lista;
+	//Banco de Dados
+
+		//Usuarios
+		private static ListaIDs         perguntasUsuario;
+		private static Crud<Usuario>    usuarios;
+
+		//Perguntas
+    	private static Crud<Pergunta>   perguntas;
+		private static ListaInvertida   listaDeChaves;
+
+		//Respostas
+		private static Crud<Resposta>   respostas;
+		private static ListaIDs         respostasUsuario;
+		private static ListaIDs 		perguntasRespostas;
 	
 	//Codigo de protocolo geral
 	public static CodigoDeProtocolo resultado = CodigoDeProtocolo.NULL;
@@ -33,10 +42,10 @@ public class CrudAPI {
     public CrudAPI() {
         
         try {
-            usuarios   = new Crud<>("Usuarios",  Usuario.class.getConstructor());
-            ids        = new ListaIDs(this.path + "/" + "IDs");
-			perguntas  = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
-            lista 	   = new ListaInvertida(10,"Dados/indice.dict","Dados/indice.dictBlock");
+            usuarios          = new Crud<>("Usuarios",  Usuario.class.getConstructor());
+            perguntasUsuario  = new ListaIDs(this.path + "/" + "IDs");
+			perguntas         = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
+            listaDeChaves     = new ListaInvertida(10,"Dados/indice.dict","Dados/indice.dictBlock");
             
         } catch(Exception e) { e.printStackTrace(); }
 	}
@@ -236,7 +245,7 @@ public class CrudAPI {
 
 		resp = perguntas.create(p);
 		p.setId(resp);
-		ids.create(idUsuario,resp);
+		perguntasUsuario.create(idUsuario,resp);
 		inserirPalavrasChave(p);
 		return resp;
 	}
@@ -289,7 +298,7 @@ public class CrudAPI {
 		Pergunta[]   resp  		     = null;
 		int[] 	     idsPerguntas    = null;
 		
-		idsPerguntas = ids.read(idUsuario);
+		idsPerguntas = perguntasUsuario.read(idUsuario);
 
         if(idsPerguntas == null)
 			return  null;
@@ -326,7 +335,7 @@ public class CrudAPI {
 
 		try { 
 			for (byte i = 0; i < palavrasChave.length; i++) {
-				idArray = lista.read(palavrasChave[i]);
+				idArray = listaDeChaves.read(palavrasChave[i]);
 
 				for (byte j = 0; j < idArray.length; j++) {
 	
@@ -357,7 +366,7 @@ public class CrudAPI {
 
 		try {
 			for ( String s : palavras_chave )
-				lista.create(s,p.getId());
+				listaDeChaves.create(s,p.getId());
 
 		} catch(Exception e) {e.printStackTrace();}
 	}
@@ -371,10 +380,44 @@ public class CrudAPI {
 
 		try {
 			for ( String s : palavras_chave) 
-				lista.delete(s,p.getId());
+				listaDeChaves.delete(s,p.getId());
 
 		} catch(Exception e) {e.printStackTrace();}
 
+	}
+
+	//Respostas 
+
+	/**
+	 * Armazena uma nova resposta nos bancos de dados
+	 * @param r é a resposta a ser armazenada
+	 * @param idPergunta é a pergunta na qual a resposta corresponde
+	 * @return
+	 */
+	public int novaResposta(Resposta r, int idPergunta) {
+		int idResposta = -1;
+
+		idResposta = resposta.create(r);
+		r.setId(idResposta);
+
+		respostasUsuario.create(r.getIdUsuario(),r.getId());
+		perguntasRespostas.create(idPergunta,r.getId());
+
+		return idResposta;
+	}
+
+	/**
+	 * Função para achar uma resposta no banco de dados a partir da ID
+	 * @param id que é a ID da resposta
+	 * @return a resposta correspondente a ID (caso ela exista)
+	 */
+	public static Resposta acharResposta(int id) {
+
+		Resposta r = null;
+		try {
+			r = respostas.read(id);
+		} catch(Exception e ) { e.printStackTrace(); }
+		return r;
 	}
 
 }
