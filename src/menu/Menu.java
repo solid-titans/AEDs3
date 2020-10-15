@@ -2,7 +2,9 @@ package menu;
 
 import menu.sistema.graficos.*;
 import menu.sistema.*;
+import produtos.CelulaResposta;
 import produtos.Pergunta;
+import produtos.Usuario;
 import menu.pergunta.PerguntasFrontEnd;
 
 /**
@@ -12,19 +14,15 @@ import menu.pergunta.PerguntasFrontEnd;
  */
 public class Menu {
 
-    private ASCIInterface              graficos;
+    private ASCIInterface       graficos;
 
-    private static int                 idUsuario;                  //Id do Usuario que usar o sistema
-    private static CrudAPI             minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
-    private static CodigoDeProtocolo   requisicao;                 //Variavel para 
+    private int                 idUsuario;                  //Id do Usuario que usar o sistema
+    private CrudAPI             minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
 
     /**
      * Configura a id do usuário que vai acessar o programa
      * @param id
      */
-    public static void setId(int id) {
-        idUsuario = id;
-    }
 
     public Menu() {
 
@@ -39,14 +37,17 @@ public class Menu {
     public void Inicio() {
 
         char opcao;
+        CelulaResposta resultadoVerificacao = new CelulaResposta();
+
+        CodigoDeProtocolo opcaoEscolhida;
 
         ASCIInterface.limparTela();
         do {
 
             System.out.println(graficos.caixa("PERGUNTAS 1.0"));
-            opcao = Selecao.Acesso();
+            opcao          = Selecao.Acesso();
 
-            requisicao = CodigoDeProtocolo.NULL;
+            opcaoEscolhida = CodigoDeProtocolo.NULL;
             //Fazendo a interação com o acesso
             /*
             *   O acesso ao sistema funciona a partir de um
@@ -72,15 +73,15 @@ public class Menu {
                     break;
 
                 case '1': // Acessando o sistema usando credenciais existentes
-                    requisicao = CodigoDeProtocolo.ACESSOAOSISTEMA;
+                    opcaoEscolhida = CodigoDeProtocolo.ACESSOAOSISTEMA;
                     break;
 
                 case '2': // Criando um novo usuario
-                    requisicao = CodigoDeProtocolo.CRIARNOVOUSUARIO;
+                    opcaoEscolhida = CodigoDeProtocolo.CRIARNOVOUSUARIO;
                     break;
 
                 case '3': // Resentando a senha
-                    requisicao = CodigoDeProtocolo.CRIARSENHATEMPORARIA;
+                    opcaoEscolhida = CodigoDeProtocolo.CRIARSENHATEMPORARIA;
                     break;
 
                 //Operacao Invalida
@@ -89,10 +90,11 @@ public class Menu {
                     break;
             }
 
-            if(requisicao != CodigoDeProtocolo.NULL) {
-                requisicao = minhaAPI.verificarRequisicaoEmAcesso(requisicao);
-                if(requisicao == CodigoDeProtocolo.MUDARUSUARIO) {
+            if(opcaoEscolhida != CodigoDeProtocolo.NULL) {
+                resultadoVerificacao = minhaAPI.verificarRequisicaoEmAcesso(opcaoEscolhida);
+                if(resultadoVerificacao.getCdp() == CodigoDeProtocolo.MUDARUSUARIO) {
                     graficos.setBorda(63);
+                    idUsuario = resultadoVerificacao.getUsuario().getId();
                     acessoGarantido();
                     
                 }
@@ -113,14 +115,18 @@ public class Menu {
         byte menuIndex    = 1;
         byte notificacoes = 0;
 
+        CelulaResposta resultadoVerificacao = new CelulaResposta();
+
+        CodigoDeProtocolo opcaoEscolhida;
+
         //Loop do menu
         do {
             ASCIInterface.limparTela();
 
             System.out.println(graficos.caixa("PERGUNTAS 1.0"));
-            opcao = Selecao.imprimirTela(menuIndex,notificacoes);
+            opcao          = Selecao.imprimirTela(menuIndex,notificacoes);
 
-            requisicao = CodigoDeProtocolo.NULL;
+            opcaoEscolhida = CodigoDeProtocolo.NULL;
 
             //Fazendo a mudança do menu
             /*
@@ -145,6 +151,7 @@ public class Menu {
 
                 case "01": // Saindo do programa
                     System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
+                    idUsuario = -1;
                     graficos.setBorda(1);
                     break;
 
@@ -153,15 +160,15 @@ public class Menu {
                     break;
 
                 case "21": // Indo para a tela de consultar/responder perguntas
-                    requisicao = CodigoDeProtocolo.CONSULTARPERGUNTAS;
+                    opcaoEscolhida = CodigoDeProtocolo.CONSULTARPERGUNTAS;
                     break;
 
                 case "31": // Verificar suas notificacoes
-                    requisicao = CodigoDeProtocolo.OLHARNOTIFICACOES;
+                    opcaoEscolhida = CodigoDeProtocolo.OLHARNOTIFICACOES;
                     break;
 
                 case "41": 
-                    requisicao = CodigoDeProtocolo.NOVASENHA;
+                    opcaoEscolhida = CodigoDeProtocolo.NOVASENHA;
                     break;                       
 
                 //Menu Criacao de Perguntas
@@ -171,19 +178,19 @@ public class Menu {
                     break;
 
                 case "12": // Listando as perguntas do usuario atual
-                    requisicao = CodigoDeProtocolo.LISTARPERGUNTAS;
+                    opcaoEscolhida = CodigoDeProtocolo.LISTARPERGUNTAS;
                     break;
 
                 case "22": // Incluindo uma nova pergunta
-                    requisicao = CodigoDeProtocolo.NOVAPERGUNTA;
+                    opcaoEscolhida = CodigoDeProtocolo.NOVAPERGUNTA;
                     break;
 
                 case "32": // Alterando uma pergunta atual
-                    requisicao = CodigoDeProtocolo.ALTERARPERGUNTA;
+                    opcaoEscolhida = CodigoDeProtocolo.ALTERARPERGUNTA;
                     break;
 
                 case "42": // Arquivando as perguntas
-                    requisicao = CodigoDeProtocolo.ARQUIVARPERGUNTA;
+                    opcaoEscolhida = CodigoDeProtocolo.ARQUIVARPERGUNTA;
                     break;
 
                 //Operacao Invalida
@@ -193,8 +200,11 @@ public class Menu {
                     break;
             }
 
-            if(requisicao != CodigoDeProtocolo.NULL) {
-                requisicao = minhaAPI.verificarRequisicaoDoUsuario(requisicao,idUsuario);
+            if(opcaoEscolhida != CodigoDeProtocolo.NULL) {
+                resultadoVerificacao = minhaAPI.verificarRequisicaoDoUsuario(opcaoEscolhida,idUsuario);
+                if(resultadoVerificacao.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) {
+                    navegarPergunta(resultadoVerificacao.getPergunta(), resultadoVerificacao.getUsuario());
+                }
 
             }
 
@@ -202,7 +212,7 @@ public class Menu {
 
     }
 
-    public static CodigoDeProtocolo navegarPergunta(Pergunta p,String nome) {
+    public CodigoDeProtocolo navegarPergunta(Pergunta p,Usuario u) {
 
         Selecao.graficos.setBorda(220);
         
@@ -210,14 +220,17 @@ public class Menu {
         
         byte menuIndex = 3;
 
+        CelulaResposta resultadoVerificacao = new CelulaResposta();
+        CodigoDeProtocolo opcaoEscolhida;
+
         do {
             ASCIInterface.limparTela();
 
-            System.out.println(PerguntasFrontEnd.toString(p, nome));
+            System.out.println(PerguntasFrontEnd.toString(p, u.getNome()));
 
             opcao = Selecao.imprimirTela(menuIndex,(byte)-1);
 
-            requisicao = CodigoDeProtocolo.NULL;
+            opcaoEscolhida = CodigoDeProtocolo.NULL;
 
             switch(opcao) {
                 case "03":
@@ -225,11 +238,11 @@ public class Menu {
                     break;
 
                 case "13":
-                    requisicao = CodigoDeProtocolo.LISTARRESPOSTASGERAL;
+                    opcaoEscolhida = CodigoDeProtocolo.LISTARRESPOSTASGERAL;
                     break;
                 
                 case "23":
-                    requisicao = CodigoDeProtocolo.LISTARCOMENTARIOSGERAL;
+                    opcaoEscolhida = CodigoDeProtocolo.LISTARCOMENTARIOSGERAL;
                     break;
                 
                 case "33":
@@ -249,19 +262,19 @@ public class Menu {
                     break;
 
                 case "14":
-                    requisicao = CodigoDeProtocolo.LISTARRESPOSTASUSUARIO;
+                    opcaoEscolhida = CodigoDeProtocolo.LISTARRESPOSTASUSUARIO;
                     break;
                 
                 case "24":
-                    requisicao = CodigoDeProtocolo.INCLUIRRESPOSTA;
+                    opcaoEscolhida = CodigoDeProtocolo.INCLUIRRESPOSTA;
                     break;
                 
                 case "34":
-                    requisicao = CodigoDeProtocolo.ALTERARRESPOSTA;
+                    opcaoEscolhida = CodigoDeProtocolo.ALTERARRESPOSTA;
                     break;
                 
                 case "44":
-                    requisicao = CodigoDeProtocolo.ARQUIVARRESPOSTA;
+                    opcaoEscolhida = CodigoDeProtocolo.ARQUIVARRESPOSTA;
                     break;
 
                 case "05":
@@ -273,15 +286,15 @@ public class Menu {
                     break;
             }
 
-            if(requisicao != CodigoDeProtocolo.NULL) {
-                requisicao = minhaAPI.verificarRequisicaoEmPergunta(requisicao,p.getId(),idUsuario);
+            if(opcaoEscolhida != CodigoDeProtocolo.NULL) {
+                resultadoVerificacao = minhaAPI.verificarRequisicaoEmPergunta(opcaoEscolhida,p.getId(),idUsuario);
 
             }
 
         } while(!opcao.equals("03"));
 
 
-        return requisicao;
+        return opcaoEscolhida;
     }
 
 }

@@ -71,6 +71,10 @@ public class Selecao {
                "Opção: ";
     }
 
+    /**
+     * Função com a tela de criação de respostas
+     * @return uma String com todas as opções do menu de criação de respostas
+     */
     public static String menuDeRespostasString() {
         return "INÍCIO > PERGUNTAS > CRIAÇÃO DE RESPOSTAS\n\n"  +
                "1) Listar suas respostas\n"                     +
@@ -81,6 +85,10 @@ public class Selecao {
                "Opção: ";
     }
 
+    /**
+     * Função com a tela de criação de comentarios
+     * @return uma String com todas as opções do menu de criação de comentarios
+     */
     public static String menuDeComentariosString() {
         return "1) Listar suas comentarios\n"       +
                "2) Incluir uma comentarios\n"       +
@@ -90,6 +98,10 @@ public class Selecao {
                "Opção: ";
     }
 
+    /**
+     * Função com a tela de avaliação
+     * @return a String com as instruções sobre digitar a nota
+     */
     public static String menuDeAvaliacaoString() {
         return "Digite a nota\n";
     }

@@ -4,6 +4,7 @@ import menu.sistema.CodigoDeProtocolo;
 import menu.sistema.CrudAPI;
 import menu.sistema.graficos.*;
 import menu.sistema.Sistema;
+import produtos.CelulaResposta;
 import produtos.Resposta;
 
 /**
@@ -20,44 +21,44 @@ public class RespostaAPI {
     /**
      * Função para listar todas as respostas com base na id da Pergunta
      * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
-     * @return
+     * @return uma CelulaResposta com os resultados da operação
      */
-    public static CodigoDeProtocolo listarRespostasDoGeral(int idPergunta) {
+    public static CelulaResposta listarRespostasDoGeral(int idPergunta) {
 
-        CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
-        Resposta[] array  = CrudAPI.getRespostaArrayGeral(idPergunta);
+        CelulaResposta resultado = new CelulaResposta();
+        Resposta[] array         = CrudAPI.getRespostaArrayGeral(idPergunta);
 
         if ( array == null ) {
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
         
         } else {
             System.out.println(RespostasFrontEnd.listarRespostasGeral(array));
-            resp = CodigoDeProtocolo.SUCESSO;
+            resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
-        return resp;
+        return resultado;
     }
 
     /**
      * Função para listar todas as respostas com base na id da Pergunta e na ID do usuario
      * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
      * @param idUsuario é a ID do usuario que será usado como base na pesquisa
-     * @return
+     * @return uma CelulaResposta com os resultados da operação
      */
-    public static CodigoDeProtocolo listarRespostasDoUsuario(int idPergunta, int idUsuario) {
+    public static CelulaResposta listarRespostasDoUsuario(int idPergunta, int idUsuario) {
 
-        CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
-        Resposta[] array  = CrudAPI.getRespostaArrayUser(idPergunta,idUsuario);
+        CelulaResposta resultado = new CelulaResposta();
+        Resposta[] array  = CrudAPI.getRespostaArrayUser(idUsuario);
 
         if ( array == null ) {
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
         
         } else {
             System.out.println(RespostasFrontEnd.listarRespostas(array));
-            resp = CodigoDeProtocolo.SUCESSO;
+            resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
-        return resp;
+        return resultado;
     }
 
     /**
@@ -66,28 +67,29 @@ public class RespostaAPI {
      * @param idUsuario é a ID do usuario que fez a requisição
      * @return
      */
-    public static Resposta criarResposta(int idPergunta, int idUsuario) {
+    public static CelulaResposta criarResposta(int idPergunta, int idUsuario) {
+        String            resposta             = "";
 
-        Resposta respostaCriada             = null;
-        String resposta                     = "";
-
-        CodigoDeProtocolo confirmarOperacao = CodigoDeProtocolo.ERRO;
+        CelulaResposta    resultado            = new CelulaResposta();
+        CodigoDeProtocolo confirmarOperacao    = CodigoDeProtocolo.ERRO;
 
         resposta = Sistema.inserir(graficos,"Insira a sua resposta",TAM_MIN_RESPOSTA,TAM_MAX_RESPOSTA,true);
         if(resposta.equals("")) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            return resultado;
         }
 
-        respostaCriada = new Resposta(idPergunta, idUsuario, resposta);
+        resultado.setResposta(new Resposta(idPergunta, idUsuario, resposta));
 
-        confirmarOperacao = RespostasFrontEnd.verificar(respostaCriada);
+        confirmarOperacao = RespostasFrontEnd.verificar(resultado.getResposta());
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            return resultado;
         }
 
-        return respostaCriada;
+        resultado.setCdp(CodigoDeProtocolo.SUCESSO);
+
+        return resultado;
     }
 
     /**
@@ -96,21 +98,22 @@ public class RespostaAPI {
      * @param idUsuario é a ID do usuario que fez a requisição
      * @return
     */
-    public static Resposta alterarResposta(int idPergunta, int idUsuario) {
+    public static CelulaResposta alterarResposta(int idPergunta, int idUsuario) {
+        Resposta              respostaAlterada     = null;
 
-        Resposta              respostaAlterada  = null;
-        CodigoDeProtocolo     confirmarOperacao = CodigoDeProtocolo.ERRO;
+        String                resposta             = "";
 
-        String                resposta          = "";
+        CodigoDeProtocolo     confirmarOperacao    = CodigoDeProtocolo.ERRO;
+        CelulaResposta        resultado            = new CelulaResposta();
 
-        respostaAlterada = escolherResposta(idPergunta,idUsuario);
+        respostaAlterada = escolherResposta(idPergunta,idUsuario).getResposta();
         if(respostaAlterada == null) {
-            return null;
+            return resultado;
         }
 
         if(!respostaAlterada.getAtiva()) {
             System.out.println("A resposta já estava ativada!");
-            return null;
+            return resultado;
         }
 
         resposta = Sistema.inserir(graficos,"Insira a sua resposta",TAM_MIN_RESPOSTA,TAM_MAX_RESPOSTA,true);
@@ -119,11 +122,13 @@ public class RespostaAPI {
 
         confirmarOperacao = RespostasFrontEnd.verificar(respostaAlterada);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            return resultado;
         }
 
-        return respostaAlterada;
+        resultado.setCdp(CodigoDeProtocolo.SUCESSO);
+
+        return resultado;
     }
 
     /**
@@ -132,30 +137,34 @@ public class RespostaAPI {
      * @param idUsuario é a ID do usuario que fez a requisição
      * @return
     */
-    public static Resposta arquivarResposta(int idPergunta, int idUsuario) {
+    public static CelulaResposta arquivarResposta(int idPergunta, int idUsuario) {
 
         Resposta              respostaAlterada  = null;
-        CodigoDeProtocolo     confirmarOperacao = CodigoDeProtocolo.ERRO;
 
-        respostaAlterada = escolherResposta(idPergunta,idUsuario);
+        CodigoDeProtocolo     confirmarOperacao    = CodigoDeProtocolo.ERRO;
+        CelulaResposta        resultado            = new CelulaResposta();
+
+        respostaAlterada = escolherResposta(idPergunta,idUsuario).getResposta();
         if(respostaAlterada == null) {
-            return null;
+            return resultado;
         }
 
         if(!respostaAlterada.getAtiva()) {
             System.out.println("A resposta já estava ativada!");
-            return null;
+            return resultado;
         }
 
         confirmarOperacao = RespostasFrontEnd.verificar(respostaAlterada);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return null;
         }
 
         respostaAlterada.setAtiva(false);
+        resultado.setResposta(respostaAlterada);
+        resultado.setCdp(CodigoDeProtocolo.SUCESSO);
 
-        return respostaAlterada;
+        return resultado;
     }
 
     /**
@@ -163,29 +172,29 @@ public class RespostaAPI {
      * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias respostas
      * @return a Resposta que foi propriamente escolhida
      */
-    private static Resposta escolherResposta(int idPergunta, int idUsuario) {
+    private static CelulaResposta escolherResposta(int idPergunta, int idUsuario) {
+        int id                   = -1;
+        Resposta[] array         = null;
 
-        Resposta resp         = null;
-        int id                = -1;
-        Resposta[] array      = null;
+        CelulaResposta resultado = new CelulaResposta();
 
-        array = CrudAPI.getRespostaArrayUser(idPergunta,idUsuario);       
+        array = CrudAPI.getRespostaArrayUser(idUsuario);       
 
         if ( array != null ) {
             id   = RespostasFrontEnd.escolherResposta(array);
             if(id != -1)
                 if(id == -3) {
-                    CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
+                    resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
                 }
                 else {
-                    resp = CrudAPI.acharResposta(id);
+                    resultado.setResposta(CrudAPI.acharResposta(id));
                 }
 
         } else {
             System.err.println("ERRO! nenhuma pergunta encontrada!");
         }
 
-        return resp; 
+        return resultado; 
     }
 
     

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import produtos.*;
 import crud.*;
 import menu.usuario.UsuarioAPI;
-import menu.Menu;
 import menu.pergunta.PerguntasAPI;
 import menu.pergunta.indices.*;
 import menu.resposta.RespostaAPI;
@@ -30,9 +29,6 @@ public class CrudAPI {
 		private static Crud<Resposta>   respostas;
 		private static ListaIDs         respostasUsuario;
 		private static ListaIDs 		perguntasRespostas;
-	
-	//Codigo de protocolo geral
-	public static CodigoDeProtocolo resultado = CodigoDeProtocolo.NULL;
 
 	//GFG para hashear a senha
 	public static GFG hasheador = new GFG(1000);
@@ -65,38 +61,26 @@ public class CrudAPI {
 	 * @param cdp é o Codigo referente a ação que o usuário quer
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
 	 */
-	public CodigoDeProtocolo verificarRequisicaoEmAcesso(CodigoDeProtocolo cdp ) {
-		int                id			= -1;
-		Usuario            tmp			= null;
-
-		resultado 	= CodigoDeProtocolo.ERRO;
+	public CelulaResposta verificarRequisicaoEmAcesso(CodigoDeProtocolo cdp ) {
+		CelulaResposta cr = new CelulaResposta();
 
 		switch(cdp) {
 
 			case ACESSOAOSISTEMA: //Pedir para acessar o sistema
-				id = UsuarioAPI.acessarAoSistema();
-				if(id != -1) {
-					Menu.setId(id);
-					resultado = CodigoDeProtocolo.MUDARUSUARIO;
-				}
-
+				cr = UsuarioAPI.acessarAoSistema();
 				break;
 
 			case CRIARNOVOUSUARIO: // Criar um novo usuário no banco de dados
-				tmp = UsuarioAPI.criarNovoUsuario();
-				if(tmp != null) {
-					inserirNovoUsuarioNoCrud(tmp);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = UsuarioAPI.criarNovoUsuario();
+				if(cr.getUsuario() != null) 
+					inserirNovoUsuarioNoCrud(cr.getUsuario());
 
 				break;
 
 			case CRIARSENHATEMPORARIA: 
-				tmp = UsuarioAPI.criarSenhaTemporaria();
-				if( tmp != null) {
-					atualizarCredenciaisDoUsuario(tmp);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = UsuarioAPI.criarSenhaTemporaria();
+				if( cr.getUsuario() != null) 
+					atualizarCredenciaisDoUsuario(cr.getUsuario());
 
 				break;   
 			default:
@@ -104,9 +88,9 @@ public class CrudAPI {
 
 		}
 		
-		CodigoDeProtocolo.verificarCodigo(resultado);
+		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
 
-		return resultado;
+		return cr;
 	}
 
 	/**
@@ -115,21 +99,17 @@ public class CrudAPI {
 	 * @param idUsuario é o codigo do usuário que fez a requisição
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
 	 */
-	public CodigoDeProtocolo verificarRequisicaoDoUsuario(CodigoDeProtocolo cdp, int idUsuario) {
-		Usuario           usuarioAtual 	 = null;
-		Pergunta          pergunta       = null;
-
-		resultado 	                     = CodigoDeProtocolo.ERRO;
+	public CelulaResposta verificarRequisicaoDoUsuario(CodigoDeProtocolo cdp, int idUsuario) {
+		CelulaResposta cr = new CelulaResposta();
 
 		switch(cdp) {
 
 			case CONSULTARPERGUNTAS: // Indo para a tela de consultar/responder perguntas
-				pergunta = PerguntasAPI.consultarPerguntaPelaPalavraChave(idUsuario);
-				if(pergunta != null) {
-					String nome = acharUsuario(pergunta.getIdUsuario()).getNome();
-					resultado = Menu.navegarPergunta(pergunta,nome);
-					if(resultado == CodigoDeProtocolo.NULL)
-						resultado = CodigoDeProtocolo.SUCESSO;
+				cr = PerguntasAPI.consultarPerguntaPelaPalavraChave(idUsuario);
+				if (cr.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) {
+					Usuario u = acharUsuario(cr.getPergunta().getIdUsuario());
+					if(u != null)
+						cr.setUsuario(u);
 				}
 
 				break;
@@ -139,42 +119,34 @@ public class CrudAPI {
 				break;
 
 			case NOVASENHA: 
-				usuarioAtual = UsuarioAPI.criarNovaSenha(idUsuario);
-				if(usuarioAtual != null) {
-					atualizarCredenciaisDoUsuario(usuarioAtual);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = UsuarioAPI.criarNovaSenha(idUsuario);
+				if(cr.getUsuario() != null) 
+					atualizarCredenciaisDoUsuario(cr.getUsuario());
 
 				break;                       
 
 			case LISTARPERGUNTAS: // Listando as perguntas do usuario atual
-				resultado = PerguntasAPI.listarPerguntas(idUsuario);
+				cr = PerguntasAPI.listarPerguntas(idUsuario);
 				break;
 
 			case NOVAPERGUNTA: // Incluindo uma nova pergunta
-				pergunta = PerguntasAPI.criarPergunta(idUsuario);
-				if(pergunta != null) {
-					novaPergunta(pergunta, idUsuario);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = PerguntasAPI.criarPergunta(idUsuario);
+				if(cr.getPergunta() != null) 
+					novaPergunta(cr.getPergunta(), idUsuario);
 
 				break;
 
 			case ALTERARPERGUNTA: // Alterando uma pergunta atual
-				pergunta = PerguntasAPI.alterarPergunta(idUsuario);
-				if(pergunta != null) {
-					atualizarPergunta(pergunta);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = PerguntasAPI.alterarPergunta(idUsuario);
+				if(cr.getPergunta() != null) 
+					atualizarPergunta(cr.getPergunta());	
 
 				break;
 
 			case ARQUIVARPERGUNTA: // Arquivando as perguntas
-				pergunta = PerguntasAPI.arquivarPergunta(idUsuario);
-				if(pergunta != null) {
-					desativarPergunta(pergunta);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = PerguntasAPI.arquivarPergunta(idUsuario);
+				if(cr.getPergunta() != null) 
+					desativarPergunta(cr.getPergunta());
 
 				break;
 			default:
@@ -182,9 +154,9 @@ public class CrudAPI {
 
 		}
 
-		CodigoDeProtocolo.verificarCodigo(resultado);
+		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
 
-		return resultado;
+		return cr;
 	}
 
 	/**
@@ -192,10 +164,8 @@ public class CrudAPI {
 	 * @param cdp é o Codigo referente a ação que o usuário quer
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
 	 */
-	public CodigoDeProtocolo verificarRequisicaoEmPergunta(CodigoDeProtocolo cdp, int idPergunta,int idUsuario) {
-		Resposta tmp		= null;
-
-		resultado 	= CodigoDeProtocolo.ERRO;
+	public CelulaResposta verificarRequisicaoEmPergunta(CodigoDeProtocolo cdp, int idPergunta,int idUsuario) {
+		CelulaResposta cr = new CelulaResposta();
 
 		switch(cdp) {
 
@@ -204,46 +174,41 @@ public class CrudAPI {
 				break;
 
 			case LISTARRESPOSTASGERAL:
-				resultado = RespostaAPI.listarRespostasDoGeral(idPergunta);
+				cr = RespostaAPI.listarRespostasDoGeral(idPergunta);
 				break;
 
 			case LISTARRESPOSTASUSUARIO: //Pedir para acessar o sistema
-				resultado = RespostaAPI.listarRespostasDoUsuario(idPergunta,idUsuario);
+				cr = RespostaAPI.listarRespostasDoUsuario(idPergunta,idUsuario);
 				break;
 
 			case INCLUIRRESPOSTA: // Criar um novo usuário no banco de dados
-				tmp = RespostaAPI.criarResposta(idPergunta,idUsuario);
-				if(tmp != null) {
-					novaResposta(tmp, idPergunta);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = RespostaAPI.criarResposta(idPergunta,idUsuario);
+				if(cr.getResposta() != null) 
+					novaResposta(cr.getResposta(), idPergunta);
 
 				break;
 
 			case ALTERARRESPOSTA: 
-				tmp = RespostaAPI.alterarResposta(idPergunta,idUsuario);
-				if( tmp != null) {
-					atualizarResposta(tmp);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = RespostaAPI.alterarResposta(idPergunta,idUsuario);
+				if( cr.getResposta() != null) 
+					atualizarResposta(cr.getResposta());
 
 				break;    
 
 			case ARQUIVARRESPOSTA: 
-				tmp = RespostaAPI.arquivarResposta(idPergunta,idUsuario);
-				if( tmp != null) {
-					atualizarResposta(tmp);
-					resultado = CodigoDeProtocolo.SUCESSO;
-				}
+				cr = RespostaAPI.arquivarResposta(idPergunta,idUsuario);
+				if( cr.getResposta() != null) 
+					atualizarResposta(cr.getResposta());
 
-				break;       
+				break;
+				       
 			default:
 				break;              
 		}
 		
-		CodigoDeProtocolo.verificarCodigo(resultado);
+		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
 
-		return resultado;
+		return cr;
 	}
 
 	/*
@@ -491,31 +456,28 @@ public class CrudAPI {
 	 * @param idUsuario do usuário que requisitou o processo
 	 * @return array de respostas do idUsuario(se ele tiver registrado)
 	 */
-	public static Resposta[] getRespostaArrayUser(int idPergunta,int idUsuario) {
-		ArrayList<Resposta> array    = new ArrayList<>();
+	public static Resposta[] getRespostaArrayUser(int idUsuario) {
 		Resposta[]   resp  		     = null;
 		int[] 	     idsRespostas    = null;
 		
-		idsRespostas = perguntasRespostas.read(idPergunta);
+		idsRespostas = respostasUsuario.read(idUsuario);
 
         if(idsRespostas == null)
 			return  null;
 
+		resp = new Resposta[idsRespostas.length];
+
+		int contador = 0;
         for (int i : idsRespostas) {
             try {
                 Resposta temp = respostas.read(i);
                 if(temp == null)
 					continue;
-				if(temp.getIdUsuario() != idUsuario) 
-					continue;
 
-                array.add(temp);
+				resp[contador] = temp; 
+				contador++;
             }catch(Exception e) { e.printStackTrace(); }
 		}
-		
-		resp = new Resposta[array.size()];
-		for(int i = 0; i < array.size(); i++) 
-			resp[i] = array.get(i);
 
 		return resp;
 	}
@@ -542,6 +504,9 @@ public class CrudAPI {
                 Resposta temp = respostas.read(i);
                 if(temp == null)
 					continue;
+				if(temp.getIdPergunta() != idPergunta) {
+					System.out.println("ue");
+				}
 
 				resp[contador] = temp; 
 				contador++;
