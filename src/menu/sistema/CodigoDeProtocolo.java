@@ -12,20 +12,35 @@ public enum CodigoDeProtocolo {
     ACESSOAOSISTEMA         ("1"),
     CRIARNOVOUSUARIO        ("2"),
     CRIARSENHATEMPORARIA    ("3"),
+
+    //Inicio
     CONSULTARPERGUNTAS      ("21"),
     OLHARNOTIFICACOES       ("31"),
     NOVASENHA               ("41"),
+
+    //Perguntas
     LISTARPERGUNTAS         ("12"),
     NOVAPERGUNTA            ("22"),
     ALTERARPERGUNTA         ("32"),
     ARQUIVARPERGUNTA        ("42"),
 
+    //Respostas
+    LISTARRESPOSTASGERAL    ("13"),
+    LISTARRESPOSTASUSUARIO  ("14"),
+    INCLUIRRESPOSTA         ("24"),
+    ALTERARRESPOSTA         ("34"),
+    ARQUIVARRESPOSTA        ("44"),
+
+    //Comentários
+    LISTARCOMENTARIOSGERAL  ("23"),
+    
     //Possíveis resultados
     SUCESSO                 ("111"),
     ERRO                    ("000"),
     NULL                    ("-1"),
     MUDARUSUARIO            ("222"),
-    OPERACAOCANCELADA       ("-3");
+    OPERACAOCANCELADA       ("-3"),
+    IRPARAPERGUNTA          ("333");
 
     private String codigo;
 
@@ -60,6 +75,9 @@ public enum CodigoDeProtocolo {
                 System.out.println("Operação cancelada pelo usuário");
                 break;
 
+            case IRPARAPERGUNTA:
+                System.out.println("Indo para o menu de interação com a pergunta");
+                break;
             default:
                 System.out.println("Erro! Operação desconhecida");
 

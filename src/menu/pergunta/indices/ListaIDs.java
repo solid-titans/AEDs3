@@ -153,7 +153,7 @@ public class ListaIDs {
             // Se a região do arquivo existe deslocar até ela
             else {
 
-                if(posPerguntasUsuario < this.arquivo.length()) {
+                if(posPerguntasUsuario < this.arquivo.length() -4 ) {
                     
                     this.arquivo.seek(posPerguntasUsuario); // Ir até a posição no arquivo
 

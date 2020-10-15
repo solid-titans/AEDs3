@@ -9,7 +9,7 @@ import menu.sistema.Sistema;
  * Classe para administrar casos específicos da admnistração visual das Perguntas
  * @author MysteRys337 (Gustavo Lopes)
  */
-class PerguntasFrontEnd {
+public class PerguntasFrontEnd {
 	
 		//Atributos
         private static ANSILibrary destaqueData             = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
@@ -35,7 +35,7 @@ class PerguntasFrontEnd {
                 }
 
                 resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-                resp += toString(i);
+                resp += toString(i) + "\n";
                 contador++;
                 
             }
@@ -148,10 +148,11 @@ class PerguntasFrontEnd {
          * @return uma String com o conteúdo da Pergunta
          */
         public static String toString(Pergunta p,String nome) {
-            return p.getTitulo()                                                               +
+            return destaqueTitulo.imprimir(p.getTitulo())                                      +
                    "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                         +            
                    "Pergunta criada por \'"+nome+"\' em "+ destaqueData.imprimir(p.getData())  +
-                   "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
+                   "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n" +
+                   "Nota: " + p.getNota() + "\n";
         }
 
         /**

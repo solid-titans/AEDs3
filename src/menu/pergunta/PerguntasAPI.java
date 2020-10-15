@@ -1,7 +1,6 @@
 package menu.pergunta;
 
 import produtos.*;
-import menu.*;
 import menu.sistema.*;
 import menu.sistema.graficos.*;
 
@@ -13,35 +12,61 @@ public class PerguntasAPI {
 
     public static ASCIInterface graficos = new ASCIInterface(199, 231 , 232, 184); //interface grafica
 
-    private static final byte TAMANHO_MINIMO_TITULO     = 3;                       //Tamanho minimo para as perguntas
-    private static final byte TAMANHO_MAXIMO_TITULO     = 25;                      //Tamanho maximo para as perguntas
+    private static final byte TAM_MIN_TITULO     = 3;                       //Tamanho minimo para as perguntas
+    private static final byte TAM_MAX_TITULO     = 25;                      //Tamanho maximo para as perguntas
 
-    private static final byte TAMANHO_MINIMO_PERGUNTA   = 3;                       //Tamanho minimo para as perguntas
-    private static final byte TAMANHO_MAXIMO_PERGUNTA   = 100;                     //Tamanho maximo para as perguntas
+    private static final byte TAM_MIN_PERGUNTA   = 3;                       //Tamanho minimo para as perguntas
+    private static final byte TAM_MAX_PERGUNTA   = 100;                     //Tamanho maximo para as perguntas
+
+    /**
+     * Função que serve para listar as perguntas de um usuário com base na ID do usuário
+     * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de ver as perguntas
+     * @return um Codigo de Protocolo que representa o resultado da operação
+     */
+    public static CelulaResposta listarPerguntas(int idUsuario) {
+
+        CelulaResposta resultado = new CelulaResposta();
+        Pergunta[]     array     = CrudAPI.getPerguntaArray(idUsuario);
+
+        if ( array == null ) {
+            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
+        
+        } else {
+            System.out.println(PerguntasFrontEnd.listarPerguntas(array));
+            resultado.setCdp(CodigoDeProtocolo.SUCESSO);
+        }
+
+        return resultado;
+    }
 
     /**
      * Função para criar uma nova pergunta e registrar na ID do usuario que foi recebido
      * @param idUsuario é o número que corresponde a ID do usuario que quer registrar uma pergunta
      * @return a Pergunta que foi registrada
      */
-    public static Pergunta criarPergunta(int idUsuario) {
+    public static CelulaResposta criarPergunta(int idUsuario) {
 
         Pergunta           novaPergunta          = null;
         CodigoDeProtocolo  confirmarOperacao     = CodigoDeProtocolo.ERRO;
 
+        CelulaResposta resultado = new CelulaResposta();
+
         novaPergunta  = inserirDadosDaPergunta(idUsuario);
         if(novaPergunta == null) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            return resultado;
         }
 
         confirmarOperacao = PerguntasFrontEnd.verificar(novaPergunta);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
+            resultado.setCdp(confirmarOperacao);
+            return resultado;
         }
 
-        return novaPergunta;
+        resultado.setPergunta(novaPergunta);
+        resultado.setCdp(confirmarOperacao);
+
+        return resultado;
     }
 
     /**
@@ -49,33 +74,39 @@ public class PerguntasAPI {
      * @param idUsuario é o numero correspondente a ID do usuário que gostaria de trocar a pergunta
      * @return a Pergunta que será alterada
      */
-    public static Pergunta alterarPergunta(int idUsuario) {
+    public static CelulaResposta alterarPergunta(int idUsuario) {
 
         Pergunta             perguntaAlterada    = null;
         int                  idPerguntaAlterada  = -1;
         CodigoDeProtocolo    confirmar           = CodigoDeProtocolo.ERRO;
 
-        perguntaAlterada = escolherPergunta(idUsuario);
+        CelulaResposta resultado = new CelulaResposta();
+
+        perguntaAlterada = escolherPergunta(idUsuario).getPergunta();
         if(perguntaAlterada == null) {
-            return null;
+            return resultado;
         }
 
         if(!perguntaAlterada.getAtiva()) {
             System.out.println("A pergunta está desativada!");
-            return null;
+            return resultado;
         }
 
-        confirmar = PerguntasFrontEnd.verificar(perguntaAlterada);
-        if(confirmar == CodigoDeProtocolo.OPERACAOCANCELADA) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
-        }
         idPerguntaAlterada = perguntaAlterada.getId();
 
         perguntaAlterada   = inserirDadosDaPergunta(idUsuario);
         perguntaAlterada.setId(idPerguntaAlterada);
 
-        return perguntaAlterada;
+        confirmar = PerguntasFrontEnd.verificar(perguntaAlterada);
+        if(confirmar == CodigoDeProtocolo.OPERACAOCANCELADA) {
+            resultado.setCdp(confirmar);
+            return resultado;
+        }
+
+        resultado.setPergunta(perguntaAlterada);
+        resultado.setCdp(confirmar);
+
+        return resultado;
     }
 
     /**
@@ -83,109 +114,34 @@ public class PerguntasAPI {
      * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de arquivar uma pergunta
      * @return a Pergunta que será registrada
      */
-    public static Pergunta arquivarPergunta(int idUsuario) {
+    public static CelulaResposta arquivarPergunta(int idUsuario) {
 
         Pergunta              perguntaAlterada  = null;
         CodigoDeProtocolo     confirmarOperacao = CodigoDeProtocolo.ERRO;
 
-        perguntaAlterada = escolherPergunta(idUsuario);
+        CelulaResposta        resultado         = new CelulaResposta();
+
+        perguntaAlterada = escolherPergunta(idUsuario).getPergunta();
         if(perguntaAlterada == null) {
-            return null;
+            return resultado;
         }
 
         if(!perguntaAlterada.getAtiva()) {
             System.out.println("A pergunta já estava ativada!");
-            return null;
+            return resultado;
         }
 
         confirmarOperacao = PerguntasFrontEnd.verificar(perguntaAlterada);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
+            resultado.setCdp(confirmarOperacao);
+            return resultado;
         }
 
         perguntaAlterada.setAtiva(false);
+        resultado.setPergunta(perguntaAlterada);
+        resultado.setCdp(CodigoDeProtocolo.SUCESSO);
 
-        return perguntaAlterada;
-    }
-
-    /**
-     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
-     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias perguntas
-     * @return a Pergunta que foi propriamente escolhida
-     */
-    private static Pergunta escolherPergunta(int idUsuario) {
-
-        Pergunta resp         = null;
-        int id                = -1;
-        Pergunta[] array      = null;
-
-        array = CrudAPI.getPerguntaArray(idUsuario);         
-
-        if ( array != null ) {
-            id   = PerguntasFrontEnd.escolherPergunta(array);
-            if(id != -1)
-                if(id == -3) {
-                    CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-                }
-                else {
-                    resp = CrudAPI.acharPergunta(id);
-                }
-
-        } else {
-            System.err.println("ERRO! nenhuma pergunta encontrada!");
-        }
-
-        return resp; 
-    }
-
-    /**
-     * Função que permite um usuário consultar as perguntas no banco de dados com base nas palavras-chave
-     * @param idUsuario é o número da ID do usuário que está acessando essa função
-     * @return um Codigo de Protocolo que representa o resultado da operação
-     */
-    public static void consultarPerguntas(int idUsuario) {
-
-        Pergunta tmp               = null;
-
-        String   nome              = "";
-
-        byte     opcao             = -1;
-
-        Resposta respostaAoUsuario = null;
-
-        tmp = encontrarPergunta(idUsuario);
-    
-        if ( tmp != null) {
-            nome = CrudAPI.acharUsuario(tmp.getIdUsuario()).getNome();
-
-            opcao = Selecao.interagirComPergunta(PerguntasFrontEnd.toString(tmp,nome););
-
-            switch(opcao) {
-
-                case 0:
-                    System.out.println("Ok.. vamos voltar ao menu");
-                    CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-                    break;
-
-                case 1:
-                    System.out.println("Responder o usuario");
-                    break;
-
-                case 2:
-                    System.out.println("Comentar o usuario");
-                    break;
-
-                case 3:
-                    System.out.println("Avaliar a pergunta");
-                    break;
-
-                default:
-                    System.out.println("Erro! Entrada inválida!");
-                    break;
-            }
-
-        }
+        return resultado;
     }
 
     /**
@@ -193,18 +149,20 @@ public class PerguntasAPI {
      * @param idUsuario é o número da ID do usuário que está acessando essa função
      * @return a Pergunta que o usuário escolheu
      */
-    public static Pergunta encontrarPergunta(int idUsuario) {
+    public static CelulaResposta consultarPerguntaPelaPalavraChave(int idUsuario) {
 
-        String entrada    = "";
-        Pergunta[] lista  = null;
-        Pergunta resp     = null;
-        int idPergunta    = -1;
+        String         entrada     = "";
+
+        Pergunta[]     lista       = null;
+        CelulaResposta resultado   = new CelulaResposta();
+        
+        int            idPergunta  = -1;
     
         entrada = Sistema.inserir(graficos,"Busque as perguntas por palavra chave separadas por espaço em branco",
-                                           "Ex: política Brasil eleições",TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+                                           "Ex: política Brasil eleições",TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(entrada.equals("")) {
-            CrudAPI.resultado = CodigoDeProtocolo.OPERACAOCANCELADA;
-            return null;
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            return resultado;
         }
 
         entrada = Pergunta.consertarPalavrasChave(entrada);
@@ -217,37 +175,19 @@ public class PerguntasAPI {
             System.out.println("Um total de " + lista.length + " foi/foram encontrado(s)");
     
             idPergunta = PerguntasFrontEnd.escolherPergunta(lista);
-            if(idPergunta != -1)
-                resp = CrudAPI.acharPergunta(idPergunta);
+            if(idPergunta != -1) {
+                resultado.setPergunta(CrudAPI.acharPergunta(idPergunta));
+                resultado.setCdp(CodigoDeProtocolo.IRPARAPERGUNTA);
+
+            }
 
             ASCIInterface.limparTela();
-        }
-        else {
+
+        } else {
             System.out.println("Atenção! Nenhuma pergunta encontrada com as palavras-chave inserida!");
         }
     
-        return resp;
-    }
-
-    /**
-     * Função que serve para listar as perguntas de um usuário com base na ID do usuário
-     * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de ver as perguntas
-     * @return um Codigo de Protocolo que representa o resultado da operação
-     */
-    public static CodigoDeProtocolo listarPerguntas(int idUsuario) {
-
-        CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
-        Pergunta[] array  = CrudAPI.getPerguntaArray(idUsuario);
-
-        if ( array == null ) {
-            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
-        
-        } else {
-            System.out.println(PerguntasFrontEnd.listarPerguntas(array));
-            resp = CodigoDeProtocolo.SUCESSO;
-        }
-
-        return resp;
+        return resultado;
     }
 
     /**
@@ -264,17 +204,17 @@ public class PerguntasAPI {
         Pergunta p            = null;
 
         titulo         = Sistema.inserir(graficos,"Insira o título da pergunta",                                             
-                                         TAMANHO_MINIMO_TITULO,TAMANHO_MAXIMO_TITULO,true);
+                                         TAM_MIN_TITULO,TAM_MAX_TITULO,true);
         if(titulo.equals("")){
             return null;
         }
         pergunta       = Sistema.inserir(graficos,"Insira a pergunta",                                                       
-                                         TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+                                         TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(pergunta.equals("")){
             return null;
         }
         palavras_chave = Sistema.inserir(graficos,"Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",
-                                         TAMANHO_MINIMO_PERGUNTA,TAMANHO_MAXIMO_PERGUNTA,true);
+                                         TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(palavras_chave.equals("")){
             return null;
         }
@@ -282,6 +222,36 @@ public class PerguntasAPI {
         p = new Pergunta(idUsuario,titulo,pergunta,palavras_chave);
 
         return p;
+    }
+
+    /**
+     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
+     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias perguntas
+     * @return a Pergunta que foi propriamente escolhida
+     */
+    private static CelulaResposta escolherPergunta(int idUsuario) {
+        int id                   = -1;
+        Pergunta[] array         = null;
+
+        CelulaResposta resultado = new CelulaResposta();
+
+        array = CrudAPI.getPerguntaArray(idUsuario);         
+
+        if ( array != null ) {
+            id   = PerguntasFrontEnd.escolherPergunta(array);
+            if(id != -1)
+                if(id == -3) {
+                    resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+                }
+                else {
+                    resultado.setPergunta(CrudAPI.acharPergunta(id));
+                }
+
+        } else {
+            System.err.println("ERRO! nenhuma pergunta encontrada!");
+        }
+
+        return resultado; 
     }
 
 }

@@ -32,12 +32,12 @@ public class Selecao {
      * @return uma String com todas as opções do menu inicial
      */
     public static String inicioString(byte notificacoes) {
-        return "INÍCIO\n\n" +
-               "1) Criação de perguntas\n" +
-               "2) Consultar/responder perguntas\n" +
-               "3) Notificações: " + notificacoes + "\n\n"+
-               "4) Redefinir senha: \n\n" + 
-               "0) Sair\n\n" +
+        return "INÍCIO\n\n"                                 +
+               "1) Criação de perguntas\n"                  +
+               "2) Consultar/responder perguntas\n"         +
+               "3) Notificações: " + notificacoes + "\n\n"  +
+               "4) Redefinir senha: \n\n"                   + 
+               "0) Sair\n\n"                                +
                "Opção: ";
     }
 
@@ -45,13 +45,13 @@ public class Selecao {
      * Função com a tela de criação de Perguntas
      * @return uma String com todas as opções do menu de criação de perguntas
      */
-    public static String criacaoDePerguntasString() {
-        return "INÍCIO > CRIAÇÃO DE PERGUNTAS\n\n" +
-               "1) Listar\n" +
-               "2) Incluir\n" +
-               "3) Alterar\n"+
-               "4) Arquivar\n\n" +
-               "0) Retornar ao menu anterior\n\n"+
+    public static String menuDePerguntasString() {
+        return "INÍCIO > CRIAÇÃO DE PERGUNTAS\n\n"  +
+               "1) Listar\n"                        +
+               "2) Incluir\n"                       +
+               "3) Alterar\n"                       +
+               "4) Arquivar\n\n"                    +
+               "0) Retornar ao menu anterior\n\n"   +
                "Opção: ";
     }
 
@@ -59,14 +59,53 @@ public class Selecao {
      * Função com a tela de navegação pela pergunta selecionada pelo usuário
      * @return uma String com todas as opções do menu de interação com pergunta
      */
-    public static String navegarPelaPergunta() {
-        return "Escolha uma das opções abaixo: \n\n"  +
-               "1) Responder\n"                       +
-               "2) Comentar\n"                        +
-               "3) Avaliar\n\n"                       +
+    public static String navegarPelaPerguntaString() {
+        return "INÍCIO > PERGUNTAS \n\n"              +
+               "Escolha uma das opções abaixo: \n\n"  +
+               "1) Listar respostas\n"                +
+               "2) Listar comentarios\n\n"            +
+               "3) Responder\n"                       +
+               "4) Comentar\n"                        +
+               "5) Avaliar\n\n"                       +
                "0) Retornar\n\n"                      +
                "Opção: ";
     }
+
+    /**
+     * Função com a tela de criação de respostas
+     * @return uma String com todas as opções do menu de criação de respostas
+     */
+    public static String menuDeRespostasString() {
+        return "INÍCIO > PERGUNTAS > CRIAÇÃO DE RESPOSTAS\n\n"  +
+               "1) Listar suas respostas\n"                     +
+               "2) Incluir uma resposta\n"                      +
+               "3) Alterar uma resposta\n"                      +
+               "4) Arquivar uma resposta\n\n"                   +
+               "0) Retornar ao menu anterior\n\n"               +
+               "Opção: ";
+    }
+
+    /**
+     * Função com a tela de criação de comentarios
+     * @return uma String com todas as opções do menu de criação de comentarios
+     */
+    public static String menuDeComentariosString() {
+        return "1) Listar suas comentarios\n"       +
+               "2) Incluir uma comentarios\n"       +
+               "3) Alterar uma comentarios\n"       +
+               "4) Arquivar uma comentarios\n\n"    +
+               "0) Retornar ao menu anterior\n\n"   +
+               "Opção: ";
+    }
+
+    /**
+     * Função com a tela de avaliação
+     * @return a String com as instruções sobre digitar a nota
+     */
+    public static String menuDeAvaliacaoString() {
+        return "Digite a nota\n";
+    }
+
 
     /**
      * Função com interação a tela de acesso ao sistema
@@ -74,13 +113,8 @@ public class Selecao {
      */
     public static char Acesso() {
 
-        //limpar a tela
-        ASCIInterface.limparTela();
-
         char opcao = 'B';
 
-        //Imprimir uma caixa com o titulo
-        System.out.println(graficos.caixa("PERGUNTAS 1.0"));
         System.out.print(acessoString());
 
         //Fazendo leitura do teclado
@@ -98,12 +132,9 @@ public class Selecao {
      * @param notificacoes é o numero de notificações que o atual usuário tem
      * @return uma String que corresponde a opção escolhida pelo usuário
      */
-    public static String Inicio(byte menuIndex, byte notificacoes) {    
+    public static String imprimirTela(byte menuIndex, byte notificacoes) {    
 
             String opcao = "";
-
-            //Imprimir uma caixa com o titulo
-            System.out.println(graficos.caixa(5,"PERGUNTAS 1.0"));
 
             //Imprimindo o menu a ser exibido para o usuario
             switch(menuIndex) 
@@ -116,7 +147,27 @@ public class Selecao {
 
                 //Criacao de perguntas
                 case 2:
-                    System.out.print(criacaoDePerguntasString());
+                    System.out.print(menuDePerguntasString());
+                    break;
+
+                //Navegação de perguntas
+                case 3:
+                    System.out.print(navegarPelaPerguntaString());
+                    break;
+
+                //Menu de respostas
+                case 4:
+                    System.out.print(menuDeRespostasString());
+                    break;
+
+                //Menu de comentarios
+                case 5:
+                    System.out.print(menuDeComentariosString());
+                    break;
+            
+                //Menu de avaliação
+                case 6:
+                    System.out.print(menuDeAvaliacaoString());
                     break;
 
                 //Caso a variavel tenha alguma variavel diferente
@@ -137,28 +188,6 @@ public class Selecao {
             ASCIInterface.limparTela();
 
             return opcao;
-    }
-
-    /**
-     * Função de interação com a pergunta selecionada pelo usuário atual
-     * @param perguntaSelecionada é a string contendo informações da pergunta selecionada
-     * @return o byte correspondendo a opção escolhida pelo usuário
-     */
-    public static byte interagirComPergunta(String perguntaSelecionada) {
-
-        byte opcao = -1;
-
-        System.out.println(graficos.caixa("Vamos imprimir a pergunta selecionada!"));
-        System.out.println(perguntaSelecionada);
-
-        System.out.println(navegarPelaPergunta());
-
-        opcao = Sistema.lerByte();
-    
-        //limpando a tela
-        ASCIInterface.limparTela();
-
-        return opcao;
     }
 
 }
