@@ -142,7 +142,8 @@ public class RespostasFrontEnd {
          * @return uma String com o conteúdo da Resposta
          */
         public static String toString(Resposta r,String nome) {
-            return "\n" + RespostaAPI.graficos.caixa(r.getResposta())                    +
-                   "Respondida em " + destaqueData.imprimir(r.getData()) + " por " + nome;
+            return "\n" + RespostaAPI.graficos.caixa(r.getResposta())                            +
+                   "Respondida em " + destaqueData.imprimir(r.getData()) + " por " + nome + "\n" +
+                   "Nota: " + r.getNota() + "\n";
         }
 }

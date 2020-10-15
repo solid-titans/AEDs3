@@ -151,7 +151,8 @@ public class PerguntasFrontEnd {
             return p.getTitulo()                                                               +
                    "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                         +            
                    "Pergunta criada por \'"+nome+"\' em "+ destaqueData.imprimir(p.getData())  +
-                   "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
+                   "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n" +
+                   "Nota: " + p.getNota() + "\n";
         }
 
         /**
