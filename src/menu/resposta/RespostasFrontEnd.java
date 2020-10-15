@@ -53,7 +53,7 @@ public class RespostasFrontEnd {
            
             for (Resposta i : array) {
                 if(i.getAtiva() == false) 
-                    resp += "\n(Arquivada)";
+                    continue;
 
                 nome = CrudAPI.acharUsuario(i.getIdUsuario()).getNome();
 
