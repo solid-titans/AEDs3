@@ -32,12 +32,12 @@ public class Selecao {
      * @return uma String com todas as opções do menu inicial
      */
     public static String inicioString(byte notificacoes) {
-        return "INÍCIO\n\n" +
-               "1) Criação de perguntas\n" +
-               "2) Consultar/responder perguntas\n" +
-               "3) Notificações: " + notificacoes + "\n\n"+
-               "4) Redefinir senha: \n\n" + 
-               "0) Sair\n\n" +
+        return "INÍCIO\n\n"                                 +
+               "1) Criação de perguntas\n"                  +
+               "2) Consultar/responder perguntas\n"         +
+               "3) Notificações: " + notificacoes + "\n\n"  +
+               "4) Redefinir senha: \n\n"                   + 
+               "0) Sair\n\n"                                +
                "Opção: ";
     }
 
@@ -46,12 +46,12 @@ public class Selecao {
      * @return uma String com todas as opções do menu de criação de perguntas
      */
     public static String menuDePerguntasString() {
-        return "INÍCIO > CRIAÇÃO DE PERGUNTAS\n\n" +
-               "1) Listar\n" +
-               "2) Incluir\n" +
-               "3) Alterar\n"+
-               "4) Arquivar\n\n" +
-               "0) Retornar ao menu anterior\n\n"+
+        return "INÍCIO > CRIAÇÃO DE PERGUNTAS\n\n"  +
+               "1) Listar\n"                        +
+               "2) Incluir\n"                       +
+               "3) Alterar\n"                       +
+               "4) Arquivar\n\n"                    +
+               "0) Retornar ao menu anterior\n\n"   +
                "Opção: ";
     }
 
@@ -60,20 +60,24 @@ public class Selecao {
      * @return uma String com todas as opções do menu de interação com pergunta
      */
     public static String navegarPelaPerguntaString() {
-        return "Escolha uma das opções abaixo: \n\n"  +
-               "1) Responder\n"                       +
-               "2) Comentar\n"                        +
-               "3) Avaliar\n\n"                       +
+        return "INÍCIO > PERGUNTAS \n\n"              +
+               "Escolha uma das opções abaixo: \n\n"  +
+               "1) Listar respostas\n"                +
+               "2) Listar comentarios\n\n"            +
+               "3) Responder\n"                       +
+               "4) Comentar\n"                        +
+               "5) Avaliar\n\n"                       +
                "0) Retornar\n\n"                      +
                "Opção: ";
     }
 
     public static String menuDeRespostasString() {
-        return "1) Listar suas respostas\n"        +
-               "2) Incluir uma resposta\n"         +
-               "3) Alterar uma resposta\n"         +
-               "4) Arquivar uma resposta\n\n"      +
-               "0) Retornar ao menu anterior\n\n"  +
+        return "INÍCIO > PERGUNTAS > CRIAÇÃO DE RESPOSTAS\n\n"  +
+               "1) Listar suas respostas\n"                     +
+               "2) Incluir uma resposta\n"                      +
+               "3) Alterar uma resposta\n"                      +
+               "4) Arquivar uma resposta\n\n"                   +
+               "0) Retornar ao menu anterior\n\n"               +
                "Opção: ";
     }
 

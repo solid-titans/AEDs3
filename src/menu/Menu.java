@@ -14,9 +14,9 @@ public class Menu {
 
     private ASCIInterface              graficos;
 
-    private static int         idUsuario;                  //Id do Usuario que usar o sistema
-    private static CrudAPI            minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
-    private static CodigoDeProtocolo  requisicao;                 //Variavel para 
+    private static int                 idUsuario;                  //Id do Usuario que usar o sistema
+    private static CrudAPI             minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
+    private static CodigoDeProtocolo   requisicao;                 //Variavel para 
 
     /**
      * Configura a id do usuário que vai acessar o programa
@@ -225,14 +225,22 @@ public class Menu {
                     break;
 
                 case "13":
-                    menuIndex = 4;
+                    requisicao = CodigoDeProtocolo.LISTARRESPOSTASGERAL;
                     break;
                 
                 case "23":
-                    menuIndex = 5;
+                    requisicao = CodigoDeProtocolo.LISTARCOMENTARIOSGERAL;
                     break;
                 
                 case "33":
+                    menuIndex = 4;
+                    break;
+
+                case "43":
+                    menuIndex = 5;
+                    break;
+
+                case "53":
                     menuIndex = 6;
                     break;
 
@@ -241,7 +249,7 @@ public class Menu {
                     break;
 
                 case "14":
-                    requisicao = CodigoDeProtocolo.LISTARRESPOSTAS;
+                    requisicao = CodigoDeProtocolo.LISTARRESPOSTASUSUARIO;
                     break;
                 
                 case "24":

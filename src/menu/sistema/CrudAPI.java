@@ -127,7 +127,9 @@ public class CrudAPI {
 				pergunta = PerguntasAPI.consultarPerguntaPelaPalavraChave(idUsuario);
 				if(pergunta != null) {
 					String nome = acharUsuario(pergunta.getIdUsuario()).getNome();
-					Menu.navegarPergunta(pergunta,nome);
+					resultado = Menu.navegarPergunta(pergunta,nome);
+					if(resultado == CodigoDeProtocolo.NULL)
+						resultado = CodigoDeProtocolo.SUCESSO;
 				}
 
 				break;
@@ -197,13 +199,19 @@ public class CrudAPI {
 
 		switch(cdp) {
 
-			case LISTARRESPOSTAS: //Pedir para acessar o sistema
-				System.out.println("Listar respostas");
-				resultado = RespostaAPI.listarRespostas(idPergunta,idUsuario);
+			case LISTARCOMENTARIOSGERAL:
+				System.out.println("Comentarios...");
+				break;
+
+			case LISTARRESPOSTASGERAL:
+				resultado = RespostaAPI.listarRespostasDoGeral(idPergunta);
+				break;
+
+			case LISTARRESPOSTASUSUARIO: //Pedir para acessar o sistema
+				resultado = RespostaAPI.listarRespostasDoUsuario(idPergunta,idUsuario);
 				break;
 
 			case INCLUIRRESPOSTA: // Criar um novo usuário no banco de dados
-				System.out.println("Incluir respostas");
 				tmp = RespostaAPI.criarResposta(idPergunta,idUsuario);
 				if(tmp != null) {
 					novaResposta(tmp, idPergunta);
@@ -213,7 +221,6 @@ public class CrudAPI {
 				break;
 
 			case ALTERARRESPOSTA: 
-				System.out.println("Alterar respostas");
 				tmp = RespostaAPI.alterarResposta(idPergunta,idUsuario);
 				if( tmp != null) {
 					atualizarResposta(tmp);
@@ -223,7 +230,6 @@ public class CrudAPI {
 				break;    
 
 			case ARQUIVARRESPOSTA: 
-				System.out.println("Arquivar respostas");
 				tmp = RespostaAPI.arquivarResposta(idPergunta,idUsuario);
 				if( tmp != null) {
 					atualizarResposta(tmp);
@@ -249,9 +255,7 @@ public class CrudAPI {
 	 * @param u é o usuário que é para ser registrado
 	 * @return um numero inteiro correspondendo ao ID do novo usuário
 	 */
-    public int inserirNovoUsuarioNoCrud(Usuario u) {
-		return usuarios.create(u);	
-    }
+    public int inserirNovoUsuarioNoCrud(Usuario u) { return usuarios.create(u); }
 
 	/**
 	 * Função para encontrar um usuário a partir do email
@@ -259,7 +263,6 @@ public class CrudAPI {
 	 * @return o usuário caso ele foi encontrado
 	 */
     public static Usuario acharUsuario(String email) {
-
         Usuario resp = null;
 
         try {
@@ -268,15 +271,14 @@ public class CrudAPI {
 		} catch(Exception e) {}
 
         return resp;
-    }
-
+	}
+	
 	/**
 	 * Função para encontrar um usuário a partir do ID
 	 * @param idUsuario é o numero inteiro que corresponde ao ID do usuário a ser procurado
 	 * @return o usuário caso ele foi encontrado
 	 */
     public static Usuario acharUsuario(int idUsuario) {
-
         Usuario resp = null;
 
         try {
@@ -285,15 +287,13 @@ public class CrudAPI {
         } catch(Exception e) {e.printStackTrace();}
 
         return resp;
-    }
-
+	}
+	
 	/**
 	 * Atualizar as credenciais de um usuário no CRUD
 	 * @param u é o usuário a ser atualizado
 	 */
-    public void atualizarCredenciaisDoUsuario(Usuario u) {
-        usuarios.update(u, u.getId());  
-	}
+	public void atualizarCredenciaisDoUsuario(Usuario u) { usuarios.update(u, u.getId()); }
 	
 	/*
 	*	Funções do CRUD de pergunta
@@ -321,7 +321,6 @@ public class CrudAPI {
 	 * @return a pergunta correspondente a ID (caso ela exista)
 	 */
 	public static Pergunta acharPergunta(int id) {
-
 		Pergunta p = null;
 		try {
 			p = perguntas.read(id);
@@ -334,7 +333,6 @@ public class CrudAPI {
 	 * @param novo é a pergunta que será atualizada
 	 */
 	public void atualizarPergunta(Pergunta novo) {
-
 		Pergunta antiga = acharPergunta(novo.getId());
 
 		removerPalavrasChave(antiga);
@@ -348,9 +346,9 @@ public class CrudAPI {
 	 * @param p é a pergunta a ser desativada
 	 */
 	public void desativarPergunta(Pergunta p) {
-
 		removerPalavrasChave(p);
 		perguntas.update(p,p.getId());
+
 	}
 
 	/**
@@ -359,7 +357,6 @@ public class CrudAPI {
 	 * @return array de perguntas do idUsuario(se ele tiver registrado)
 	 */
 	public static Pergunta[] getPerguntaArray(int idUsuario) {
-		    
 		Pergunta[]   resp  		     = null;
 		int[] 	     idsPerguntas    = null;
 		
@@ -392,7 +389,6 @@ public class CrudAPI {
 	 * @return um array de perguntas com as palavrasChave enviada
 	 */
 	public static Pergunta[] getPerguntasPalavrasChave(String[] palavrasChave,int idUsuario) {
-
 		ArrayList<Pergunta> array = new ArrayList<>();
 		Pergunta[] resp 		  = null;
 
@@ -426,7 +422,6 @@ public class CrudAPI {
 	 * @param p é a Pergunta de onde será retirada as palavras-chave
 	 */
 	public void inserirPalavrasChave(Pergunta p) {
-	
 		String[] palavras_chave = p.getPalavrasChave().split(" ");
 
 		try {
@@ -452,7 +447,6 @@ public class CrudAPI {
 	}
 
 	//Respostas 
-
 	/**
 	 * Armazena uma nova resposta nos bancos de dados
 	 * @param r é a resposta a ser armazenada
@@ -477,30 +471,27 @@ public class CrudAPI {
 	 * @return a resposta correspondente a ID (caso ela exista)
 	 */
 	public static Resposta acharResposta(int id) {
-
 		Resposta r = null;
 		try {
 			r = respostas.read(id);
 		} catch(Exception e ) { e.printStackTrace(); }
 		return r;
+
 	}
 
 	/**
 	 * Função para atualizar uma resposta
 	 * @param r é a pergunta a ser atualizada
 	 */
-	public void atualizarResposta(Resposta r) {
-		respostas.update(r,r.getId());
-	}
+	public void atualizarResposta(Resposta r) { respostas.update(r,r.getId());}
 
 	/**
-	 * Função para pegar um array de perguntas com base na Id de um usuário no banco de dados
+	 * Função para pegar um array de respostas com base na Id de um usuário no banco de dados
 	 * @param idPergunta da pergunta
 	 * @param idUsuario do usuário que requisitou o processo
-	 * @return array de perguntas do idUsuario(se ele tiver registrado)
+	 * @return array de respostas do idUsuario(se ele tiver registrado)
 	 */
-	public static Resposta[] getRespostaArrayOfUser(int idPergunta,int idUsuario) {
-		
+	public static Resposta[] getRespostaArrayUser(int idPergunta,int idUsuario) {
 		ArrayList<Resposta> array    = new ArrayList<>();
 		Resposta[]   resp  		     = null;
 		int[] 	     idsRespostas    = null;
@@ -529,4 +520,34 @@ public class CrudAPI {
 		return resp;
 	}
 
+	/**
+	 * Função para pegar um array de respostas com base na Id de uma pergunta no banco de dados
+	 * @param idPergunta da pergunta
+	 * @return array de respostas do idUsuario(se ele tiver registrado)
+	 */
+	public static Resposta[] getRespostaArrayGeral(int idPergunta) {
+		Resposta[]   resp  		     = null;
+		int[] 	     idsRespostas    = null;
+		
+		idsRespostas = perguntasRespostas.read(idPergunta);
+
+        if(idsRespostas == null)
+			return  null;
+
+		resp = new Resposta[idsRespostas.length];
+
+		int contador = 0;
+        for (int i : idsRespostas) {
+            try {
+                Resposta temp = respostas.read(i);
+                if(temp == null)
+					continue;
+
+				resp[contador] = temp; 
+				contador++;
+            }catch(Exception e) { e.printStackTrace(); }
+		}
+
+		return resp;
+	}
 }

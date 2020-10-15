@@ -17,10 +17,37 @@ public class RespostaAPI {
     private static final byte TAM_MIN_RESPOSTA     = 3;                            //Tamanho minimo para as respostas
     private static final byte TAM_MAX_RESPOSTA     = 100;                          //Tamanho maximo para as respostas
 
-    public static CodigoDeProtocolo listarRespostas(int idPergunta, int idUsuario) {
+    /**
+     * Função para listar todas as respostas com base na id da Pergunta
+     * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
+     * @return
+     */
+    public static CodigoDeProtocolo listarRespostasDoGeral(int idPergunta) {
 
         CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
-        Resposta[] array  = CrudAPI.getRespostaArrayOfUser(idPergunta,idUsuario);
+        Resposta[] array  = CrudAPI.getRespostaArrayGeral(idPergunta);
+
+        if ( array == null ) {
+            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
+        
+        } else {
+            System.out.println(RespostasFrontEnd.listarRespostasGeral(array));
+            resp = CodigoDeProtocolo.SUCESSO;
+        }
+
+        return resp;
+    }
+
+    /**
+     * Função para listar todas as respostas com base na id da Pergunta e na ID do usuario
+     * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
+     * @param idUsuario é a ID do usuario que será usado como base na pesquisa
+     * @return
+     */
+    public static CodigoDeProtocolo listarRespostasDoUsuario(int idPergunta, int idUsuario) {
+
+        CodigoDeProtocolo resp = CodigoDeProtocolo.ERRO;
+        Resposta[] array  = CrudAPI.getRespostaArrayUser(idPergunta,idUsuario);
 
         if ( array == null ) {
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
@@ -33,6 +60,12 @@ public class RespostaAPI {
         return resp;
     }
 
+    /**
+     * Função para criar uma resposta para o banco de dados
+     * @param idPergunta é a id da pergunta que foi escolhida pelo usuário
+     * @param idUsuario é a ID do usuario que fez a requisição
+     * @return
+     */
     public static Resposta criarResposta(int idPergunta, int idUsuario) {
 
         Resposta respostaCriada             = null;
@@ -57,6 +90,12 @@ public class RespostaAPI {
         return respostaCriada;
     }
 
+    /**
+     * Função para alterar uma das respostas do usuário
+     * @param idPergunta é a id da pergunta que foi escolhida pelo usuário
+     * @param idUsuario é a ID do usuario que fez a requisição
+     * @return
+    */
     public static Resposta alterarResposta(int idPergunta, int idUsuario) {
 
         Resposta              respostaAlterada  = null;
@@ -87,6 +126,12 @@ public class RespostaAPI {
         return respostaAlterada;
     }
 
+    /**
+     * Função para arquivar uma das respostas do usuário
+     * @param idPergunta é a id da pergunta que foi escolhida pelo usuário
+     * @param idUsuario é a ID do usuario que fez a requisição
+     * @return
+    */
     public static Resposta arquivarResposta(int idPergunta, int idUsuario) {
 
         Resposta              respostaAlterada  = null;
@@ -114,9 +159,9 @@ public class RespostaAPI {
     }
 
     /**
-     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
-     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias perguntas
-     * @return a Pergunta que foi propriamente escolhida
+     * Função para gerenciar a escolha de uma resposta com base na ID de um usuário e uma pergunta
+     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias respostas
+     * @return a Resposta que foi propriamente escolhida
      */
     private static Resposta escolherResposta(int idPergunta, int idUsuario) {
 
@@ -124,7 +169,7 @@ public class RespostaAPI {
         int id                = -1;
         Resposta[] array      = null;
 
-        array = CrudAPI.getRespostaArrayOfUser(idPergunta,idUsuario);       
+        array = CrudAPI.getRespostaArrayUser(idPergunta,idUsuario);       
 
         if ( array != null ) {
             id   = RespostasFrontEnd.escolherResposta(array);

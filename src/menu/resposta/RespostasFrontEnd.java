@@ -17,18 +17,48 @@ public class RespostasFrontEnd {
         public static String listarRespostas(Resposta[] array) {
 
             String  resp     = "";
+
             byte    contador = 1;
 
-            resp += RespostaAPI.graficos.caixa(3,"PERGUNTAS");
+            resp += RespostaAPI.graficos.caixa(3,"Respostas");
 
            
             for (Resposta i : array) {
-                if(i.getAtiva() == false) {
+                if(i.getAtiva() == false) 
                     resp += "\n(Arquivada)";
-                }
 
                 resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
                 resp += toString(i) + "\n";
+                contador++;
+                
+            }
+    
+            return resp;
+        }
+
+        /**
+         * Função para retornar todas as respostas em um array em formato String
+         * @param array é o array de respostas que foi enviado
+         * @return a String correspondente a listagem das respostas
+         */
+        public static String listarRespostasGeral(Resposta[] array) {
+
+            String  resp     = "";
+            String  nome     = "";
+            
+            byte    contador = 1;
+
+            resp += RespostaAPI.graficos.caixa(3,"Respostas");
+
+           
+            for (Resposta i : array) {
+                if(i.getAtiva() == false) 
+                    resp += "\n(Arquivada)";
+
+                nome = CrudAPI.acharUsuario(i.getIdUsuario()).getNome();
+
+                resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
+                resp += toString(i,nome) + "\n";
                 contador++;
                 
             }
@@ -97,12 +127,22 @@ public class RespostasFrontEnd {
         }
 
         /**
-         * Função retornar uma String com o conteúdo da pergunta P formatado
-         * @param p é a pergunta que foi recebida
-         * @return uma String com o conteúdo da Pergunta
+         * Função retornar uma String com o conteúdo da resposta r formatado
+         * @param r é a resposta que foi recebida
+         * @return uma String com o conteúdo da resposta
          */
         public static String toString(Resposta r) {
             return destaqueData.imprimir(r.getData()) + "\n"         + 
                    "\n" + RespostaAPI.graficos.caixa(r.getResposta());
+        }
+
+        /**
+         * Função retornar uma String com o conteúdo da resposta r formatado
+         * @param r é a resposta que foi recebida
+         * @return uma String com o conteúdo da Resposta
+         */
+        public static String toString(Resposta r,String nome) {
+            return "\n" + RespostaAPI.graficos.caixa(r.getResposta())                    +
+                   "Respondida em " + destaqueData.imprimir(r.getData()) + " por " + nome;
         }
 }

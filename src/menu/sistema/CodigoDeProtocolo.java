@@ -25,10 +25,14 @@ public enum CodigoDeProtocolo {
     ARQUIVARPERGUNTA        ("42"),
 
     //Respostas
-    LISTARRESPOSTAS         ("14"),
+    LISTARRESPOSTASGERAL    ("13"),
+    LISTARRESPOSTASUSUARIO  ("14"),
     INCLUIRRESPOSTA         ("24"),
     ALTERARRESPOSTA         ("34"),
     ARQUIVARRESPOSTA        ("44"),
+
+    //Comentários
+    LISTARCOMENTARIOSGERAL  ("23"),
     
     //Possíveis resultados
     SUCESSO                 ("111"),
