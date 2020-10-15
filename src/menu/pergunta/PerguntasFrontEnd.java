@@ -148,7 +148,7 @@ public class PerguntasFrontEnd {
          * @return uma String com o conteúdo da Pergunta
          */
         public static String toString(Pergunta p,String nome) {
-            return p.getTitulo()                                                               +
+            return destaqueTitulo.imprimir(p.getTitulo())                                      +
                    "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                         +            
                    "Pergunta criada por \'"+nome+"\' em "+ destaqueData.imprimir(p.getData())  +
                    "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n" +
