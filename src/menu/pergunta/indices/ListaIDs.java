@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.RandomAccessFile;
 
-public class ListaIDs {
+public class ListaIDs implements ListaIDsInterface {
     private RandomAccessFile arquivo;              // Banco de dados no disco
     private RandomAccessFile pilhaIds;             // Banco de dados de id das perguntas do usuario
     private final int        TAMDADOSARQUIVO = 12; // Tamanho dos objeto inseriodos no arquivo
