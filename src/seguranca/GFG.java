@@ -7,7 +7,7 @@ import java.util.Random;
 
 
 // Programa para cifrar as senhas do banco de dados  
-public class GFG {  
+public class GFG implements GFGInterface {  
     private int numMaxInteracoes;  // Salvar o número máximo de interações do hash
 
     public GFG(int numMaxInteracoes) {
@@ -115,7 +115,8 @@ public class GFG {
      * @param senha Senha para ser hasheada
      * @return String contendo todos os itens da senha hash, interações e o hash da senha
      */
-    public String hash(String senha) {
+    @Override
+    public String hashearSenha(String senha) {
         // Escrever o hash
         String senhaCompleta = ""; 
 
@@ -132,15 +133,16 @@ public class GFG {
 
     /**
      * Função para verificar se um hash e uma senha são iguais
-     * @param hashCompleto Receber um hash gerado pela função GFG.hash(senha)
      * @param senha Receber a String da senha
+     * @param hashSenha Receber um hash gerado pela função GFG.hash(senha)
      * @return Verificar se a senha passada e o hashCompleto batem 
      */
-    public boolean verificarHash(String hashCompleto, String senha) {
+    @Override
+    public boolean verificarSenha(String senha, String hashSenha) {
         boolean senhaCorreta = false;
 
         // Separando elementos da String do hash
-        String[] elementosHash = hashCompleto.split("[$]");
+        String[] elementosHash = hashSenha.split("[$]");
 
         // String[0] -> Salt
         String salt    = elementosHash[0];
