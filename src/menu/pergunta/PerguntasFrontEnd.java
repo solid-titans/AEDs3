@@ -1,27 +1,42 @@
 package menu.pergunta;
 
 import produtos.*;
+import menu.sistema.abstracts.frontend.FrontEndplus;
+import menu.sistema.abstracts.frontend.RegistroVisual;
+import menu.sistema.abstracts.frontend.RegistroVisualplus;
+import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
-import menu.sistema.CodigoDeProtocolo;
-import menu.sistema.Sistema;
+
+import menu.sistema.input.Input;
 
 /**
  * Classe para administrar casos específicos da admnistração visual das Perguntas
  * @author MysteRys337 (Gustavo Lopes)
  */
-public class PerguntasFrontEnd {
+public class PerguntasFrontEnd implements FrontEndplus{
 	
-		//Atributos
-        private static ANSILibrary destaqueData             = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
-        private static ANSILibrary destaqueTitulo           = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
-        private static ANSILibrary destaquePalavrasChave    = new ANSILibrary(135, 154, ANSILibrary.TEXTO_SUBLINHADO);
+        //Atributos
+        private ASCIInterface graficos;
+
+        private ANSILibrary   destaqueData;
+        private ANSILibrary   destaqueTitulo;
+        private ANSILibrary   destaquePalavrasChave;
+
+        private Input       input;
+
+        public PerguntasFrontEnd(ANSILibrary destaqueData, ANSILibrary destaqueTitulo, ANSILibrary destaquePalavrasChave, Input input) {
+            this.destaqueData          = destaqueData;
+            this.destaqueTitulo        = destaqueTitulo;
+            this.destaquePalavrasChave = destaquePalavrasChave;
+            this.input                 = input;
+        }
 
         /**
          * Função para retornar todas as perguntas em um array em formato String
          * @param array é o array de perguntas que foi enviado
          * @return a String correspondente a listagem das perguntas
          */
-        public static String listarPerguntas(Pergunta[] array) {
+        public String listar(RegistroVisualplus[] array) {
 
             String  resp     = "";
             byte    contador = 1;
@@ -29,13 +44,13 @@ public class PerguntasFrontEnd {
             resp += PerguntasAPI.graficos.caixa(3,"PERGUNTAS");
 
            
-            for (Pergunta i : array) {
+            for (RegistroVisualplus i : array) {
                 if(i.getAtiva() == false) {
                     resp += "\n(Arquivada)";
                 }
 
                 resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-                resp += toString(i) + "\n";
+                resp += i.imprimir() + "\n";
                 contador++;
                 
             }
@@ -48,7 +63,7 @@ public class PerguntasFrontEnd {
          * @param array é o array de perguntas que foi enviado
          * @return a String correspondente a listagem das perguntas
          */
-        public static String listarPerguntasSimplificado(Pergunta[] array) {
+        public String listarSimplificado(RegistroVisualplus[] array) {
 
             String  resp     = "";
             byte    contador = 1;
@@ -56,13 +71,13 @@ public class PerguntasFrontEnd {
             resp += PerguntasAPI.graficos.caixa(3,"PERGUNTAS");
 
            
-            for (Pergunta i : array) {
+            for (RegistroVisualplus i : array) {
                 if(i.getAtiva() == false) {
                     resp += "\n(Arquivada)";
                 }
 
                 resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-                resp += toStringSimplificada(i);
+                resp += i.imprimirSimplificado();
                 contador++;
                 
             }
@@ -75,18 +90,18 @@ public class PerguntasFrontEnd {
          * @param p é a pergunta que foi recebida seja qual for a operação
          * @return um codigo de protocolo referente ao resultado da verificacao
          */
-        public static CodigoDeProtocolo verificar(Pergunta p) {
+        public CodigoDeProtocolo verificar(RegistroVisual objeto) {
 
             String              confirmar   = "";
             CodigoDeProtocolo   sucesso     = CodigoDeProtocolo.ERRO;
 
             System.out.println(PerguntasAPI.graficos.caixa("Vamos conferir a sua pergunta") + "\n");
-            System.out.print(toString(p) + 
+            System.out.print(objeto.imprimir() + 
                             "\nEssa é a sua pergunta?(s/n) : ");
 
-            confirmar = Sistema.lerEntrada();
+            confirmar = input.lerString();
 
-            ASCIInterface.limparTela();
+            graficos.limparTela();
 
             if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
 
@@ -104,16 +119,16 @@ public class PerguntasFrontEnd {
          * @param array que é o array de perguntas na qual o usuário terá que fazer uma escolha
          * @return o Id da pergunta que o usuário escolheu
          */
-        public static int escolherPergunta(Pergunta[] array) {
+        public int escolherPergunta(Pergunta[] array) {
 
             byte     entrada          = -1;
             int      indexSelecionado = -1;
     
-            System.out.print(PerguntasFrontEnd.listarPerguntasSimplificado(array) + 
+            System.out.print(listarSimplificado(array) + 
                               "\nEscolha uma das perguntas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
     
-            entrada = Sistema.lerByte();
-            ASCIInterface.limparTela();     
+            entrada = input.lerByte();
+            graficos.limparTela();     
     
             if (array.length > entrada - 1 && entrada - 1 >= 0) {
 
@@ -127,42 +142,6 @@ public class PerguntasFrontEnd {
             }
             
             return indexSelecionado; 
-        }
-
-        /**
-         * Função retornar uma String com o conteúdo da pergunta P formatado
-         * @param p é a pergunta que foi recebida
-         * @return uma String com o conteúdo da Pergunta
-         */
-        public static String toString(Pergunta p) {
-            return destaqueData.imprimir(p.getData()) + "\n"                                 + 
-                   destaqueTitulo.imprimir(p.getTitulo())                                    +
-                   "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                       + 
-                   "Palavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
-        }
-
-        /**
-         * Função para retornar uma String com o conteúdo da pergunta P formatado
-         * @param p é a pergunta que foi recebida
-         * @param nome é o nome do usuário que registrou a pergunta
-         * @return uma String com o conteúdo da Pergunta
-         */
-        public static String toString(Pergunta p,String nome) {
-            return destaqueTitulo.imprimir(p.getTitulo())                                      +
-                   "\n" + PerguntasAPI.graficos.caixa(p.getPergunta())                         +            
-                   "Pergunta criada por \'"+nome+"\' em "+ destaqueData.imprimir(p.getData())  +
-                   "\nPalavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n" +
-                   "Nota: " + p.getNota() + "\n";
-        }
-
-        /**
-         * Função para retornar uma String com o conteúdo da pergunta P formatado de forma simplificada
-         * @param p é a pergunta que foi recebida
-         * @return uma String com o conteúdo da Pergunta
-         */
-        public static String toStringSimplificada(Pergunta p) {
-            return "Título:         " + destaqueTitulo.imprimir(p.getTitulo()) + "\n" +
-                   "Palavras-chave: " + destaquePalavrasChave.imprimir(p.getPalavrasChave()) + "\n";
         }
 
 }

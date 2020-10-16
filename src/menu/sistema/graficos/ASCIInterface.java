@@ -289,7 +289,7 @@ public class ASCIInterface {
      * Limpar a tela do terminal
      * @implNote o programa verifica se o sistema operacional é um Windows ou do tipo Unix 
      */
-    public static void limparTela(){
+    public void limparTela(){
 
         String OS = System.getProperty("os.name").toLowerCase();
         //String clear;

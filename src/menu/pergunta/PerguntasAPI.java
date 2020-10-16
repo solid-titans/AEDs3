@@ -2,7 +2,9 @@ package menu.pergunta;
 
 import produtos.*;
 import menu.sistema.*;
+import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
+import menu.sistema.input.CustomInput;
 
 /**
  * Classe para gerenciar todas as funções de controle de perguntas
@@ -10,29 +12,44 @@ import menu.sistema.graficos.*;
  */
 public class PerguntasAPI {
 
-    public static ASCIInterface graficos = new ASCIInterface(199, 231 , 232, 184); //interface grafica
+    private final byte        TAM_MIN_TITULO;   //Tamanho minimo para as perguntas
+    private final byte        TAM_MAX_TITULO;   //Tamanho maximo para as perguntas
 
-    private static final byte TAM_MIN_TITULO     = 3;                       //Tamanho minimo para as perguntas
-    private static final byte TAM_MAX_TITULO     = 25;                      //Tamanho maximo para as perguntas
+    private final byte        TAM_MIN_PERGUNTA; //Tamanho minimo para as perguntas
+    private final byte        TAM_MAX_PERGUNTA; //Tamanho maximo para as perguntas
 
-    private static final byte TAM_MIN_PERGUNTA   = 3;                       //Tamanho minimo para as perguntas
-    private static final byte TAM_MAX_PERGUNTA   = 100;                     //Tamanho maximo para as perguntas
+    private PerguntasFrontEnd perguntasFrontEnd;
+
+    private CustomInput       customInput;
+
+    public PerguntasAPI(byte TAM_MIN_TITULO,byte TAM_MAX_TITULO, byte TAM_MIN_PERGUNTA,byte TAM_MAX_PERGUNTA, PerguntasFrontEnd perguntasFrontEnd,CustomInput customInput) {
+
+        this.TAM_MIN_TITULO    = TAM_MIN_TITULO;
+        this.TAM_MAX_TITULO    = TAM_MAX_TITULO;
+
+        this.TAM_MIN_PERGUNTA  = TAM_MIN_PERGUNTA;
+        this.TAM_MAX_PERGUNTA  = TAM_MAX_PERGUNTA;
+
+        this.perguntasFrontEnd = perguntasFrontEnd;
+
+        this.customInput       = customInput;
+    }
 
     /**
      * Função que serve para listar as perguntas de um usuário com base na ID do usuário
      * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de ver as perguntas
      * @return um Codigo de Protocolo que representa o resultado da operação
      */
-    public static CelulaResposta listarPerguntas(int idUsuario) {
+    public CelulaResposta listarPerguntas(int idUsuario) {
 
         CelulaResposta resultado = new CelulaResposta();
-        Pergunta[]     array     = CrudAPI.getPerguntaArray(idUsuario);
+        Pergunta[]     array     = APIControle.getPerguntaArray(idUsuario);
 
         if ( array == null ) {
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
         
         } else {
-            System.out.println(PerguntasFrontEnd.listarPerguntas(array));
+            System.out.println(perguntasFrontEnd.listar(array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
@@ -44,7 +61,7 @@ public class PerguntasAPI {
      * @param idUsuario é o número que corresponde a ID do usuario que quer registrar uma pergunta
      * @return a Pergunta que foi registrada
      */
-    public static CelulaResposta criarPergunta(int idUsuario) {
+    public CelulaResposta criarPergunta(int idUsuario) {
 
         Pergunta           novaPergunta          = null;
         CodigoDeProtocolo  confirmarOperacao     = CodigoDeProtocolo.ERRO;
@@ -57,7 +74,7 @@ public class PerguntasAPI {
             return resultado;
         }
 
-        confirmarOperacao = PerguntasFrontEnd.verificar(novaPergunta);
+        confirmarOperacao = perguntasFrontEnd.verificar(novaPergunta);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(confirmarOperacao);
             return resultado;
@@ -74,7 +91,7 @@ public class PerguntasAPI {
      * @param idUsuario é o numero correspondente a ID do usuário que gostaria de trocar a pergunta
      * @return a Pergunta que será alterada
      */
-    public static CelulaResposta alterarPergunta(int idUsuario) {
+    public CelulaResposta alterarPergunta(int idUsuario) {
 
         Pergunta             perguntaAlterada    = null;
         int                  idPerguntaAlterada  = -1;
@@ -97,7 +114,7 @@ public class PerguntasAPI {
         perguntaAlterada   = inserirDadosDaPergunta(idUsuario);
         perguntaAlterada.setId(idPerguntaAlterada);
 
-        confirmar = PerguntasFrontEnd.verificar(perguntaAlterada);
+        confirmar = perguntasFrontEnd.verificar(perguntaAlterada);
         if(confirmar == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(confirmar);
             return resultado;
@@ -114,7 +131,7 @@ public class PerguntasAPI {
      * @param idUsuario é o numero que corresponde a ID do usuário que gostaria de arquivar uma pergunta
      * @return a Pergunta que será registrada
      */
-    public static CelulaResposta arquivarPergunta(int idUsuario) {
+    public CelulaResposta arquivarPergunta(int idUsuario) {
 
         Pergunta              perguntaAlterada  = null;
         CodigoDeProtocolo     confirmarOperacao = CodigoDeProtocolo.ERRO;
@@ -131,7 +148,7 @@ public class PerguntasAPI {
             return resultado;
         }
 
-        confirmarOperacao = PerguntasFrontEnd.verificar(perguntaAlterada);
+        confirmarOperacao = perguntasFrontEnd.verificar(perguntaAlterada);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(confirmarOperacao);
             return resultado;
@@ -149,7 +166,7 @@ public class PerguntasAPI {
      * @param idUsuario é o número da ID do usuário que está acessando essa função
      * @return a Pergunta que o usuário escolheu
      */
-    public static CelulaResposta consultarPerguntaPelaPalavraChave(int idUsuario) {
+    public CelulaResposta consultarPerguntaPelaPalavraChave(int idUsuario) {
 
         String         entrada     = "";
 
@@ -158,7 +175,7 @@ public class PerguntasAPI {
         
         int            idPergunta  = -1;
     
-        entrada = Sistema.inserir(graficos,"Busque as perguntas por palavra chave separadas por espaço em branco",
+        entrada = customInput.inserir("Busque as perguntas por palavra chave separadas por espaço em branco",
                                            "Ex: política Brasil eleições",TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(entrada.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
@@ -167,21 +184,16 @@ public class PerguntasAPI {
 
         entrada = Pergunta.consertarPalavrasChave(entrada);
 
-        lista   = CrudAPI.getPerguntasPalavrasChave(entrada.split(" "),idUsuario);
-        ASCIInterface.limparTela();
+        lista   = APIControle.getPerguntasPalavrasChave(entrada.split(" "),idUsuario);
     
         if(lista.length > 0) {
     
-            System.out.println("Um total de " + lista.length + " foi/foram encontrado(s)");
-    
-            idPergunta = PerguntasFrontEnd.escolherPergunta(lista);
+            idPergunta = perguntasFrontEnd.escolherPergunta(lista);
             if(idPergunta != -1) {
-                resultado.setPergunta(CrudAPI.acharPergunta(idPergunta));
+                resultado.setPergunta(APIControle.acharPergunta(idPergunta));
                 resultado.setCdp(CodigoDeProtocolo.IRPARAPERGUNTA);
 
             }
-
-            ASCIInterface.limparTela();
 
         } else {
             System.out.println("Atenção! Nenhuma pergunta encontrada com as palavras-chave inserida!");
@@ -195,7 +207,7 @@ public class PerguntasAPI {
      * @param idUsuario é o numero que corresponde a ID do usuário que será dono da pergunta inserida
      * @return a Pergunta que foi formada
      */
-    private static Pergunta inserirDadosDaPergunta(int idUsuario) {
+    private Pergunta inserirDadosDaPergunta(int idUsuario) {
 
         String titulo         = "";
         String pergunta       = "";
@@ -203,17 +215,17 @@ public class PerguntasAPI {
 
         Pergunta p            = null;
 
-        titulo         = Sistema.inserir(graficos,"Insira o título da pergunta",                                             
+        titulo         = customInput.inserir("Insira o título da pergunta",                                             
                                          TAM_MIN_TITULO,TAM_MAX_TITULO,true);
         if(titulo.equals("")){
             return null;
         }
-        pergunta       = Sistema.inserir(graficos,"Insira a pergunta",                                                       
+        pergunta       = customInput.inserir("Insira a pergunta",                                                       
                                          TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(pergunta.equals("")){
             return null;
         }
-        palavras_chave = Sistema.inserir(graficos,"Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",
+        palavras_chave = customInput.inserir("Insira as palavras-chave dessa pergunta","Exemplo: Brasil política saude",
                                          TAM_MIN_PERGUNTA,TAM_MAX_PERGUNTA,true);
         if(palavras_chave.equals("")){
             return null;
@@ -229,22 +241,22 @@ public class PerguntasAPI {
      * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias perguntas
      * @return a Pergunta que foi propriamente escolhida
      */
-    private static CelulaResposta escolherPergunta(int idUsuario) {
+    private CelulaResposta escolherPergunta(int idUsuario) {
         int id                   = -1;
         Pergunta[] array         = null;
 
         CelulaResposta resultado = new CelulaResposta();
 
-        array = CrudAPI.getPerguntaArray(idUsuario);         
+        array = APIControle.getPerguntaArray(idUsuario);         
 
         if ( array != null ) {
-            id   = PerguntasFrontEnd.escolherPergunta(array);
+            id   = perguntasFrontEnd.escolherPergunta(array);
             if(id != -1)
                 if(id == -3) {
                     resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
                 }
                 else {
-                    resultado.setPergunta(CrudAPI.acharPergunta(id));
+                    resultado.setPergunta(APIControle.acharPergunta(id));
                 }
 
         } else {

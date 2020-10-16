@@ -1,6 +1,6 @@
 package menu;
 
-import menu.sistema.Sistema;
+import menu.sistema.input.Input;
 import menu.sistema.graficos.*;
 
 /**
@@ -9,9 +9,17 @@ import menu.sistema.graficos.*;
  */
 public class Selecao {
     
-    public static ASCIInterface graficos = new ASCIInterface(); // Interface grafica feita em ASCII
+    private ASCIInterface graficos;
+    private Input         input;
 
-    //String com as interfaces dos diferentes menu
+    public Selecao(ASCIInterface graficos,Input input) {
+        this.graficos = graficos;
+        this.input    = input;
+    }
+
+    public ASCIInterface getASCIInterface() {
+        return this.graficos;
+    }
 
     /**
      * Função com o menu de acesso
@@ -111,17 +119,17 @@ public class Selecao {
      * Função com interação a tela de acesso ao sistema
      * @return um char com a opção escolhida pelo usuário
      */
-    public static char Acesso() {
+    public char Acesso() {
 
-        char opcao = 'B';
+        char opcao = '\0';
 
         System.out.print(acessoString());
 
         //Fazendo leitura do teclado
-        opcao = Sistema.lerChar();
+        opcao = input.lerChar();
 
         //limpando a tela
-        ASCIInterface.limparTela();   
+        graficos.limparTela();   
 
         return opcao;
     }
@@ -132,7 +140,7 @@ public class Selecao {
      * @param notificacoes é o numero de notificações que o atual usuário tem
      * @return uma String que corresponde a opção escolhida pelo usuário
      */
-    public static String imprimirTela(byte menuIndex, byte notificacoes) {    
+    public String imprimirTela(byte menuIndex, byte notificacoes) {    
 
             String opcao = "";
 
@@ -177,7 +185,7 @@ public class Selecao {
             }
 
             //Fazendo leitura do teclado
-            opcao = Sistema.lerEntrada();
+            opcao = input.lerString();
 
             //Se o usuario não tenha apenas apertado 'enter' (String vazia)
             if ( opcao.length() != 0 ) {
@@ -185,7 +193,7 @@ public class Selecao {
             }
 
             //limpando a tela
-            ASCIInterface.limparTela();
+            graficos.limparTela();
 
             return opcao;
     }

@@ -1,9 +1,8 @@
 package menu.resposta;
 
-import menu.sistema.CodigoDeProtocolo;
-import menu.sistema.CrudAPI;
+import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
-import menu.sistema.Sistema;
+import menu.sistema.input.CustomInput;
 import produtos.CelulaResposta;
 import produtos.Resposta;
 
@@ -13,26 +12,35 @@ import produtos.Resposta;
  */
 public class RespostaAPI {
 
-    public static ASCIInterface graficos = new ASCIInterface(199, 231 , 232, 184); //interface grafica
+    private final byte        TAM_MIN_RESPOSTA; //Tamanho minimo para as respostas
+    private final byte        TAM_MAX_RESPOSTA; //Tamanho maximo para as respostas
 
-    private static final byte TAM_MIN_RESPOSTA     = 3;                            //Tamanho minimo para as respostas
-    private static final byte TAM_MAX_RESPOSTA     = 100;                          //Tamanho maximo para as respostas
+    private RespostasFrontEnd respostasFrontEnd;
+
+    private CustomInput       customInput;
+
+    public RespostaAPI(byte TAM_MIN_RESPOSTA, byte TAM_MAX_RESPOSTA, RespostasFrontEnd respostasFrontEnd,CustomInput customInput) {
+        this.TAM_MIN_RESPOSTA  = TAM_MIN_RESPOSTA;
+        this.TAM_MAX_RESPOSTA  = TAM_MAX_RESPOSTA;
+
+        this.respostasFrontEnd = respostasFrontEnd;
+    }
 
     /**
      * Função para listar todas as respostas com base na id da Pergunta
      * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
      * @return uma CelulaResposta com os resultados da operação
      */
-    public static CelulaResposta listarRespostasDoGeral(int idPergunta) {
+    public CelulaResposta listarRespostasDoGeral(int idPergunta) {
 
         CelulaResposta resultado = new CelulaResposta();
-        Resposta[] array         = CrudAPI.getRespostaArrayGeral(idPergunta);
+        Resposta[]     array     = APIControle.getRespostaArrayGeral(idPergunta);
 
         if ( array == null ) {
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
         
         } else {
-            System.out.println(RespostasFrontEnd.listarRespostasGeral(array));
+            System.out.println(respostasFrontEnd.listarGeral(array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
@@ -45,16 +53,16 @@ public class RespostaAPI {
      * @param idUsuario é a ID do usuario que será usado como base na pesquisa
      * @return uma CelulaResposta com os resultados da operação
      */
-    public static CelulaResposta listarRespostasDoUsuario(int idPergunta, int idUsuario) {
+    public CelulaResposta listarRespostasDoUsuario(int idPergunta, int idUsuario) {
 
         CelulaResposta resultado = new CelulaResposta();
-        Resposta[] array  = CrudAPI.getRespostaArrayUser(idUsuario);
+        Resposta[] array  = APIControle.getRespostaArrayUser(idUsuario);
 
         if ( array == null ) {
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
         
         } else {
-            System.out.println(RespostasFrontEnd.listarRespostas(array));
+            System.out.println(respostasFrontEnd.listar(array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
@@ -67,13 +75,13 @@ public class RespostaAPI {
      * @param idUsuario é a ID do usuario que fez a requisição
      * @return
      */
-    public static CelulaResposta criarResposta(int idPergunta, int idUsuario) {
+    public CelulaResposta criarResposta(int idPergunta, int idUsuario) {
         String            resposta             = "";
 
         CelulaResposta    resultado            = new CelulaResposta();
         CodigoDeProtocolo confirmarOperacao    = CodigoDeProtocolo.ERRO;
 
-        resposta = Sistema.inserir(graficos,"Insira a sua resposta",TAM_MIN_RESPOSTA,TAM_MAX_RESPOSTA,true);
+        resposta = customInput.inserir("Insira a sua resposta",TAM_MIN_RESPOSTA,TAM_MAX_RESPOSTA,true);
         if(resposta.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
@@ -81,7 +89,7 @@ public class RespostaAPI {
 
         resultado.setResposta(new Resposta(idPergunta, idUsuario, resposta));
 
-        confirmarOperacao = RespostasFrontEnd.verificar(resultado.getResposta());
+        confirmarOperacao = respostasFrontEnd.verificar(resultado.getResposta());
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
@@ -98,7 +106,7 @@ public class RespostaAPI {
      * @param idUsuario é a ID do usuario que fez a requisição
      * @return
     */
-    public static CelulaResposta alterarResposta(int idPergunta, int idUsuario) {
+    public CelulaResposta alterarResposta(int idPergunta, int idUsuario) {
         Resposta              respostaAlterada     = null;
 
         String                resposta             = "";
@@ -116,11 +124,11 @@ public class RespostaAPI {
             return resultado;
         }
 
-        resposta = Sistema.inserir(graficos,"Insira a sua resposta",TAM_MIN_RESPOSTA,TAM_MAX_RESPOSTA,true);
+        resposta = customInput.inserir("Insira a sua resposta",TAM_MIN_RESPOSTA,TAM_MAX_RESPOSTA,true);
 
         respostaAlterada.setResposta(resposta);
 
-        confirmarOperacao = RespostasFrontEnd.verificar(respostaAlterada);
+        confirmarOperacao = respostasFrontEnd.verificar(respostaAlterada);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
@@ -137,7 +145,7 @@ public class RespostaAPI {
      * @param idUsuario é a ID do usuario que fez a requisição
      * @return
     */
-    public static CelulaResposta arquivarResposta(int idPergunta, int idUsuario) {
+    public CelulaResposta arquivarResposta(int idPergunta, int idUsuario) {
 
         Resposta              respostaAlterada  = null;
 
@@ -154,7 +162,7 @@ public class RespostaAPI {
             return resultado;
         }
 
-        confirmarOperacao = RespostasFrontEnd.verificar(respostaAlterada);
+        confirmarOperacao = respostasFrontEnd.verificar(respostaAlterada);
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return null;
@@ -172,22 +180,22 @@ public class RespostaAPI {
      * @param idUsuario é o número que corresponde a ID do usuário que gostaria de escolher uma de suas próprias respostas
      * @return a Resposta que foi propriamente escolhida
      */
-    private static CelulaResposta escolherResposta(int idPergunta, int idUsuario) {
+    private CelulaResposta escolherResposta(int idPergunta, int idUsuario) {
         int id                   = -1;
         Resposta[] array         = null;
 
         CelulaResposta resultado = new CelulaResposta();
 
-        array = CrudAPI.getRespostaArrayUser(idUsuario);       
+        array = APIControle.getRespostaArrayUser(idUsuario);       
 
         if ( array != null ) {
-            id   = RespostasFrontEnd.escolherResposta(array);
+            id   = respostasFrontEnd.escolherResposta(array);
             if(id != -1)
                 if(id == -3) {
                     resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
                 }
                 else {
-                    resultado.setResposta(CrudAPI.acharResposta(id));
+                    resultado.setResposta(APIControle.acharResposta(id));
                 }
 
         } else {
@@ -196,6 +204,5 @@ public class RespostaAPI {
 
         return resultado; 
     }
-
     
 }

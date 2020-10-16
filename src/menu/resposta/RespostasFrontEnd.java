@@ -1,34 +1,46 @@
 package menu.resposta;
 
 import menu.sistema.*;
+import menu.sistema.abstracts.frontend.RegistroVisual;
+import menu.sistema.abstracts.frontend.RegistroVisualResposta;
+import menu.sistema.abstracts.frontend.RegistroVisualplus;
+import menu.sistema.abstracts.frontend.RespostaFrontEndInterface;
+import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
+import menu.sistema.input.Input;
 import produtos.Resposta;
 
-public class RespostasFrontEnd {
+public class RespostasFrontEnd implements RespostaFrontEndInterface{
 
 		//Atributos
-        private static ANSILibrary destaqueData             = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
+        private ANSILibrary   destaqueData;
+        private Input         input;
+        private ASCIInterface graficos;
+
+        public RespostasFrontEnd(ANSILibrary destaqueData,ASCIInterface graficos,Input input) {
+            this.destaqueData = destaqueData;
+            this.input        = input;
+            this.graficos     = graficos;
+        }
 
         /**
          * Função para retornar todas as respostas em um array em formato String
          * @param array é o array de respostas que foi enviado
          * @return a String correspondente a listagem das respostas
          */
-        public static String listarRespostas(Resposta[] array) {
+        public String listar(RegistroVisualplus[] array) {
 
             String  resp     = "";
-
             byte    contador = 1;
 
-            resp += RespostaAPI.graficos.caixa(3,"Respostas");
-
+            resp += graficos.caixa(3,"Respostas");
            
-            for (Resposta i : array) {
+            for (RegistroVisualplus i : array) {
                 if(i.getAtiva() == false) 
                     resp += "\n(Arquivada)";
 
                 resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-                resp += toString(i) + "\n";
+                resp += i.imprimir() + "\n";
                 contador++;
                 
             }
@@ -41,24 +53,24 @@ public class RespostasFrontEnd {
          * @param array é o array de respostas que foi enviado
          * @return a String correspondente a listagem das respostas
          */
-        public static String listarRespostasGeral(Resposta[] array) {
+        public String listarGeral(RegistroVisualResposta[] array) {
 
             String  resp     = "";
             String  nome     = "";
             
             byte    contador = 1;
 
-            resp += RespostaAPI.graficos.caixa(3,"Respostas");
+            resp += graficos.caixa(3,"Respostas");
 
            
-            for (Resposta i : array) {
+            for (RegistroVisualResposta i : array) {
                 if(i.getAtiva() == false) 
                     continue;
 
-                nome = CrudAPI.acharUsuario(i.getIdUsuario()).getNome();
+                nome = APIControle.acharUsuario(i.getIdUsuario()).getNome();
 
                 resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-                resp += toString(i,nome) + "\n";
+                resp += i.imprimir(nome) + "\n";
                 contador++;
                 
             }
@@ -66,24 +78,49 @@ public class RespostasFrontEnd {
             return resp;
         }
 
+        /**
+         * Função para retornar todas as perguntas em um array em formato String de forma simplificada
+         * @param array é o array de perguntas que foi enviado
+         * @return a String correspondente a listagem das perguntas
+         */
+        public String listarSimplificado(RegistroVisualplus[] array) {
+
+            String  resp     = "";
+            byte    contador = 1;
+
+            resp += graficos.caixa(3,"PERGUNTAS");
+
+            for (RegistroVisualplus i : array) {
+                if(i.getAtiva() == false) {
+                    resp += "\n(Arquivada)";
+                }
+
+                resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
+                resp += i.imprimirSimplificado();
+                contador++;
+                
+            }
+    
+            return resp;
+        }
 
         /**
          * Função para fazer a confirmação com o usuário se essa é a resposta que será registrada/alterada/arquivada
          * @param r é a resposta que foi recebida seja qual for a operação
          * @return um codigo de protocolo referente ao resultado da verificacao
          */
-        public static CodigoDeProtocolo verificar(Resposta r) {
+        public CodigoDeProtocolo verificar(RegistroVisual r) {
 
             String              confirmar   = "";
             CodigoDeProtocolo   sucesso     = CodigoDeProtocolo.ERRO;
 
-            System.out.println(RespostaAPI.graficos.caixa("Vamos conferir a sua pergunta") + "\n");
-            System.out.print(toString(r) + 
+            System.out.println(graficos.caixa("Vamos conferir a sua pergunta") + "\n");
+            System.out.print(r.imprimir() + 
                             "\nEssa é a sua pergunta?(s/n) : ");
 
-            confirmar = Sistema.lerEntrada();
+            confirmar = input.lerString();
 
-            ASCIInterface.limparTela();
+            graficos.limparTela();
 
             if(confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
 
@@ -101,16 +138,16 @@ public class RespostasFrontEnd {
          * @param array que é o array de respostas na qual o usuário terá que fazer uma escolha
          * @return o Id da resposta que o usuário escolheu
          */
-        public static int escolherResposta(Resposta[] array) {
+        public int escolherResposta(Resposta[] array) {
 
             byte     entrada          = -1;
             int      indexSelecionado = -1;
     
-            System.out.print(listarRespostas(array) + 
+            System.out.print(listar(array) + 
                             "\nEscolha uma das respostas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
     
-            entrada = Sistema.lerByte();
-            ASCIInterface.limparTela();     
+            entrada = input.lerByte();
+            graficos.limparTela();     
     
             if (array.length > entrada - 1 && entrada - 1 >= 0) {
 
@@ -126,24 +163,4 @@ public class RespostasFrontEnd {
             return indexSelecionado; 
         }
 
-        /**
-         * Função retornar uma String com o conteúdo da resposta r formatado
-         * @param r é a resposta que foi recebida
-         * @return uma String com o conteúdo da resposta
-         */
-        public static String toString(Resposta r) {
-            return destaqueData.imprimir(r.getData()) + "\n"         + 
-                   "\n" + RespostaAPI.graficos.caixa(r.getResposta());
-        }
-
-        /**
-         * Função retornar uma String com o conteúdo da resposta r formatado
-         * @param r é a resposta que foi recebida
-         * @return uma String com o conteúdo da Resposta
-         */
-        public static String toString(Resposta r,String nome) {
-            return "\n" + RespostaAPI.graficos.caixa(r.getResposta())                            +
-                   "Respondida em " + destaqueData.imprimir(r.getData()) + " por " + nome + "\n" +
-                   "Nota: " + r.getNota() + "\n";
-        }
 }

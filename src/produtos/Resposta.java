@@ -14,9 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import crud.Registro;
+import menu.sistema.abstracts.frontend.RegistroVisualResposta;
 
-public class Resposta implements Registro {
+public class Resposta implements RegistroVisualResposta {
 
     private int idResposta;
     private int idPergunta;
@@ -203,6 +203,20 @@ public class Resposta implements Registro {
                 
         
         return dataFormatada.format(SistemaData);
+    }
+
+    public String imprimir() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public String imprimirSimplificado() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String imprimir(String nome) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

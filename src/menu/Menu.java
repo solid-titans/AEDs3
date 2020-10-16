@@ -1,7 +1,8 @@
 package menu;
 
 import menu.sistema.graficos.*;
-import menu.sistema.*;
+import menu.sistema.controle.CodigoDeProtocolo;
+import menu.sistema.controle.APIControle;
 import produtos.CelulaResposta;
 import produtos.Pergunta;
 import produtos.Usuario;
@@ -14,21 +15,22 @@ import menu.pergunta.PerguntasFrontEnd;
  */
 public class Menu {
 
-    private ASCIInterface       graficos;
+    private ASCIInterface graficos;                   //Interface gráfica
 
-    private int                 idUsuario;                  //Id do Usuario que usar o sistema
-    private CrudAPI             minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
+    private int           idUsuario;                  //Id do Usuario que usar o sistema
+    private APIControle   minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
+    private Selecao       selecao;
 
     /**
      * Configura a id do usuário que vai acessar o programa
      * @param id
      */
+    public Menu(ASCIInterface graficos, APIControle minhaAPI,Selecao selecao,int idUsuario) {
 
-    public Menu() {
-
-        idUsuario      = -1;
-        minhaAPI       = new CrudAPI();
-        graficos       = new ASCIInterface();
+        this.idUsuario = idUsuario;
+        this.minhaAPI  = minhaAPI;
+        this.graficos  = graficos;
+        this.selecao   = selecao;
     }
 
     /**
@@ -41,11 +43,11 @@ public class Menu {
 
         CodigoDeProtocolo opcaoEscolhida;
 
-        ASCIInterface.limparTela();
+        graficos.limparTela();
         do {
 
             System.out.println(graficos.caixa("PERGUNTAS 1.0"));
-            opcao          = Selecao.Acesso();
+            opcao          = selecao.Acesso();
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
             //Fazendo a interação com o acesso
@@ -101,7 +103,7 @@ public class Menu {
 
             }
             
-        ASCIInterface.limparTela();
+        graficos.limparTela();
         } while (opcao != '0');
     }
 
@@ -121,10 +123,10 @@ public class Menu {
 
         //Loop do menu
         do {
-            ASCIInterface.limparTela();
+            graficos.limparTela();
 
             System.out.println(graficos.caixa("PERGUNTAS 1.0"));
-            opcao          = Selecao.imprimirTela(menuIndex,notificacoes);
+            opcao          = selecao.imprimirTela(menuIndex,notificacoes);
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
 
@@ -214,7 +216,7 @@ public class Menu {
 
     public CodigoDeProtocolo navegarPergunta(Pergunta p,Usuario u) {
 
-        Selecao.graficos.setBorda(220);
+        selecao.getASCIInterface().setBorda(220);
         
         String opcao = "";
         
@@ -224,11 +226,11 @@ public class Menu {
         CodigoDeProtocolo opcaoEscolhida;
 
         do {
-            ASCIInterface.limparTela();
+            graficos.limparTela();
 
-            System.out.println(PerguntasFrontEnd.toString(p, u.getNome()));
+            System.out.println(p.imprimir());
 
-            opcao = Selecao.imprimirTela(menuIndex,(byte)-1);
+            opcao = selecao.imprimirTela(menuIndex,(byte)-1);
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
 

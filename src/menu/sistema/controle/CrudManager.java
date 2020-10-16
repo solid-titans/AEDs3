@@ -1,17 +1,19 @@
-package menu.sistema;
+package menu.sistema.controle;
+
+import produtos.*;
+import seguranca.GFG;
 
 import java.util.ArrayList;
 
-import produtos.*;
 import crud.*;
-import menu.usuario.UsuarioAPI;
-import menu.pergunta.PerguntasAPI;
 import menu.pergunta.indices.*;
-import menu.resposta.RespostaAPI;
-import seguranca.GFG;
 
-public class CrudAPI {
+public class CrudManager {
 
+
+	//GFG para hashear a senha
+	public GFG hasheador;
+	
 	// Path dos Cruds
 	private final String            path = "Dados";
 
@@ -30,15 +32,11 @@ public class CrudAPI {
 		private static ListaIDs         respostasUsuario;
 		private static ListaIDs 		perguntasRespostas;
 
-	//GFG para hashear a senha
-	public static GFG hasheador = new GFG(1000);
-	
-	/**
-	 * 	Construtor 1: iniciar todos os bancos de dados que o programa precisa
-	 */
-    public CrudAPI() {
-        
-        try {
+	public CrudManager() {
+
+		this.hasheador = new GFG(1000);
+
+		try {
 			//Usuarios
             usuarios           = new Crud<>("Usuarios",  Usuario.class.getConstructor());
 			perguntasUsuario   = new ListaIDs(this.path + "/" + "perguntasUsuarioIDs");
@@ -55,162 +53,7 @@ public class CrudAPI {
             
         } catch(Exception e) { e.printStackTrace(); }
 	}
-	
-	/**
-	 * Função para verificar o pedido do usuário enquanto ele estiver na tela de Acesso
-	 * @param cdp é o Codigo referente a ação que o usuário quer
-	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
-	 */
-	public CelulaResposta verificarRequisicaoEmAcesso(CodigoDeProtocolo cdp ) {
-		CelulaResposta cr = new CelulaResposta();
-
-		switch(cdp) {
-
-			case ACESSOAOSISTEMA: //Pedir para acessar o sistema
-				cr = UsuarioAPI.acessarAoSistema();
-				break;
-
-			case CRIARNOVOUSUARIO: // Criar um novo usuário no banco de dados
-				cr = UsuarioAPI.criarNovoUsuario();
-				if(cr.getUsuario() != null) 
-					inserirNovoUsuarioNoCrud(cr.getUsuario());
-
-				break;
-
-			case CRIARSENHATEMPORARIA: 
-				cr = UsuarioAPI.criarSenhaTemporaria();
-				if( cr.getUsuario() != null) 
-					atualizarCredenciaisDoUsuario(cr.getUsuario());
-
-				break;   
-			default:
-				break;                    
-
-		}
-		
-		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
-
-		return cr;
-	}
-
-	/**
-	 * Função para verificar o pedido do usuário enquanto ele estiver logado no programa
-	 * @param cdp é o Codigo referente a ação que o usuário quer
-	 * @param idUsuario é o codigo do usuário que fez a requisição
-	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
-	 */
-	public CelulaResposta verificarRequisicaoDoUsuario(CodigoDeProtocolo cdp, int idUsuario) {
-		CelulaResposta cr = new CelulaResposta();
-
-		switch(cdp) {
-
-			case CONSULTARPERGUNTAS: // Indo para a tela de consultar/responder perguntas
-				cr = PerguntasAPI.consultarPerguntaPelaPalavraChave(idUsuario);
-				if (cr.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) {
-					Usuario u = acharUsuario(cr.getPergunta().getIdUsuario());
-					if(u != null)
-						cr.setUsuario(u);
-				}
-
-				break;
-
-			case OLHARNOTIFICACOES: // Verificar suas notificacoes
-				System.out.println("Olha so as notificacoes");
-				break;
-
-			case NOVASENHA: 
-				cr = UsuarioAPI.criarNovaSenha(idUsuario);
-				if(cr.getUsuario() != null) 
-					atualizarCredenciaisDoUsuario(cr.getUsuario());
-
-				break;                       
-
-			case LISTARPERGUNTAS: // Listando as perguntas do usuario atual
-				cr = PerguntasAPI.listarPerguntas(idUsuario);
-				break;
-
-			case NOVAPERGUNTA: // Incluindo uma nova pergunta
-				cr = PerguntasAPI.criarPergunta(idUsuario);
-				if(cr.getPergunta() != null) 
-					novaPergunta(cr.getPergunta(), idUsuario);
-
-				break;
-
-			case ALTERARPERGUNTA: // Alterando uma pergunta atual
-				cr = PerguntasAPI.alterarPergunta(idUsuario);
-				if(cr.getPergunta() != null) 
-					atualizarPergunta(cr.getPergunta());	
-
-				break;
-
-			case ARQUIVARPERGUNTA: // Arquivando as perguntas
-				cr = PerguntasAPI.arquivarPergunta(idUsuario);
-				if(cr.getPergunta() != null) 
-					desativarPergunta(cr.getPergunta());
-
-				break;
-			default:
-				break;
-
-		}
-
-		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
-
-		return cr;
-	}
-
-	/**
-	 * Função para verificar o pedido do usuário enquanto ele estiver na tela de Consultar Pergunta
-	 * @param cdp é o Codigo referente a ação que o usuário quer
-	 * @return é o Codigo correspondente ao resultado da operação realizada pelo usuário
-	 */
-	public CelulaResposta verificarRequisicaoEmPergunta(CodigoDeProtocolo cdp, int idPergunta,int idUsuario) {
-		CelulaResposta cr = new CelulaResposta();
-
-		switch(cdp) {
-
-			case LISTARCOMENTARIOSGERAL:
-				System.out.println("Comentarios...");
-				break;
-
-			case LISTARRESPOSTASGERAL:
-				cr = RespostaAPI.listarRespostasDoGeral(idPergunta);
-				break;
-
-			case LISTARRESPOSTASUSUARIO: //Pedir para acessar o sistema
-				cr = RespostaAPI.listarRespostasDoUsuario(idPergunta,idUsuario);
-				break;
-
-			case INCLUIRRESPOSTA: // Criar um novo usuário no banco de dados
-				cr = RespostaAPI.criarResposta(idPergunta,idUsuario);
-				if(cr.getResposta() != null) 
-					novaResposta(cr.getResposta(), idPergunta);
-
-				break;
-
-			case ALTERARRESPOSTA: 
-				cr = RespostaAPI.alterarResposta(idPergunta,idUsuario);
-				if( cr.getResposta() != null) 
-					atualizarResposta(cr.getResposta());
-
-				break;    
-
-			case ARQUIVARRESPOSTA: 
-				cr = RespostaAPI.arquivarResposta(idPergunta,idUsuario);
-				if( cr.getResposta() != null) 
-					atualizarResposta(cr.getResposta());
-
-				break;
-				       
-			default:
-				break;              
-		}
-		
-		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
-
-		return cr;
-	}
-
+    
 	/*
 	*	Funções do CRUD de usuário
 	*/
@@ -220,14 +63,16 @@ public class CrudAPI {
 	 * @param u é o usuário que é para ser registrado
 	 * @return um numero inteiro correspondendo ao ID do novo usuário
 	 */
-    public int inserirNovoUsuarioNoCrud(Usuario u) { return usuarios.create(u); }
+    public int inserirNovoUsuarioNoCrud(Usuario u) { 
+		return usuarios.create(u); 
+	}
 
 	/**
 	 * Função para encontrar um usuário a partir do email
 	 * @param email é a String contendo o email
 	 * @return o usuário caso ele foi encontrado
 	 */
-    public static Usuario acharUsuario(String email) {
+    public Usuario acharUsuario(String email) {
         Usuario resp = null;
 
         try {
@@ -243,7 +88,7 @@ public class CrudAPI {
 	 * @param idUsuario é o numero inteiro que corresponde ao ID do usuário a ser procurado
 	 * @return o usuário caso ele foi encontrado
 	 */
-    public static Usuario acharUsuario(int idUsuario) {
+    public Usuario acharUsuario(int idUsuario) {
         Usuario resp = null;
 
         try {
@@ -285,7 +130,7 @@ public class CrudAPI {
 	 * @param id que é a ID da pergunta
 	 * @return a pergunta correspondente a ID (caso ela exista)
 	 */
-	public static Pergunta acharPergunta(int id) {
+	public Pergunta acharPergunta(int id) {
 		Pergunta p = null;
 		try {
 			p = perguntas.read(id);
@@ -321,7 +166,7 @@ public class CrudAPI {
 	 * @param idUsuario que for mandada
 	 * @return array de perguntas do idUsuario(se ele tiver registrado)
 	 */
-	public static Pergunta[] getPerguntaArray(int idUsuario) {
+	public Pergunta[] getPerguntaArray(int idUsuario) {
 		Pergunta[]   resp  		     = null;
 		int[] 	     idsPerguntas    = null;
 		
@@ -353,7 +198,7 @@ public class CrudAPI {
 	 * @param idUsuario que é a ID do usuário que fez o pedido para pesquisar
 	 * @return um array de perguntas com as palavrasChave enviada
 	 */
-	public static Pergunta[] getPerguntasPalavrasChave(String[] palavrasChave,int idUsuario) {
+	public Pergunta[] getPerguntasPalavrasChave(String[] palavrasChave,int idUsuario) {
 		ArrayList<Pergunta> array = new ArrayList<>();
 		Pergunta[] resp 		  = null;
 

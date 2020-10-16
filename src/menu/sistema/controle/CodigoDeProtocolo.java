@@ -1,4 +1,4 @@
-package menu.sistema;
+package menu.sistema.controle;
 
 /**
  * Classe para armazenar todos os comandos para as API processar além de gerenciar seus respectivos resultados de resposta ao usuário
@@ -82,6 +82,5 @@ public enum CodigoDeProtocolo {
                 System.out.println("Erro! Operação desconhecida");
 
         }
-        Sistema.esperarUsuario();
     }
 }

@@ -2,7 +2,11 @@ package menu.usuario;
 
 import produtos.*;
 import menu.sistema.*;
+import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
+import menu.sistema.input.CustomInput;
+import menu.sistema.misc.Email;
+import menu.sistema.misc.Regex;
 
 /**
  * Classe para gerenciar todas as funções de controle de Usuário
@@ -10,40 +14,55 @@ import menu.sistema.graficos.*;
  */
 public class UsuarioAPI {
 
-    public static ASCIInterface graficos               = new ASCIInterface(202, 231 , 232, 184);
+    private final byte       TAM_MIN_EMAIL; //Tamanho mínimo do email
+    private final byte       TAM_MAX_EMAIL; //Tamanho máximo do email
 
-    private static final byte   TAMANHO_MINIMO_EMAIL   = 10;    //Tamanho mínimo do email
-    private static final byte   TAMANHO_MAXIMO_EMAIL   = 50;    //Tamanho máximo do email
+    private final byte       TAM_MIN_NOME;  //Tamanho mínimo do nome
+    private final byte       TAM_MAX_NOME;  //Tamanho máximo do nome
 
-    private static final byte   TAMANHO_MINIMO_NOME    = 3;     //Tamanho mínimo do nome
-    private static final byte   TAMANHO_MAXIMO_NOME    = 25;    //Tamanho máximo do nome
+    private UsuariosFrontEnd usuariosFrontEnd;
+
+    private CustomInput      customInput;
+
+    public UsuarioAPI(byte TAM_MIN_EMAIL,byte TAM_MAX_EMAIL, byte TAM_MIN_NOME,byte TAM_MAX_NOME, UsuariosFrontEnd usuariosFrontEnd,CustomInput customInput) {
+
+        this.TAM_MIN_EMAIL    = TAM_MIN_EMAIL;
+        this.TAM_MAX_EMAIL    = TAM_MAX_EMAIL;
+
+        this.TAM_MIN_NOME     = TAM_MIN_NOME;
+        this.TAM_MAX_NOME     = TAM_MAX_NOME;
+
+        this.usuariosFrontEnd = usuariosFrontEnd;
+
+        this.customInput      = customInput;
+    }
 
     /**
      * Função para tentar ao acessar o sistema
      * @return uma CelulaResposta com os resultados da operação armazenada
      */
-    public static CelulaResposta acessarAoSistema() {
-        String email                    = "";
+    public CelulaResposta acessarAoSistema() {
+        String            email         = "";
 
-        CelulaResposta resultado        = new CelulaResposta();
+        CelulaResposta    resultado     = new CelulaResposta();
 
         CodigoDeProtocolo acertouAsenha = CodigoDeProtocolo.ERRO;
 
         Usuario           usuarioAcesso = null;
 
-        email = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,false);
+        email = customInput.inserir("Insira o seu email",TAM_MIN_EMAIL,TAM_MAX_EMAIL,false);
         if(email.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
         }
-        else if(CrudAPI.acharUsuario(email) == null) {
+        else if(APIControle.acharUsuario(email) == null) {
             System.err.println("Erro! E-mail inválido");
             return resultado;
         }
 
-        usuarioAcesso = CrudAPI.acharUsuario(email);
+        usuarioAcesso = APIControle.acharUsuario(email);
 
-        acertouAsenha = UsuariosFrontEnd.inserirSenha(usuarioAcesso.getSenha(),3);
+        acertouAsenha = usuariosFrontEnd.inserirSenha(usuarioAcesso.getSenha(),3);
         if(acertouAsenha == CodigoDeProtocolo.ERRO) {
             System.err.println("Erro! Você passou todas as suas tentativas");
             return resultado;
@@ -63,7 +82,7 @@ public class UsuarioAPI {
      * Função para a criação de um novo usuário ao CRUD
      * @return uma CelulaResposta com os resultados da operação armazenada
      */
-    public static CelulaResposta criarNovoUsuario() {
+    public CelulaResposta criarNovoUsuario() {
 
         String email                        = "";
         String nome                         = "";
@@ -73,42 +92,42 @@ public class UsuarioAPI {
 
         CelulaResposta resultado            = new CelulaResposta();
 
-        email = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,true);
+        email = customInput.inserir("Insira o seu email",TAM_MIN_EMAIL,TAM_MAX_EMAIL,true);
         if (email.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
 
-        } else if(CrudAPI.acharUsuario(email) != null ) {
+        } else if(APIControle.acharUsuario(email) != null ) {
             System.err.println("Erro! Esse email já possui uma conta registrada");
             return resultado;
 
-        } else if(!Sistema.verificarEmail(email)) {
+        } else if(!Regex.verificarEmail(email)) {
             System.err.println("Erro! Esse email é inválido");
             return resultado;
 
         }
 
-        nome = Sistema.inserir(graficos,"Insira o nome do usuário",TAMANHO_MINIMO_NOME,TAMANHO_MAXIMO_NOME,true);
+        nome = customInput.inserir("Insira o nome do usuário",TAM_MIN_NOME,TAM_MAX_NOME,true);
         if(nome.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
         } 
 
-        senha = UsuariosFrontEnd.novaSenha();
+        senha = usuariosFrontEnd.novaSenha();
         if(senha.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
         } 
 
         resultado.setUsuario(new Usuario(nome,email,senha));
-        confirmarOperacao     = UsuariosFrontEnd.verificar(resultado.getUsuario());
+        confirmarOperacao = usuariosFrontEnd.verificar(resultado.getUsuario());
 
         if(confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
         }
 
-        resultado.getUsuario().setSenha(CrudAPI.hasheador.hash(senha));
+        resultado.getUsuario().setSenha(APIControle.hasheador.hash(senha));
         resultado.setCdp(CodigoDeProtocolo.SUCESSO);
 
         return resultado;
@@ -118,26 +137,26 @@ public class UsuarioAPI {
      * Função para registrar uma senha temporária ao usuário com um email que o mesmo inserir
      * @return uma CelulaResposta com os resultados da operação armazenada
      */
-    public static CelulaResposta criarSenhaTemporaria() {
+    public CelulaResposta criarSenhaTemporaria() {
         String email             = "";
         String senhaTemporaria   = "";
 
         CelulaResposta resultado = new CelulaResposta();
 
-        email = Sistema.inserir(graficos,"Insira o seu email",TAMANHO_MINIMO_EMAIL,TAMANHO_MAXIMO_EMAIL,false);
+        email = customInput.inserir("Insira o seu email",TAM_MIN_EMAIL,TAM_MAX_EMAIL,false);
         if (email.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return null;
         }
-        if(CrudAPI.acharUsuario(email) == null) {
+        if(APIControle.acharUsuario(email) == null) {
             System.err.println("Erro! E-mail inválido");
             return null;
         }
 
-        senhaTemporaria = Sistema.gerarSenha();
-        resultado.setUsuario(CrudAPI.acharUsuario(email));
-        Sistema.escreverEmail(senhaTemporaria, resultado.getUsuario().getNome());
-        resultado.getUsuario().setSenha(CrudAPI.hasheador.hash(senhaTemporaria));
+        senhaTemporaria = Regex.gerarSenha();
+        resultado.setUsuario(APIControle.acharUsuario(email));
+        Email.escreverEmail(senhaTemporaria, resultado.getUsuario().getNome());
+        resultado.getUsuario().setSenha(APIControle.hasheador.hash(senhaTemporaria));
 
         resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         System.out.println("Um email foi enviado a você com a sua senha temporaria\n(Obs: Olhe a pasta do projeto)");
@@ -149,14 +168,14 @@ public class UsuarioAPI {
      * Função para o usuário registrar uma nova senha para ele mesmo
      * @return uma CelulaResposta com os resultados da operação armazenada
      */
-    public static CelulaResposta criarNovaSenha(int idUsuario) {
+    public CelulaResposta criarNovaSenha(int idUsuario) {
         String            novaSenha     = "";
         CodigoDeProtocolo acertouAsenha = CodigoDeProtocolo.ERRO;
 
         CelulaResposta resultado        = new CelulaResposta();
 
-        resultado.setUsuario(CrudAPI.acharUsuario(idUsuario));
-        acertouAsenha = UsuariosFrontEnd.inserirSenha(resultado.getUsuario().getSenha(),3);
+        resultado.setUsuario(APIControle.acharUsuario(idUsuario));
+        acertouAsenha = usuariosFrontEnd.inserirSenha(resultado.getUsuario().getSenha(),3);
 
         if(acertouAsenha == CodigoDeProtocolo.ERRO) {
             System.err.println("Erro! Senhas não se correspondem!");
@@ -167,8 +186,8 @@ public class UsuarioAPI {
             return null;
         }
 
-        novaSenha = UsuariosFrontEnd.novaSenha();
-        resultado.getUsuario().setSenha(CrudAPI.hasheador.hash(novaSenha));
+        novaSenha = usuariosFrontEnd.novaSenha();
+        resultado.getUsuario().setSenha(APIControle.hasheador.hash(novaSenha));
         resultado.setCdp(CodigoDeProtocolo.SUCESSO);
 
         return resultado;

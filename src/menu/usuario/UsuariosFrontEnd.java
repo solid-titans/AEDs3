@@ -1,23 +1,36 @@
 package menu.usuario;
 
 import produtos.*;
-import menu.sistema.CodigoDeProtocolo;
-import menu.sistema.Sistema;
-import menu.sistema.CrudAPI;
+import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
+import menu.sistema.input.CustomInput;
+import menu.sistema.input.Input;
+import menu.sistema.misc.Regex;
+import menu.sistema.abstracts.frontend.FrontEnd;
+import menu.sistema.abstracts.frontend.RegistroVisual;
 
 /**
  * Classe para administrar casos específicos da admnistração visual dos Usuários
  * @author MysteRys337 (Gustavo Lopes)
  */
-public class UsuariosFrontEnd {
+public class UsuariosFrontEnd implements FrontEnd {
     
     //Variaveis de controle de grafico
-    private static ANSILibrary   destaque  = new ANSILibrary(15, 124, ANSILibrary.TEXTO_SUBLINHADO);
-    private static ANSILibrary   destaque2 = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
+    private ASCIInterface graficos;
     
-    private static final byte   TAMANHO_MINIMO_SENHA   = 3;
-    private static final byte   TAMANHO_MAXIMO_SENHA   = 50;
+    private final byte    TAM_MIN_SENHA;
+    private final byte    TAM_MAX_SENHA;
+
+    private CustomInput   customInput;
+
+    public UsuariosFrontEnd(ASCIInterface graficos, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA,CustomInput customInput) {
+        this.TAM_MIN_SENHA = TAM_MIN_SENHA;
+        this.TAM_MAX_SENHA = TAM_MAX_SENHA;
+
+        this.graficos      = graficos;
+
+        this.customInput   = customInput;
+    }
 
     /**
      * Função para dar n tentativas ao usuário de inserir a senha
@@ -25,31 +38,31 @@ public class UsuariosFrontEnd {
      * @param tentativas é a quantidade de tentativas que o loop irá permitir
      * @return um codigo de protocolo referente ao resultado da verificacao
      */
-    public static CodigoDeProtocolo inserirSenha(String senhaDoUsuario,int tentativas) {
+    public CodigoDeProtocolo inserirSenha(String senhaDoUsuario,int tentativas) {
         String            entradaDoUsuario   = "";
         CodigoDeProtocolo sucesso            = CodigoDeProtocolo.ERRO;
   
         do {         
-            entradaDoUsuario = Sistema.inserir(UsuarioAPI.graficos,"Insira a senha","\nNumero de tentativas : " + tentativas,TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,false);
+            entradaDoUsuario = customInput.inserir("Insira a senha","\nNumero de tentativas : " + tentativas,TAM_MIN_SENHA,TAM_MAX_SENHA,false);
             if(entradaDoUsuario.equals("")) {
                 sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
                 return sucesso;
             }
   
-            ASCIInterface.limparTela();
+            graficos.limparTela();
 
-            if(!CrudAPI.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario)) {
+            if(!APIControle.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario)) {
 
                 tentativas--;
                 System.err.println("Erro! As senhas não são iguais!");
-                Sistema.esperarUsuario();
-                ASCIInterface.limparTela();
+                customInput.esperarUsuario();
+                graficos.limparTela();
 
             } else {
                 sucesso = CodigoDeProtocolo.SUCESSO;
             }
 
-        } while(!CrudAPI.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario) && tentativas > 0);
+        } while(!APIControle.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario) && tentativas > 0);
   
         return sucesso;
     }
@@ -58,7 +71,7 @@ public class UsuariosFrontEnd {
      * Função para dar o usuário a oportunidade de inserir uma senha
      * @return a senha que o usuário inseriu
      */
-    public static String novaSenha() {
+    public String novaSenha() {
         String senha          = "";
         String confirmarSenha = "";
         byte forcaDaSenha     = -1;
@@ -66,17 +79,17 @@ public class UsuariosFrontEnd {
         boolean senhasIguais  = false;
 
         do {
-            senha          = Sistema.inserir(UsuarioAPI.graficos, "Criando senha",TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,true);
+            senha = customInput.inserir("Criando senha",TAM_MIN_SENHA,TAM_MAX_SENHA,true);
             if(senha.equals("")) {
                 return "";
             }
-            confirmarSenha = Sistema.inserir(UsuarioAPI.graficos, "Confirmar senha",TAMANHO_MINIMO_SENHA,TAMANHO_MAXIMO_SENHA,false);
+            confirmarSenha = customInput.inserir("Confirmar senha",TAM_MIN_SENHA,TAM_MAX_SENHA,false);
             if(confirmarSenha.equals("")) {
                 return "";
             }            
 
-            ASCIInterface.limparTela();
-            forcaDaSenha = Sistema.verificarSenha(senha);
+            graficos.limparTela();
+            forcaDaSenha = Regex.verificarSenha(senha);
             senhasIguais = senha.equals(confirmarSenha);
 
             if ( senhasIguais == false ) {
@@ -95,8 +108,8 @@ public class UsuariosFrontEnd {
                                 "Obs: Recomendamos no mínimo uma senha de força 3.\n" +                                      
                                 "Pressione \"Enter\" para continuar...");
 
-                Sistema.lerEntrada();
-                ASCIInterface.limparTela();
+                customInput.lerString();
+                graficos.limparTela();
             }
         } while( senhasIguais == false || forcaDaSenha <= 2);;
 
@@ -108,17 +121,17 @@ public class UsuariosFrontEnd {
      * @param novoUsuario é o usuário a ser conferido
      * @return um codigo de protocolo referente ao resultado da verificacao
      */
-    public static CodigoDeProtocolo verificar(Usuario novoUsuario) {
+    public CodigoDeProtocolo verificar(RegistroVisual novoUsuario) {
         CodigoDeProtocolo sucesso     = CodigoDeProtocolo.ERRO;
         String            confirmar   = "";
 
-        System.out.print(UsuarioAPI.graficos.caixa("Vamos então verificar os seus dados!") + "\n" + 
-                                           imprimirUsuario(novoUsuario)                  +
-                                           "\nEstá tudo de acordo?(s/n) : "       );
+        System.out.print(graficos.caixa("Vamos então verificar os seus dados!") + "\n" + 
+                                        novoUsuario.imprimir()                  +
+                                        "\nEstá tudo de acordo?(s/n) : "       );
 
-        confirmar = Sistema.lerEntrada();
+        confirmar = customInput.lerString();
 
-        ASCIInterface.limparTela();
+        graficos.limparTela();
         if(confirmar.equals("") || confirmar.toLowerCase().equals("s")) {
 
             sucesso = CodigoDeProtocolo.SUCESSO;
@@ -130,18 +143,6 @@ public class UsuariosFrontEnd {
         }
 
         return sucesso;
-    }
-
-    /**
-     * Função para imprimir o usuário de forma customizada
-     * @param u é o usuario a ser imprimido
-     * @return a String que corresponde ao usuário
-     */
-    public static String imprimirUsuario(Usuario u) {
-        return   "\n" +
-        destaque.imprimir("Email:           ") + destaque2.imprimir(u.getEmail())     + "\n\n" +
-        destaque.imprimir("Nome de usuário: ") + destaque2.imprimir(u.getNome())      + "\n\n" +
-        destaque.imprimir("Senha:           ") + destaque2.imprimir(u.getSenha())     + "\n\n";
     }
 
 }

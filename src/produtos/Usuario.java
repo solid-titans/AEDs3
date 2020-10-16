@@ -1,6 +1,6 @@
 /*
 * Registro de usuario para ser usado no CRUD
-*/ 
+*/
 
 package produtos;
 
@@ -10,9 +10,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import crud.Registro;
+import menu.sistema.abstracts.frontend.RegistroVisual;
 
-public class Usuario implements Registro {
+public class Usuario implements RegistroVisual {
     private String nome;
     private String email;
     private String senha;
@@ -74,6 +74,10 @@ public class Usuario implements Registro {
         return this.senha;
     }
 
+    public String imprimir() {
+        return null;
+    }
+
     /*  Serializar objeto
     *   Faz uso do ByteArrayOutputStream e do DataOutputStream
     *   para armazenar os dados do usuário dentro de um array
@@ -106,14 +110,8 @@ public class Usuario implements Registro {
         this.email     = data.readUTF();
     }
 
-    //Imprimir os dados do usuário
-    /*
-    *   Organiza os dados do usuário(com exceção da senha)
-    *   para dentro de uma String e retorna essa String.
-    */
-    public String toString() {
-        return  "ID: "               + this.idUsuario + "\n" +
-                "Nome de usuário: "  + this.nome      + "\n" +
-                "Email: "            + this.email     + "\n";
+    public boolean getAtiva() {
+        return false;
     }
+
 }
