@@ -8,8 +8,8 @@ public class Main {
         File directorioDados = new File("Dados");
         if(!directorioDados.exists()) directorioDados.mkdir();
 
-        Menu m = new Menu();
-        m.Inicio();
+       //Menu m = new Menu();
+       // m.Inicio();
     }
 
 }

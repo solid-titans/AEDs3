@@ -12,7 +12,7 @@ import menu.sistema.misc.Regex;
  * Classe para gerenciar todas as funções de controle de Usuário
  * @author MysteRys337 ( Gustavo Lopes )
  */
-public class UsuarioAPI {
+public class UsuariosAPI {
 
     private final byte       TAM_MIN_EMAIL; //Tamanho mínimo do email
     private final byte       TAM_MAX_EMAIL; //Tamanho máximo do email
@@ -24,7 +24,7 @@ public class UsuarioAPI {
 
     private CustomInput      customInput;
 
-    public UsuarioAPI(byte TAM_MIN_EMAIL,byte TAM_MAX_EMAIL, byte TAM_MIN_NOME,byte TAM_MAX_NOME, UsuariosFrontEnd usuariosFrontEnd,CustomInput customInput) {
+    public UsuariosAPI(byte TAM_MIN_EMAIL,byte TAM_MAX_EMAIL, byte TAM_MIN_NOME,byte TAM_MAX_NOME, UsuariosFrontEnd usuariosFrontEnd,CustomInput customInput) {
 
         this.TAM_MIN_EMAIL    = TAM_MIN_EMAIL;
         this.TAM_MAX_EMAIL    = TAM_MAX_EMAIL;

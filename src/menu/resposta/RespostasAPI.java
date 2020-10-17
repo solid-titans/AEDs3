@@ -10,7 +10,7 @@ import produtos.Resposta;
  * Classe para gerenciar as Respostas
  * @author MysteRys337 (Gustavo Lopes)
  */
-public class RespostaAPI {
+public class RespostasAPI {
 
     private final byte        TAM_MIN_RESPOSTA; //Tamanho minimo para as respostas
     private final byte        TAM_MAX_RESPOSTA; //Tamanho maximo para as respostas
@@ -19,7 +19,7 @@ public class RespostaAPI {
 
     private CustomInput       customInput;
 
-    public RespostaAPI(byte TAM_MIN_RESPOSTA, byte TAM_MAX_RESPOSTA, RespostasFrontEnd respostasFrontEnd,CustomInput customInput) {
+    public RespostasAPI(byte TAM_MIN_RESPOSTA, byte TAM_MAX_RESPOSTA, RespostasFrontEnd respostasFrontEnd,CustomInput customInput) {
         this.TAM_MIN_RESPOSTA  = TAM_MIN_RESPOSTA;
         this.TAM_MAX_RESPOSTA  = TAM_MAX_RESPOSTA;
 

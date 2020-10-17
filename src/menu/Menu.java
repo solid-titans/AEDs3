@@ -6,7 +6,6 @@ import menu.sistema.controle.APIControle;
 import produtos.CelulaResposta;
 import produtos.Pergunta;
 import produtos.Usuario;
-import menu.pergunta.PerguntasFrontEnd;
 
 /**
  * Classe para gerenciar as escolhas do usuário e a comunicação com a CrudAPI

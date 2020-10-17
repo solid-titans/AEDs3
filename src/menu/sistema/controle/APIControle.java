@@ -1,16 +1,31 @@
 package menu.sistema.controle;
 
-import java.util.ArrayList;
-
-import produtos.*;
-import crud.*;
-import menu.usuario.UsuarioAPI;
+import menu.usuario.UsuariosAPI;
+import produtos.CelulaResposta;
 import menu.pergunta.PerguntasAPI;
-import menu.pergunta.indices.*;
-import menu.resposta.RespostaAPI;
-import seguranca.GFG;
+import menu.resposta.RespostasAPI;
+import menu.sistema.controle.crudmanagers.*;
 
 public class APIControle {
+
+	UsuariosAPI   usuariosAPI;
+	PerguntasAPI  perguntasAPI;
+	RespostasAPI  respostasAPI;
+
+	UsuariosCRUD  usuariosCRUD;
+	PerguntasCRUD perguntasCRUD;
+	RespostasCRUD respostasCRUD;
+
+	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI, UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD) {
+
+		this.usuariosAPI   = usuariosAPI;
+		this.perguntasAPI  = perguntasAPI;
+		this.respostasAPI  = respostasAPI;
+
+		this.usuariosCRUD  = usuariosCRUD;
+		this.perguntasCRUD = perguntasCRUD;
+		this.respostasCRUD = respostasCRUD;
+	}
 	
 	/**
 	 * Função para verificar o pedido do usuário enquanto ele estiver na tela de Acesso
@@ -23,20 +38,20 @@ public class APIControle {
 		switch(cdp) {
 
 			case ACESSOAOSISTEMA: //Pedir para acessar o sistema
-				cr = UsuarioAPI.acessarAoSistema();
+				cr = usuariosAPI.acessarAoSistema();
 				break;
 
 			case CRIARNOVOUSUARIO: // Criar um novo usuário no banco de dados
-				cr = UsuarioAPI.criarNovoUsuario();
+				cr = usuariosAPI.criarNovoUsuario();
 				if(cr.getUsuario() != null) 
-					inserirNovoUsuarioNoCrud(cr.getUsuario());
+					usuariosCRUD.inserir(cr.getUsuario());
 
 				break;
 
 			case CRIARSENHATEMPORARIA: 
-				cr = UsuarioAPI.criarSenhaTemporaria();
+				cr = usuariosAPI.criarSenhaTemporaria();
 				if( cr.getUsuario() != null) 
-					atualizarCredenciaisDoUsuario(cr.getUsuario());
+					usuariosCRUD.atualizar(cr.getUsuario());
 
 				break;   
 			default:
@@ -61,11 +76,9 @@ public class APIControle {
 		switch(cdp) {
 
 			case CONSULTARPERGUNTAS: // Indo para a tela de consultar/responder perguntas
-				cr = PerguntasAPI.consultarPerguntaPelaPalavraChave(idUsuario);
+				cr = perguntasAPI.consultarPerguntaPelaPalavraChave(idUsuario);
 				if (cr.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) {
-					Usuario u = acharUsuario(cr.getPergunta().getIdUsuario());
-					if(u != null)
-						cr.setUsuario(u);
+					cr.setUsuario(usuariosCRUD.achar(cr.getPergunta().getIdUsuario()));
 				}
 
 				break;
@@ -75,34 +88,34 @@ public class APIControle {
 				break;
 
 			case NOVASENHA: 
-				cr = UsuarioAPI.criarNovaSenha(idUsuario);
+				cr = usuariosAPI.criarNovaSenha(idUsuario);
 				if(cr.getUsuario() != null) 
-					atualizarCredenciaisDoUsuario(cr.getUsuario());
+					usuariosCRUD.atualizar(cr.getUsuario());
 
 				break;                       
 
 			case LISTARPERGUNTAS: // Listando as perguntas do usuario atual
-				cr = PerguntasAPI.listarPerguntas(idUsuario);
+				cr = perguntasAPI.listarPerguntas(idUsuario);
 				break;
 
 			case NOVAPERGUNTA: // Incluindo uma nova pergunta
-				cr = PerguntasAPI.criarPergunta(idUsuario);
+				cr = perguntasAPI.criarPergunta(idUsuario);
 				if(cr.getPergunta() != null) 
-					novaPergunta(cr.getPergunta(), idUsuario);
+					perguntasCRUD.inserir(cr.getPergunta(), idUsuario);
 
 				break;
 
 			case ALTERARPERGUNTA: // Alterando uma pergunta atual
-				cr = PerguntasAPI.alterarPergunta(idUsuario);
+				cr = perguntasAPI.alterarPergunta(idUsuario);
 				if(cr.getPergunta() != null) 
-					atualizarPergunta(cr.getPergunta());	
+					perguntasCRUD.atualizar(cr.getPergunta());	
 
 				break;
 
 			case ARQUIVARPERGUNTA: // Arquivando as perguntas
-				cr = PerguntasAPI.arquivarPergunta(idUsuario);
+				cr = perguntasAPI.arquivarPergunta(idUsuario);
 				if(cr.getPergunta() != null) 
-					desativarPergunta(cr.getPergunta());
+					perguntasCRUD.desativar(cr.getPergunta());
 
 				break;
 			default:
@@ -130,31 +143,31 @@ public class APIControle {
 				break;
 
 			case LISTARRESPOSTASGERAL:
-				cr = RespostaAPI.listarRespostasDoGeral(idPergunta);
+				cr = respostasAPI.listarRespostasDoGeral(idPergunta);
 				break;
 
 			case LISTARRESPOSTASUSUARIO: //Pedir para acessar o sistema
-				cr = RespostaAPI.listarRespostasDoUsuario(idPergunta,idUsuario);
+				cr = respostasAPI.listarRespostasDoUsuario(idPergunta,idUsuario);
 				break;
 
 			case INCLUIRRESPOSTA: // Criar um novo usuário no banco de dados
-				cr = RespostaAPI.criarResposta(idPergunta,idUsuario);
+				cr = respostasAPI.criarResposta(idPergunta,idUsuario);
 				if(cr.getResposta() != null) 
-					novaResposta(cr.getResposta(), idPergunta);
+					respostasCRUD.inserir(cr.getResposta(), idPergunta);
 
 				break;
 
 			case ALTERARRESPOSTA: 
-				cr = RespostaAPI.alterarResposta(idPergunta,idUsuario);
+				cr = respostasAPI.alterarResposta(idPergunta,idUsuario);
 				if( cr.getResposta() != null) 
-					atualizarResposta(cr.getResposta());
+					respostasCRUD.atualizar(cr.getResposta());
 
 				break;    
 
 			case ARQUIVARRESPOSTA: 
-				cr = RespostaAPI.arquivarResposta(idPergunta,idUsuario);
+				cr = respostasAPI.arquivarResposta(idPergunta,idUsuario);
 				if( cr.getResposta() != null) 
-					atualizarResposta(cr.getResposta());
+					respostasCRUD.atualizar(cr.getResposta());
 
 				break;
 				       
