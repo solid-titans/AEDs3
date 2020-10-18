@@ -1,4 +1,4 @@
-package menu.sistema.abstracts.api.crudManagers;
+package menu.sistema.abstracts.api.crudmanagers;
 
 import produtos.Usuario;
 

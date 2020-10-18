@@ -2,134 +2,150 @@ package menu.sistema.controle.crudmanagers;
 
 import crud.Crud;
 import menu.pergunta.indices.ListaIDs;
+import menu.sistema.abstracts.api.crudmanagers.RespostasInterface;
 import produtos.Resposta;
 
-public class RespostasCRUD {
+public class RespostasCRUD implements RespostasInterface {
 
-    // Path dos Cruds
-	private final String		    path;
+	// Path dos Cruds
+	private final String path;
 
-    private static Crud<Resposta>   respostas;
-    private static ListaIDs         respostasUsuario;
-    private static ListaIDs 		perguntasRespostas;
+	private static Crud<Resposta> respostas;
+	private static ListaIDs respostasUsuario;
+	private static ListaIDs perguntasRespostas;
 
-    public RespostasCRUD(String path) {
+	public RespostasCRUD(String path) {
 
 		this.path = path;
-        try {
+		try {
 
-            respostas          = new Crud<>("Respostas",  Resposta.class.getConstructor());
-			respostasUsuario   = new ListaIDs(this.path + "/" + "respostasUsuarioIDs");
-            perguntasRespostas = new ListaIDs(this.path + "/" + "perguntasRespostasIDs");
-        } catch(Exception e) {e.printStackTrace();}
-    }
-    
+			respostas = new Crud<>("Respostas", Resposta.class.getConstructor());
+			respostasUsuario = new ListaIDs(this.path + "/" + "respostasUsuarioIDs");
+			perguntasRespostas = new ListaIDs(this.path + "/" + "perguntasRespostasIDs");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Armazena uma nova resposta nos bancos de dados
-	 * @param r é a resposta a ser armazenada
+	 * 
+	 * @param r          é a resposta a ser armazenada
 	 * @param idPergunta é a pergunta na qual a resposta corresponde
 	 * @return
 	 */
-	public int inserir(Resposta r, int idPergunta) {
+	public int inserir(Resposta resposta, int idPergunta) {
 
 		int idResposta = -1;
 
-		idResposta = respostas.create(r);
-		r.setId(idResposta);
+		idResposta = respostas.create(resposta);
+		resposta.setId(idResposta);
 
-		respostasUsuario.create(r.getIdUsuario(),r.getId());
-		perguntasRespostas.create(idPergunta,r.getId());
+		respostasUsuario.create(resposta.getIdUsuario(), resposta.getId());
+		perguntasRespostas.create(idPergunta, resposta.getId());
 
 		return idResposta;
 	}
 
 	/**
 	 * Função para achar uma resposta no banco de dados a partir da ID
+	 * 
 	 * @param id que é a ID da resposta
 	 * @return a resposta correspondente a ID (caso ela exista)
 	 */
-	public static Resposta achar(int id) {
+	public Resposta achar(int id) {
 
 		Resposta r = null;
 		try {
 			r = respostas.read(id);
-		} catch(Exception e ) { e.printStackTrace(); }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return r;
 
 	}
 
 	/**
 	 * Função para atualizar uma resposta
+	 * 
 	 * @param r é a pergunta a ser atualizada
 	 */
-	public void atualizar(Resposta r) { 
+	public void atualizar(Resposta resposta) {
 
-		respostas.update(r,r.getId());
+		respostas.update(resposta, resposta.getId());
 	}
 
 	/**
-	 * Função para pegar um array de respostas com base na Id de um usuário no banco de dados
+	 * Função para pegar um array de respostas com base na Id de um usuário no banco
+	 * de dados
+	 * 
 	 * @param idPergunta da pergunta
-	 * @param idUsuario do usuário que requisitou o processo
+	 * @param idUsuario  do usuário que requisitou o processo
 	 * @return array de respostas do idUsuario(se ele tiver registrado)
 	 */
-	public static Resposta[] getRespostaArrayUser(int idUsuario) {
+	public Resposta[] getRespostaArrayUser(int idUsuario) {
 
-		Resposta[]   resp  		     = null;
-		int[] 	     idsRespostas    = null;
-		
+		Resposta[] resp = null;
+		int[] idsRespostas = null;
+
 		idsRespostas = respostasUsuario.read(idUsuario);
 
-        if(idsRespostas == null)
-			return  null;
+		if (idsRespostas == null)
+			return null;
 
 		resp = new Resposta[idsRespostas.length];
 
 		int contador = 0;
-        for (int i : idsRespostas) {
-            try {
-                Resposta temp = respostas.read(i);
-                if(temp == null)
+		for (int i : idsRespostas) {
+			try {
+				Resposta temp = respostas.read(i);
+				if (temp == null)
 					continue;
 
-				resp[contador] = temp; 
+				resp[contador] = temp;
 				contador++;
-            }catch(Exception e) { e.printStackTrace(); }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return resp;
 	}
 
 	/**
-	 * Função para pegar um array de respostas com base na Id de uma pergunta no banco de dados
+	 * Função para pegar um array de respostas com base na Id de uma pergunta no
+	 * banco de dados
+	 * 
 	 * @param idPergunta da pergunta
 	 * @return array de respostas do idUsuario(se ele tiver registrado)
 	 */
-	public static Resposta[] getRespostaArrayGeral(int idPergunta) {
+	public Resposta[] getRespostaArrayGeral(int idPergunta) {
 
-		Resposta[]   resp  		     = null;
-		int[] 	     idsRespostas    = null;
-		
+		Resposta[] resp = null;
+		int[] idsRespostas = null;
+
 		idsRespostas = perguntasRespostas.read(idPergunta);
 
-        if(idsRespostas == null)
-			return  null;
+		if (idsRespostas == null)
+			return null;
 
 		resp = new Resposta[idsRespostas.length];
 
 		int contador = 0;
-        for (int i : idsRespostas) {
-            try {
-                Resposta temp = respostas.read(i);
-                if(temp == null)
+		for (int i : idsRespostas) {
+			try {
+				Resposta temp = respostas.read(i);
+				if (temp == null)
 					continue;
-				if(temp.getIdPergunta() != idPergunta) {
+				if (temp.getIdPergunta() != idPergunta) {
 					System.out.println("ue");
 				}
 
-				resp[contador] = temp; 
+				resp[contador] = temp;
 				contador++;
-            } catch(Exception e) { e.printStackTrace(); }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return resp;

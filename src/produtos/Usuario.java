@@ -75,7 +75,9 @@ public class Usuario implements RegistroVisual {
     }
 
     public String imprimir() {
-        return null;
+        
+        
+        return "Usúario: "+ this.nome+"\nEmail: "+this.email +"\nSenha: "+ this.senha+"\n";
     }
 
     /*  Serializar objeto

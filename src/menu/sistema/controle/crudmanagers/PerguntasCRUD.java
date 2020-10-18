@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import crud.Crud;
 import menu.pergunta.indices.ListaIDs;
 import menu.pergunta.indices.ListaInvertida;
+import menu.sistema.abstracts.api.crudmanagers.PerguntaInferface;
 import produtos.Pergunta;
 
-public class PerguntasCRUD {
+public class PerguntasCRUD implements PerguntaInferface {
     
 	// Path dos Cruds
     private final String            path;
@@ -37,13 +38,13 @@ public class PerguntasCRUD {
 	 * @param IdUsuario Id do usuario que fez a pergunta
 	 * @return          Retornar a id da pergunta que foi registrada
 	 */
-	public int inserir(Pergunta p, int idUsuario) {
+	public int inserir(Pergunta pergunta, int idUsuario) {
 		int resp = -1;
 
-		resp = perguntas.create(p);
-		p.setId(resp);
+		resp = perguntas.create(pergunta);
+		pergunta.setId(resp);
 		perguntasUsuario.create(idUsuario,resp);
-		inserirPalavrasChave(p);
+		inserirPalavrasChave(pergunta);
 		return resp;
 	}
 
@@ -75,11 +76,11 @@ public class PerguntasCRUD {
 
 	/**
 	 * Função para desativar uma pergunta
-	 * @param p é a pergunta a ser desativada
+	 * @param pergunta é a pergunta a ser desativada
 	 */
-	public void desativar(Pergunta p) {
-		removerPalavrasChave(p);
-		perguntas.update(p,p.getId());
+	public void desativar(Pergunta pergunta) {
+		removerPalavrasChave(pergunta);
+		perguntas.update(pergunta,pergunta.getId());
 
 	}
 
@@ -151,14 +152,14 @@ public class PerguntasCRUD {
 
 	/**
 	 * Função para inserir as palavras-chave da pergunta P 
-	 * @param p é a Pergunta de onde será retirada as palavras-chave
+	 * @param pergunta é a Pergunta de onde será retirada as palavras-chave
 	 */
-	public void inserirPalavrasChave(Pergunta p) {
-		String[] palavras_chave = p.getPalavrasChave().split(" ");
+	private void inserirPalavrasChave(Pergunta pergunta) {
+		String[] palavras_chave = pergunta.getPalavrasChave().split(" ");
 
 		try {
 			for ( String s : palavras_chave )
-				listaDeChaves.create(s,p.getId());
+				listaDeChaves.create(s,pergunta.getId());
 
 		} catch(Exception e) {e.printStackTrace();}
 	}
@@ -167,12 +168,12 @@ public class PerguntasCRUD {
 	 * Função para remover todas as palavras-chave da pergunta registrada na lista invertida
 	 * @param p é a Pergunta de onde será retirada as palavras-chave
 	 */
-	public void removerPalavrasChave(Pergunta p) {
-		String[] palavras_chave = p.getPalavrasChave().split(" ");
+	private void removerPalavrasChave(Pergunta pergunta) {
+		String[] palavras_chave = pergunta.getPalavrasChave().split(" ");
 
 		try {
 			for ( String s : palavras_chave) 
-				listaDeChaves.delete(s,p.getId());
+				listaDeChaves.delete(s,pergunta.getId());
 
 		} catch(Exception e) {e.printStackTrace();}
 
