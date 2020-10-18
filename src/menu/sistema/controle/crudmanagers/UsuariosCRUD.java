@@ -1,11 +1,12 @@
 package menu.sistema.controle.crudmanagers;
 
-import produtos.*;
+import produtos.Usuario;
 import seguranca.GFG;
 
 import crud.*;
+import menu.sistema.abstracts.api.crudManagers.UsuarioInterface;
 
-public class UsuariosCRUD {
+public class UsuariosCRUD implements UsuarioInterface{
 
 
 	//GFG para hashear a senha
@@ -76,6 +77,10 @@ public class UsuariosCRUD {
 	 */
 	public void atualizar(Usuario u) { 
 		usuarios.update(u, u.getId()); 
+	}
+
+	public boolean isSenha(String senhaInserida, String senhaRegistrada) {
+		return hasheador.verificarHash(senhaRegistrada,senhaInserida);
 	}
 
 }

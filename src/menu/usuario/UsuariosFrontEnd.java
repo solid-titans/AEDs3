@@ -1,11 +1,10 @@
 package menu.usuario;
 
-import produtos.*;
 import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
 import menu.sistema.input.CustomInput;
-import menu.sistema.input.Input;
 import menu.sistema.misc.Regex;
+import menu.sistema.abstracts.api.crudManagers.UsuarioInterface;
 import menu.sistema.abstracts.frontend.FrontEnd;
 import menu.sistema.abstracts.frontend.RegistroVisual;
 
@@ -38,9 +37,11 @@ public class UsuariosFrontEnd implements FrontEnd {
      * @param tentativas é a quantidade de tentativas que o loop irá permitir
      * @return um codigo de protocolo referente ao resultado da verificacao
      */
-    public CodigoDeProtocolo inserirSenha(String senhaDoUsuario,int tentativas) {
+    public CodigoDeProtocolo inserirSenha(UsuarioInterface usuarios, String senhaDoUsuario,int tentativas) {
         String            entradaDoUsuario   = "";
         CodigoDeProtocolo sucesso            = CodigoDeProtocolo.ERRO;
+
+        boolean           acertouSenha       = false;
   
         do {         
             entradaDoUsuario = customInput.inserir("Insira a senha","\nNumero de tentativas : " + tentativas,TAM_MIN_SENHA,TAM_MAX_SENHA,false);
@@ -51,7 +52,9 @@ public class UsuariosFrontEnd implements FrontEnd {
   
             graficos.limparTela();
 
-            if(!APIControle.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario)) {
+            acertouSenha = usuarios.isSenha(senhaDoUsuario,entradaDoUsuario);
+
+            if(acertouSenha == false) {
 
                 tentativas--;
                 System.err.println("Erro! As senhas não são iguais!");
@@ -62,7 +65,7 @@ public class UsuariosFrontEnd implements FrontEnd {
                 sucesso = CodigoDeProtocolo.SUCESSO;
             }
 
-        } while(!APIControle.hasheador.verificarHash(senhaDoUsuario,entradaDoUsuario) && tentativas > 0);
+        } while(acertouSenha == false && tentativas > 0);
   
         return sucesso;
     }

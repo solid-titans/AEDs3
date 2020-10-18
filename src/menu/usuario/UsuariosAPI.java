@@ -2,6 +2,7 @@ package menu.usuario;
 
 import produtos.*;
 import menu.sistema.*;
+import menu.sistema.abstracts.api.crudManagers.UsuarioInterface;
 import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.graficos.*;
 import menu.sistema.input.CustomInput;
@@ -41,7 +42,7 @@ public class UsuariosAPI {
      * Função para tentar ao acessar o sistema
      * @return uma CelulaResposta com os resultados da operação armazenada
      */
-    public CelulaResposta acessarAoSistema() {
+    public CelulaResposta acessarAoSistema(UsuarioInterface usuarios) {
         String            email         = "";
 
         CelulaResposta    resultado     = new CelulaResposta();
@@ -50,17 +51,17 @@ public class UsuariosAPI {
 
         Usuario           usuarioAcesso = null;
 
-        email = customInput.inserir("Insira o seu email",TAM_MIN_EMAIL,TAM_MAX_EMAIL,false);
+        email = customInput.inserir("Insira o seu email",TAM_MIN_EMAIL,TAM_MAX_EMAIL,false);//lopinho35@gmail.com
         if(email.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
         }
-        else if(APIControle.acharUsuario(email) == null) {
-            System.err.println("Erro! E-mail inválido");
+
+        usuarioAcesso = usuarios.achar(email);//lopinho35@gmail.com
+        if(usuarioAcesso == null) {
+            System.err.println("Erro! Esse email não possui conta");
             return resultado;
         }
-
-        usuarioAcesso = APIControle.acharUsuario(email);
 
         acertouAsenha = usuariosFrontEnd.inserirSenha(usuarioAcesso.getSenha(),3);
         if(acertouAsenha == CodigoDeProtocolo.ERRO) {
