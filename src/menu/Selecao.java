@@ -1,7 +1,7 @@
 package menu;
 
 import menu.sistema.input.Input;
-import menu.sistema.graficos.*;
+import menu.sistema.graficos.CustomPrint;
 
 /**
  * Classe para armazenar todos os menus de seleção do programa
@@ -9,16 +9,16 @@ import menu.sistema.graficos.*;
  */
 public class Selecao {
     
-    private ASCIInterface graficos;
+    private CustomPrint myPrint;
     private Input         input;
 
-    public Selecao(ASCIInterface graficos,Input input) {
-        this.graficos = graficos;
+    public Selecao(CustomPrint myPrint,Input input) {
+        this.myPrint  = myPrint;
         this.input    = input;
     }
 
-    public ASCIInterface getASCIInterface() {
-        return this.graficos;
+    public void mudarCorBorda(int cor) {
+        myPrint.getInterface().setBorda(cor);
     }
 
     /**
@@ -129,7 +129,7 @@ public class Selecao {
         opcao = input.lerChar();
 
         //limpando a tela
-        graficos.limparTela();   
+        myPrint.limparTela();   
 
         return opcao;
     }
@@ -193,7 +193,7 @@ public class Selecao {
             }
 
             //limpando a tela
-            graficos.limparTela();
+            myPrint.limparTela();
 
             return opcao;
     }

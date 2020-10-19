@@ -3,10 +3,10 @@ package menu.sistema.abstracts.api.crudmanagers;
 import produtos.Pergunta;
 
 public interface PerguntaInferface {
-    public int inserir(Pergunta pergunta, int idUsuario);
-    public Pergunta achar(int id);
-    public void atualizar(Pergunta novo);
-    public void desativar(Pergunta pergunta);
+    public int        inserir(Pergunta pergunta, int idUsuario);
+    public Pergunta   achar(int id);
+    public void       atualizar(Pergunta novo);
+    public void       desativar(Pergunta pergunta);
     public Pergunta[] getPerguntaArray(int idUsuario);
     public Pergunta[] getPerguntasPalavrasChave(String[] palavrasChave,int idUsuario);
     

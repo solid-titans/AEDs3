@@ -68,10 +68,9 @@ public class PerguntasAPI {
             System.err.println();
             System.err.println("               ¯\\_(ツ)_/¯");
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
-            customInput.esperarUsuario();// tirrar daqui
 
         } else {
-            perguntasFrontEnd.listar(array);
+            System.out.println(perguntasFrontEnd.listar(array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }   
       

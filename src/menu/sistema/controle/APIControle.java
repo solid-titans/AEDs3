@@ -36,13 +36,18 @@ public class APIControle {
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo
 	 *         usuário
 	 */
-	public CelulaResposta verificarRequisicaoEmAcesso(CodigoDeProtocolo cdp) {
-		CelulaResposta cr = new CelulaResposta();
+	public CelulaResposta requisicaoEmAcesso(CodigoDeProtocolo cdp) {
+		CelulaResposta cr  = new CelulaResposta();
+
+		String nomeUsuario = "";
 
 		switch (cdp) {
 
 			case ACESSOAOSISTEMA: // Pedir para acessar o sistema
 				cr = usuariosAPI.acessarAoSistema(usuariosCRUD);
+				if(cr.getCdp() == CodigoDeProtocolo.MUDARUSUARIO) 
+					nomeUsuario = usuariosCRUD.achar(cr.getUsuario().getId()).getNome(); //Recuperar o nome do usuário
+
 				break;
 
 			case CRIARNOVOUSUARIO: // Criar um novo usuário no banco de dados
@@ -63,7 +68,7 @@ public class APIControle {
 
 		}
 
-		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
+		CodigoDeProtocolo.verificarCodigo(cr.getCdp(),nomeUsuario);
 
 		return cr;
 	}
@@ -77,7 +82,7 @@ public class APIControle {
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo
 	 *         usuário
 	 */
-	public CelulaResposta verificarRequisicaoDoUsuario(CodigoDeProtocolo cdp, int idUsuario) {
+	public CelulaResposta requisicaoEmInicio(CodigoDeProtocolo cdp, int idUsuario) {
 		CelulaResposta cr = new CelulaResposta();
 
 		switch (cdp) {
@@ -143,7 +148,7 @@ public class APIControle {
 	 * @return é o Codigo correspondente ao resultado da operação realizada pelo
 	 *         usuário
 	 */
-	public CelulaResposta verificarRequisicaoEmPergunta(CodigoDeProtocolo cdp, int idPergunta, int idUsuario) {
+	public CelulaResposta requisicaoEmPerguntas(CodigoDeProtocolo cdp, int idPergunta, int idUsuario) {
 		CelulaResposta cr = new CelulaResposta();
 
 		switch (cdp) {

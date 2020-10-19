@@ -1,6 +1,6 @@
 package menu;
 
-import menu.sistema.graficos.*;
+import menu.sistema.graficos.CustomPrint;
 import menu.sistema.input.Input;
 import menu.sistema.controle.CodigoDeProtocolo;
 import menu.sistema.controle.APIControle;
@@ -17,25 +17,25 @@ import produtos.Usuario;
  */
 public class Menu {
 
-    private ASCIInterface graficos; // Interface gráfica
+    private CustomPrint myPrint; // Interface gráfica
 
-    private int idUsuario; // Id do Usuario que usar o sistema
+    private int         idUsuario; // Id do Usuario que usar o sistema
     private APIControle minhaAPI; // Gerenciador do Crud e para direcionar as decisões do usuário
-    private Selecao selecao;
-    private Input input;
+    private Selecao     selecao;
+    private Input       input;
 
     /**
      * Configura a id do usuário que vai acessar o programa
      * 
      * @param id
      */
-    public Menu(ASCIInterface graficos, APIControle minhaAPI, Selecao selecao) {
+    public Menu(CustomPrint myPrint, APIControle minhaAPI, Selecao selecao) {
 
-        this.idUsuario = -1;// Se espera que nenhum usuario esteja usando
-        this.minhaAPI = minhaAPI;
-        this.graficos = graficos;
-        this.selecao = selecao;
-        this.input = new Input();
+        this.idUsuario = -1;         // Inicia como '-1' pois nenhum usuário estará logado de imediato
+        this.minhaAPI  = minhaAPI;
+        this.myPrint   = myPrint;
+        this.selecao   = selecao;
+        this.input     = new Input();
     }
 
     /**
@@ -48,10 +48,10 @@ public class Menu {
 
         CodigoDeProtocolo opcaoEscolhida;
 
-        graficos.limparTela();
+        myPrint.limparTela();
         do {
 
-            System.out.println(graficos.caixa("PERGUNTAS 1.0"));
+            System.out.println(myPrint.imprimir("[PERGUNTAS 1.0]"));
             opcao = selecao.Acesso();
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
@@ -95,10 +95,11 @@ public class Menu {
 
             if (opcaoEscolhida != CodigoDeProtocolo.NULL) {
 
-                resultadoVerificacao = minhaAPI.verificarRequisicaoEmAcesso(opcaoEscolhida);
+                resultadoVerificacao = minhaAPI.requisicaoEmAcesso(opcaoEscolhida);
                 input.esperarUsuario();
                 if (resultadoVerificacao.getCdp() == CodigoDeProtocolo.MUDARUSUARIO) {
-                    graficos.setBorda(63);
+
+                    myPrint.getInterface().setBorda(113);
                     idUsuario = resultadoVerificacao.getUsuario().getId();
                     acessoGarantido();
 
@@ -106,7 +107,7 @@ public class Menu {
 
             }
 
-            graficos.limparTela();
+            myPrint.limparTela();
         } while (opcao != '0');
     }
 
@@ -126,9 +127,9 @@ public class Menu {
 
         // Loop do menu
         do {
-            graficos.limparTela();
+            myPrint.limparTela();
 
-            System.out.println(graficos.caixa("PERGUNTAS 1.0"));
+            System.out.println(myPrint.imprimir("[PERGUNTAS 1.0]"));
             opcao = selecao.imprimirTela(menuIndex, notificacoes);
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
@@ -157,9 +158,10 @@ public class Menu {
                     System.out.println("|          Obrigado por usar o programa!              |");
                     System.out.println("|              Tenha um excelente dia                 |");
                     System.out.println("+-----------------------------------------------------+\n");
+
                     input.esperarUsuario();
                     idUsuario = -1;
-                    graficos.setBorda(1);
+                    myPrint.getInterface().setBorda(27);
                     break;
 
                 case "11": // Indo para a tela de criacao de perguntas
@@ -208,7 +210,8 @@ public class Menu {
             }
 
             if (opcaoEscolhida != CodigoDeProtocolo.NULL) {
-                resultadoVerificacao = minhaAPI.verificarRequisicaoDoUsuario(opcaoEscolhida, idUsuario);
+                resultadoVerificacao = minhaAPI.requisicaoEmInicio(opcaoEscolhida, idUsuario);
+                input.esperarUsuario();
                 if (resultadoVerificacao.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) {
                     navegarPergunta(resultadoVerificacao.getPergunta(), resultadoVerificacao.getUsuario());
                 }
@@ -221,7 +224,7 @@ public class Menu {
 
     public CodigoDeProtocolo navegarPergunta(Pergunta pergunta, Usuario u) {
 
-        selecao.getASCIInterface().setBorda(220);
+        selecao.mudarCorBorda(220);
 
         String opcao = "";
 
@@ -231,7 +234,7 @@ public class Menu {
         CodigoDeProtocolo opcaoEscolhida;
 
         do {
-            graficos.limparTela();
+            myPrint.limparTela();
 
             System.out.println(pergunta.imprimir());
 
@@ -294,8 +297,8 @@ public class Menu {
             }
 
             if (opcaoEscolhida != CodigoDeProtocolo.NULL) {
-                resultadoVerificacao = minhaAPI.verificarRequisicaoEmPergunta(opcaoEscolhida, pergunta.getId(),
-                        idUsuario);
+                resultadoVerificacao = minhaAPI.requisicaoEmPerguntas(opcaoEscolhida, pergunta.getId(),idUsuario);
+                input.esperarUsuario();
 
             }
 

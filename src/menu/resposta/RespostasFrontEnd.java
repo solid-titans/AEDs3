@@ -13,14 +13,13 @@ import produtos.Resposta;
 public class RespostasFrontEnd implements RespostaFrontEndInterface {
 
     // Atributos
-    private ANSILibrary destaqueData;
-    private Input input;
-    private ASCIInterface graficos;
+    private CustomPrint myPrint;
 
-    public RespostasFrontEnd(ANSILibrary destaqueData, ASCIInterface graficos, Input input) {
-        this.destaqueData = destaqueData;
+    private Input input;
+
+    public RespostasFrontEnd(CustomPrint myPrint, Input input) {
+        this.myPrint      = myPrint;
         this.input = input;
-        this.graficos = graficos;
     }
 
     /**
@@ -29,25 +28,23 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
      * @param array é o array de respostas que foi enviado
      * @return a String correspondente a listagem das respostas
      */
-    public void listar(RegistroVisualplus[] array) {
+    public String listar(RegistroVisualplus[] array) {
 
         String resp = "";
         byte contador = 1;
 
-        resp += graficos.caixa(3, "Respostas");
+        resp += myPrint.imprimir("[RESPOSTAS]");
 
         for (RegistroVisualplus i : array) {
             if (i.getAtiva() == false)
                 resp += "\n(Arquivada)";
 
-            resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-            resp += i.imprimir() + "\n";
+            resp += "\n" + myPrint.imprimir("(" + contador + ".)" + i.imprimir() + "\n");
             contador++;
 
         }
 
-        System.out.println(resp);
-        input.esperarUsuario();
+        return resp;
     }
 
     /**
@@ -63,7 +60,7 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
 
         byte contador = 1;
 
-        resp += graficos.caixa(3, "Respostas");
+        resp += myPrint.imprimir("[RESPOSTAS]");
 
         for (RegistroVisualResposta i : array) {
             if (i.getAtiva() == false)
@@ -71,8 +68,7 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
 
             nome = usuarios.achar(i.getIdUsuario()).getNome();
 
-            resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-            resp += i.imprimir(nome) + "\n";
+            resp += "\n" + myPrint.imprimir(contador + "." + i.imprimir(nome) + "\n");
             contador++;
 
         }
@@ -92,15 +88,14 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
         String resp = "";
         byte contador = 1;
 
-        resp += graficos.caixa(3, "PERGUNTAS");
+        resp += myPrint.imprimir("[RESPOSTAS]");
 
         for (RegistroVisualplus i : array) {
             if (i.getAtiva() == false) {
                 resp += "\n(Arquivada)";
             }
 
-            resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-            resp += i.imprimirSimplificado();
+            resp += "\n" + myPrint.imprimir(contador + "." + i.imprimirSimplificado() + "\n");
             contador++;
 
         }
@@ -120,12 +115,12 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
         String confirmar = "";
         CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
 
-        System.out.println(graficos.caixa("Vamos conferir a sua pergunta") + "\n");
-        System.out.print(r.imprimir() + "\nEssa é a sua pergunta?(s/n) : ");
+        System.out.println(myPrint.imprimir("[Vamos conferir a sua resposta]") + "\n");
+        System.out.print(myPrint.imprimir(r.imprimir()) + "\nEssa é a sua resposta?(s/n) : ");
 
         confirmar = input.lerString();
 
-        graficos.limparTela();
+        myPrint.limparTela();
 
         if (confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
 
@@ -153,7 +148,7 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
         listar(array);
         System.out.println("\nEscolha uma das respostas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
         entrada = input.lerByte();
-        graficos.limparTela();
+        myPrint.limparTela();
 
         if (array.length > entrada - 1 && entrada - 1 >= 0) {
 

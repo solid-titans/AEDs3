@@ -286,30 +286,6 @@ public class ASCIInterface {
     }
 
     /**
-     * Limpar a tela do terminal
-     * @implNote o programa verifica se o sistema operacional é um Windows ou do tipo Unix 
-     */
-    public void limparTela(){
-
-        String OS = System.getProperty("os.name").toLowerCase();
-        //String clear;
-
-        if(OS.equals("linux") || OS.equals("mac")) {
-
-            ANSILibrary.limparTelaUnix();
-        }
-        else {
-
-            try {
-                Runtime.getRuntime().exec("cls");
-            }
-            catch (Exception e) {
-                System.err.println("Deu ruim");
-            }
-        }
-    }
-
-    /**
      * Função que verifica se a largura e altura especificado estavam dentro do esperado
      * @param largura é o inteiro que corresponde a largura da caixa
      * @param altura é o inteiro que corresponde a altura da caixa

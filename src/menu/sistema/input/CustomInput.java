@@ -12,20 +12,11 @@ import menu.sistema.graficos.*;
 public class CustomInput extends Input implements CustomInputInterface {
 
     // Tipos de destaque
-    private ANSILibrary destaqueObs;
-    private ANSILibrary destaqueTamMin;
-    private ANSILibrary destaqueTamMax;
+    private CustomPrint myPrint;
 
-    private ASCIInterface graficos;
-
-    public CustomInput(ASCIInterface graficos, ANSILibrary destaqueTamMax, ANSILibrary destaqueTamMin,
-            ANSILibrary destaqueObs) {
+    public CustomInput(CustomPrint myPrint) {
         super();
-        this.graficos = graficos;
-
-        this.destaqueTamMax = destaqueTamMax;
-        this.destaqueTamMin = destaqueTamMin;
-        this.destaqueObs = destaqueObs;
+        this.myPrint = myPrint;
     }
 
 
@@ -43,18 +34,17 @@ public class CustomInput extends Input implements CustomInputInterface {
         String entradaDoUsuario = "";
 
         do {
-            System.out.print(graficos.caixa(titulo) + "\n");
-            System.out.println(destaqueObs
-                    .imprimir("OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo"));
-            System.out.print((printRestr) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n->" : "->");
+            System.out.print(myPrint.imprimir("["+titulo+"]" + "(OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo)") + "\n");
+            System.out.print((printRestr) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n-> " : "-> ");
 
             entradaDoUsuario = lerString();
 
-            graficos.limparTela();
+            myPrint.limparTela();
             if (temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals("")) {
+
                 System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
                 esperarUsuario();
-                graficos.limparTela();
+                myPrint.limparTela();
 
             }
         } while (temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals(""));
@@ -78,22 +68,20 @@ public class CustomInput extends Input implements CustomInputInterface {
         String entradaDoUsuario = "";
 
         do {
-            System.out
-                    .print(graficos.caixa(titulo) + destaqueObs.imprimir(observacao) + "\n"
-                            + destaqueObs.imprimir(
-                                    "OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo")
-                            + "\n");
+            System.out.print(myPrint.imprimir("["+titulo+"]" + "{" + observacao + "}" +   
+                            "\n" + "(OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo)") + "\n");
 
-            System.out.print((printRestr == true) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n->" : "\n->");
+            System.out.print((printRestr == true) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n-> " : "\n-> ");
 
             entradaDoUsuario = lerString();
 
-            graficos.limparTela();
+            myPrint.limparTela();
 
             if (temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals("")) {
+
                 System.err.println("Erro! entrada inválida!\nPressione \'Enter\' para continuar");
                 esperarUsuario();
-                graficos.limparTela();
+                myPrint.limparTela();
 
             }
 
@@ -122,7 +110,7 @@ public class CustomInput extends Input implements CustomInputInterface {
      * @return é a String que será imprimida
      */
     private String imprimirTamanhoMinMax(int menor, int maior) {
-        return destaqueTamMin.imprimir("Tamanho mínimo: " + menor) + ";"
-                + destaqueTamMax.imprimir("Tamanho máximo: " + maior);
+        return myPrint.imprimir("{Tamanho mínimo: " + menor + "}") + ";" + 
+               myPrint.imprimir("{Tamanho máximo: " + maior + "}");
     }
 }

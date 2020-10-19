@@ -219,18 +219,15 @@ public class Pergunta implements RegistroVisualplus {
     }
 
     public String imprimir() {
-        // TODO Auto-generated method stub
-        return titulo + "\t["+ getData()+"]\n\n"+ pergunta +"\n\nPalavras Chaves: "+palavrasChave +"\n";
+        return "(Título: " + titulo +"\t[" + getData()+"]) \n["+ pergunta +"] \n{Palavras Chaves: "  +palavrasChave + "}";
     }
 
     public String imprimirSimplificado() {
-        // TODO Auto-generated method stub
-        return titulo + "\t["+ getData()+"]\n"+ pergunta +"\nPalavras Chaves: "+palavrasChave+"\n";
+        return "{Título: " + titulo + "}" + "\n(Palavras Chaves:"  +palavrasChave + ")";
     }
 
     public String imprimir(String nome) {
-        // TODO Auto-generated method stub
-        return titulo+"\t["+ getData()+"]" +"\nAutor: "+nome+ "\n\n"+ pergunta +"\n\nPalavras Chaves: "+palavrasChave +"\n";
+        return "(Título: " + titulo +"\t[" + getData()+"]) "+ pergunta +"{Pergunta feita por: "+nome + "\nPalavras Chaves: "+palavrasChave + "}";
     }
 
 } 

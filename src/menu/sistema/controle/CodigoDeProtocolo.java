@@ -83,4 +83,36 @@ public enum CodigoDeProtocolo {
 
         }
     }
+
+/**
+     * Recebe um codigo de protocolo e coloca na tela uma mensagem que corresponde ao resultado de uma operação realizada pelo usuário
+     * @param cdp é o Codigo de Protocolo recebido pelo usuário
+     */
+    public static void verificarCodigo(CodigoDeProtocolo cdp,String nome) {
+        
+        switch(cdp) {
+            case ERRO:
+                System.out.println("Operação terminou com erro!");
+                break;
+
+            case SUCESSO:
+                System.out.println("Operação terminou com sucesso!");
+                break;
+
+            case MUDARUSUARIO:
+                System.out.println("Seja bem vindo " +nome + "!");
+                break;
+
+            case OPERACAOCANCELADA:
+                System.out.println("Operação cancelada pelo usuário");
+                break;
+
+            case IRPARAPERGUNTA:
+                System.out.println("Indo para o menu de interação com a pergunta");
+                break;
+            default:
+                System.out.println("Erro! Operação desconhecida");
+
+        }
+    }
 }

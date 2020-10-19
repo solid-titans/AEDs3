@@ -16,27 +16,27 @@ import menu.sistema.abstracts.frontend.RegistroVisual;
 public class UsuariosFrontEnd implements FrontEnd {
 
     // Variaveis de controle de grafico
-    private ASCIInterface graficos;
-
-    private final byte TAM_MIN_SENHA;// Tamanho padrao 05 
-    private final byte TAM_MAX_SENHA;// Tamanho padrao 64
+    private CustomPrint myPrint;
+ 
+    private final byte  TAM_MIN_SENHA;// Tamanho padrao 05 
+    private final byte  TAM_MAX_SENHA;// Tamanho padrao 64
 
     private CustomInput customInput;
 
-    public UsuariosFrontEnd(ASCIInterface graficos, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA, CustomInput customInput) {
+    public UsuariosFrontEnd(CustomPrint myPrint, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA, CustomInput customInput) {
         this.TAM_MIN_SENHA = TAM_MIN_SENHA;
         this.TAM_MAX_SENHA = TAM_MAX_SENHA;
 
-        this.graficos      = graficos;
+        this.myPrint       = myPrint;
 
         this.customInput   = customInput;
     }
 
-    public UsuariosFrontEnd(ASCIInterface graficos, CustomInput customInput) {
+    public UsuariosFrontEnd(CustomPrint myPrint, CustomInput customInput) {
         this.TAM_MIN_SENHA = 5;
         this.TAM_MAX_SENHA = 64;
 
-        this.graficos      = graficos;
+        this.myPrint       = myPrint;
 
         this.customInput   = customInput;
     }
@@ -61,10 +61,7 @@ public class UsuariosFrontEnd implements FrontEnd {
                 return sucesso;
             }
 
-            graficos.limparTela();
-           // System.out.println("U:"+entradaDoUsuario );
-           // System.out.println("S:"+ senhaDoUsuario);
-           // customInput.esperarUsuario();
+            myPrint.limparTela();
             acertouSenha = usuarios.isSenha(senhaDoUsuario, entradaDoUsuario);
 
             if (acertouSenha == false) {
@@ -72,7 +69,7 @@ public class UsuariosFrontEnd implements FrontEnd {
                 tentativas--;
                 System.err.println("Erro! As senhas não são iguais!");
                 customInput.esperarUsuario();
-                graficos.limparTela();
+                myPrint.limparTela();
 
             } else {
                 sucesso = CodigoDeProtocolo.SUCESSO;
@@ -105,7 +102,7 @@ public class UsuariosFrontEnd implements FrontEnd {
                 return "";
             }
 
-            graficos.limparTela();
+            myPrint.limparTela();
             forcaDaSenha = Regex.verificarSenha(senha);
             senhasIguais = senha.equals(confirmarSenha);
 
@@ -125,7 +122,7 @@ public class UsuariosFrontEnd implements FrontEnd {
                         + "Pressione \"Enter\" para continuar...");
 
                 customInput.lerString();
-                graficos.limparTela();
+                myPrint.limparTela();
             }
         } while (senhasIguais == false || forcaDaSenha <= 2);
         ;
@@ -143,12 +140,12 @@ public class UsuariosFrontEnd implements FrontEnd {
         CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
         String confirmar = "";
 
-        System.out.print(graficos.caixa("Vamos então verificar os seus dados!") + "\n" + novoUsuario.imprimir()
-                + "\nEstá tudo de acordo?(s/n) : ");
+        System.out.print(myPrint.imprimir("{Vamos então conferir o cadastro:}\n[Dados do usuário]") + "\n" + 
+                         novoUsuario.imprimir() + "\nEstá tudo de acordo?(s/n) : ");
 
         confirmar = customInput.lerString();
 
-        graficos.limparTela();
+        myPrint.limparTela();
         if (confirmar.equals("") || confirmar.toLowerCase().equals("s")) {
 
             sucesso = CodigoDeProtocolo.SUCESSO;

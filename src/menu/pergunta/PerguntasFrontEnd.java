@@ -18,17 +18,14 @@ import menu.sistema.input.Input;
 public class PerguntasFrontEnd implements FrontEndplus {
 
     // Atributos
-    private ASCIInterface graficos;
-
-    private ANSILibrary destaqueData;
+    private CustomPrint myPrint;
 
     private Input input;
 
-    public PerguntasFrontEnd(ANSILibrary destaqueData,ASCIInterface graficos, Input input) {
+    public PerguntasFrontEnd(CustomPrint myPrint, Input input) {
 
-        this.destaqueData = destaqueData;
+        this.myPrint      = myPrint;
         this.input        = input;
-        this.graficos     = graficos;
     }
 
     /**
@@ -37,27 +34,24 @@ public class PerguntasFrontEnd implements FrontEndplus {
      * @param array é o array de perguntas que foi enviado
      * @return a String correspondente a listagem das perguntas
      */
-    public void listar(RegistroVisualplus[] array) {
+    public String listar(RegistroVisualplus[] array) {
 
         String resp = "";
         byte contador = 1;
 
-        resp += graficos.caixa(3, "PERGUNTAS");
+        resp += myPrint.imprimir("[PERGUNTAS]");
 
         for (RegistroVisualplus i : array) {
             if (i.getAtiva() == false) {
                 resp += "\n(Arquivada)";
             }
 
-            resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-            resp += i.imprimir() + "\n";
+            resp += "\n" + myPrint.imprimir(contador + "." + i.imprimir() + "\n");
             contador++;
 
         }
-        System.out.println(resp);
-        input.esperarUsuario();
-
         
+        return resp;
     }
 
     /**
@@ -72,15 +66,14 @@ public class PerguntasFrontEnd implements FrontEndplus {
         String resp = "";
         byte contador = 1;
 
-        resp += graficos.caixa(3, "PERGUNTAS");// Interface graficas
+        resp += myPrint.imprimir("[PERGUNTAS]");
 
         for (RegistroVisualplus i : array) {
             if (i.getAtiva() == false) {
                 resp += "\n(Arquivada)";
             }
 
-            resp += "\n" + destaqueData.imprimir(contador + ".") + "\n";
-            resp += i.imprimirSimplificado();
+            resp += "\n" + contador + "." + i.imprimirSimplificado() + "\n";
             contador++;
 
         }
@@ -99,14 +92,13 @@ public class PerguntasFrontEnd implements FrontEndplus {
 
         String confirmar = "";
         CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
-        if(graficos == null)
-        System.out.println("Deu merda");
-        System.out.println(graficos.caixa("Vamos conferir a sua pergunta") + "\n");
-        System.out.print(objeto.imprimir() + "\nEssa é a sua pergunta?(s/n) : ");
+
+        System.out.println(myPrint.imprimir("[Vamos conferir a sua pergunta]") + "\n");
+        System.out.print(myPrint.imprimir(objeto.imprimir()) + "\nEssa é a sua pergunta?(s/n) : ");
 
         confirmar = input.lerString();
 
-        graficos.limparTela();
+        myPrint.limparTela();
 
         if (confirmar.length() == 0 || confirmar.toLowerCase().equals("s")) {
 
@@ -135,7 +127,7 @@ public class PerguntasFrontEnd implements FrontEndplus {
                 + "\nEscolha uma das perguntas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
 
         entrada = input.lerByte();
-        graficos.limparTela();
+        myPrint.limparTela();
 
         if (array.length > entrada - 1 && entrada - 1 >= 0) {
 
