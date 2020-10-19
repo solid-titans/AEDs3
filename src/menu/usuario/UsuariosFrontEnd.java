@@ -55,7 +55,8 @@ public class UsuariosFrontEnd implements FrontEnd {
 
         do {
             entradaDoUsuario = customInput.inserir("Insira a senha", "\nNumero de tentativas : " + tentativas,
-                    TAM_MIN_SENHA, TAM_MAX_SENHA, false);
+                                                   TAM_MIN_SENHA, TAM_MAX_SENHA, false);
+
             if (entradaDoUsuario.equals("")) {
                 sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
                 return sucesso;
@@ -141,9 +142,9 @@ public class UsuariosFrontEnd implements FrontEnd {
         String confirmar = "";
 
         System.out.print(myPrint.imprimir("{Vamos então conferir o cadastro:}\n[Dados do usuário]") + "\n" + 
-                         novoUsuario.imprimir() + "\nEstá tudo de acordo?(s/n) : ");
+                         myPrint.imprimir(novoUsuario.imprimir()));
 
-        confirmar = customInput.lerString();
+        confirmar = customInput.lerString("\nEstá tudo de acordo?(s/n) : ");
 
         myPrint.limparTela();
         if (confirmar.equals("") || confirmar.toLowerCase().equals("s")) {

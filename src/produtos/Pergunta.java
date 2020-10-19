@@ -219,7 +219,7 @@ public class Pergunta implements RegistroVisualplus {
     }
 
     public String imprimir() {
-        return "(Título: " + titulo +"\t[" + getData()+"]) \n["+ pergunta +"] \n{Palavras Chaves: "  +palavrasChave + "}";
+        return "(Título: " + titulo +"\n[" + getData()+"]) \n["+ pergunta +"] {Palavras Chaves: "  +palavrasChave + "}";
     }
 
     public String imprimirSimplificado() {
@@ -227,7 +227,7 @@ public class Pergunta implements RegistroVisualplus {
     }
 
     public String imprimir(String nome) {
-        return "(Título: " + titulo +"\t[" + getData()+"]) "+ pergunta +"{Pergunta feita por: "+nome + "\nPalavras Chaves: "+palavrasChave + "}";
+        return "(Título: " + titulo +"\n[" + getData()+"]) "+ pergunta +"{Pergunta feita por: "+nome + "Palavras Chaves: "+palavrasChave + "}";
     }
 
 } 

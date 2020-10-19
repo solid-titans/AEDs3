@@ -94,9 +94,9 @@ public class PerguntasFrontEnd implements FrontEndplus {
         CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
 
         System.out.println(myPrint.imprimir("[Vamos conferir a sua pergunta]") + "\n");
-        System.out.print(myPrint.imprimir(objeto.imprimir()) + "\nEssa é a sua pergunta?(s/n) : ");
+        System.out.print(myPrint.imprimir(objeto.imprimir()));
 
-        confirmar = input.lerString();
+        confirmar = input.lerString("\nEssa é a sua pergunta?(s/n) : ");
 
         myPrint.limparTela();
 
@@ -123,10 +123,9 @@ public class PerguntasFrontEnd implements FrontEndplus {
         byte entrada = -1;
         int indexSelecionado = -1;
 
-        System.out.print(listarSimplificado(array)
-                + "\nEscolha uma das perguntas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
+        System.out.print(listarSimplificado(array));
 
-        entrada = input.lerByte();
+        entrada = input.lerByte("\nEscolha uma das perguntas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
         myPrint.limparTela();
 
         if (array.length > entrada - 1 && entrada - 1 >= 0) {

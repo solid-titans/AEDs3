@@ -116,9 +116,9 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
         CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
 
         System.out.println(myPrint.imprimir("[Vamos conferir a sua resposta]") + "\n");
-        System.out.print(myPrint.imprimir(r.imprimir()) + "\nEssa é a sua resposta?(s/n) : ");
+        System.out.print(myPrint.imprimir(r.imprimir()));
 
-        confirmar = input.lerString();
+        confirmar = input.lerString("\nEssa é a sua resposta?(s/n) : ");
 
         myPrint.limparTela();
 
@@ -145,9 +145,9 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
         byte entrada = -1;
         int indexSelecionado = -1;
 
-        listar(array);
-        System.out.println("\nEscolha uma das respostas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
-        entrada = input.lerByte();
+        System.out.println(listarSimplificado(array));
+
+        entrada = input.lerByte("\nEscolha uma das respostas: \nObs: Pressione \'0\' para voltar ao menu\n-> ");
         myPrint.limparTela();
 
         if (array.length > entrada - 1 && entrada - 1 >= 0) {

@@ -35,9 +35,8 @@ public class CustomInput extends Input implements CustomInputInterface {
 
         do {
             System.out.print(myPrint.imprimir("["+titulo+"]" + "(OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo)") + "\n");
-            System.out.print((printRestr) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n-> " : "-> ");
 
-            entradaDoUsuario = lerString();
+            entradaDoUsuario = lerString((printRestr) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n-> " : "-> ");
 
             myPrint.limparTela();
             if (temTamanhoAdequado(entradaDoUsuario, limMin, limMax) && !entradaDoUsuario.equals("")) {
@@ -71,9 +70,7 @@ public class CustomInput extends Input implements CustomInputInterface {
             System.out.print(myPrint.imprimir("["+titulo+"]" + "{" + observacao + "}" +   
                             "\n" + "(OBS: Deixe o espaço em branco e pressione \'Enter\' para cancelar o processo)") + "\n");
 
-            System.out.print((printRestr == true) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n-> " : "\n-> ");
-
-            entradaDoUsuario = lerString();
+            entradaDoUsuario = lerString((printRestr == true) ? imprimirTamanhoMinMax(limMin, limMax) + "\n\n-> " : "\n-> ");
 
             myPrint.limparTela();
 
