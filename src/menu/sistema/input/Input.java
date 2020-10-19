@@ -43,10 +43,10 @@ public class Input implements InputInterface {
      */
     public String lerString(String texto) {
         String resp = "";
-        try {
-            System.out.print(texto);
-            resp = br.readLine();
-        } catch(IOException e ) {System.err.println("Erro na leitura!");}
+
+        System.out.print(texto);
+        resp = lerString();
+        
         return resp;
     }
 
@@ -72,15 +72,12 @@ public class Input implements InputInterface {
      * @return o primeiro caractere da String colocada
      */
     public char lerChar(String texto) {
-        String entrada = "";
         char resp = '\0';
+   
+        System.out.print(texto);
+        resp = lerChar();
 
-        entrada = lerString(texto);
-
-        if(!entrada.equals("")) {
-          resp = entrada.charAt(0);
-        }
-        return resp;       
+        return resp;
     }
     
     /**
@@ -110,16 +107,11 @@ public class Input implements InputInterface {
     public int lerInt(String texto) {
     
         int resp = -1;
-        String entrada = "";
-        
-        entrada = lerString(texto);
-        
-        if(!entrada.equals("") && entrada.matches("[0-9]+")) {
-            resp = Integer.parseInt(entrada);
-        }
+
+        System.out.print(texto);
+        resp = lerInt();
 
         return resp;
-    
     }
 
     /**
@@ -146,13 +138,10 @@ public class Input implements InputInterface {
      */
     public byte lerByte(String texto) {
 
-        int  aux  = -1;
         byte resp = -1;
 
-        aux = lerInt(texto);
-
-        if ( aux >= -128 && aux <= 127)
-          resp = (byte)aux;
+        System.out.print(texto);
+        resp = lerByte();
 
         return resp;
     }
