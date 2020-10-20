@@ -8,4 +8,5 @@ public interface RespostasInterface {
     public void       atualizar(Resposta resposta);
     public Resposta[] getRespostaArrayUser(int idUsuario);
     public Resposta[] getRespostaArrayGeral(int idPergunta);
+    public void       deletar(Resposta resposta,int idPergunta);
 }

@@ -180,7 +180,7 @@ public class APIControle {
 			case ARQUIVARRESPOSTA:
 				cr = respostasAPI.arquivarResposta(respostasCRUD,idPergunta, idUsuario);
 				if (cr.getResposta() != null)
-					respostasCRUD.atualizar(cr.getResposta());
+					respostasCRUD.deletar(cr.getResposta(),idPergunta);
 
 				break;
 

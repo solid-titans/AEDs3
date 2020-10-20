@@ -159,18 +159,21 @@ public class ListaIDs implements ListaIDsInterface {
                 if(posCabeca != -1) {
                     this.pilhaIds.seek(posCabeca);
                     this.pilhaIds.readInt();
-                    this.pilhaIds.seek(this.pilhaIds.readLong());
-        
-                    idsPerguntas = new int[numElementos];
-        
-                    long proxPos = -1;
-                    for(int i = 0; i < numElementos; i++) {
-                        idsPerguntas[i] = this.pilhaIds.readInt();
-                        
-                        proxPos = this.pilhaIds.readLong();
-                        if(proxPos != -1)
-                            this.pilhaIds.seek(proxPos);
-        
+                    long proxPosicao = this.pilhaIds.readLong();
+                    if (proxPosicao != -1) {
+                        this.pilhaIds.seek(proxPosicao);
+            
+                        idsPerguntas = new int[numElementos];
+            
+                        long proxPos = -1;
+                        for(int i = 0; i < numElementos; i++) {
+                            idsPerguntas[i] = this.pilhaIds.readInt();
+                            
+                            proxPos = this.pilhaIds.readLong();
+                            if(proxPos != -1)
+                                this.pilhaIds.seek(proxPos);
+            
+                        }
                     }
                 }
             }

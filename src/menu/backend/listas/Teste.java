@@ -1,3 +1,5 @@
+package menu.backend.listas;
+
 public class Teste {
     public static void main(String[] args) {
         ListaIDs lista = new ListaIDs("Dados/db");

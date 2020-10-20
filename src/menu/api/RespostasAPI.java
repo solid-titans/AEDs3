@@ -35,6 +35,7 @@ public class RespostasAPI {
         this.TAM_MAX_RESPOSTA = 120;
 
         this.respostasFrontEnd = respostasFrontEnd;
+        this.customInput       = customInput;
     }
 
     /**
@@ -50,6 +51,7 @@ public class RespostasAPI {
         Resposta[] array = respostas.getRespostaArrayGeral(idPergunta);
 
         if (array == null) {
+            System.err.println("\n\n                   ¯\\_(ツ)_/¯");
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
 
         } else {
@@ -74,10 +76,11 @@ public class RespostasAPI {
         Resposta[] array = respostas.getRespostaArrayUser(idUsuario);
 
         if (array == null) {
+            System.err.println("\n\n                   ¯\\_(ツ)_/¯");
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
 
         } else {
-            respostasFrontEnd.listar(array);
+            System.out.println(respostasFrontEnd.listar(array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
@@ -152,6 +155,7 @@ public class RespostasAPI {
         }
 
         resultado.setCdp(CodigoDeProtocolo.SUCESSO);
+        resultado.setResposta(respostaAlterada);
 
         return resultado;
     }
@@ -183,7 +187,7 @@ public class RespostasAPI {
         confirmarOperacao = respostasFrontEnd.verificar(respostaAlterada);
         if (confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
-            return null;
+            return resultado;
         }
 
         respostaAlterada.setAtiva(false);

@@ -214,7 +214,7 @@ public class Resposta implements RegistroVisualResposta {
     }
 
     public String imprimir(String nome) {
-        return "([" + getData()+"]) \n["+ resposta +"] + \n Resposta criada por: " + nome;
+        return "([" + getData()+"]) \n["+ resposta +"] {Resposta criada por: " + nome + "}";
     }
 
 

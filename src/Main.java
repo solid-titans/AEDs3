@@ -31,7 +31,7 @@ public class Main {
         //Interfaces ASCII
         ASCIInterface usuariosGraficos      = new ASCIInterface(92, 226, 93, 232);
         ASCIInterface perguntasGraficos     = new ASCIInterface(21, 111, 232, 15);
-        ASCIInterface respostasGraficos     = new ASCIInterface(40, 10, 232, 15);
+        ASCIInterface respostasGraficos     = new ASCIInterface(40, 121, 232, 15);
 
         //CustomPrints
         CustomPrint usuariosPrint           = new CustomPrint(usuariosGraficos,destaqueTitulo,destaqueObs);
@@ -40,10 +40,12 @@ public class Main {
 
         CustomPrint usuariosInputPrint      = new CustomPrint(usuariosGraficos,destaqueTitulo,destaqueTam);
         CustomPrint perguntasInputPrint     = new CustomPrint(perguntasGraficos,destaqueTitulo,destaqueTam);
+        CustomPrint respostasInputPrint     = new CustomPrint(respostasGraficos,destaqueTitulo,destaqueTam);
 
         // Definicoes
         CustomInput usuariosCustomInput     = new CustomInput(usuariosInputPrint);
         CustomInput perguntasCustomInput    = new CustomInput(perguntasInputPrint);
+        CustomInput respostasCustomInput    = new CustomInput(respostasInputPrint);
 
         // Interface
         UsuariosFrontEnd  usuariosFrontEnd  = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput);
@@ -53,7 +55,7 @@ public class Main {
         // APIS
         UsuariosAPI  usuariosAPI            = new UsuariosAPI(usuariosFrontEnd, usuariosCustomInput);
         PerguntasAPI perguntasAPI           = new PerguntasAPI(perguntasFrontEnd, perguntasCustomInput);
-        RespostasAPI respostasAPI           = new RespostasAPI(respostasFrontEnd, perguntasCustomInput);
+        RespostasAPI respostasAPI           = new RespostasAPI(respostasFrontEnd, respostasCustomInput);
 
         // Cruds
         UsuariosCRUD  usuariosCRUD          = new UsuariosCRUD();

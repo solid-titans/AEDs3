@@ -71,8 +71,18 @@ public class RespostasCRUD implements RespostasInterface {
 	 * @param r é a pergunta a ser atualizada
 	 */
 	public void atualizar(Resposta resposta) {
-
 		respostas.update(resposta, resposta.getId());
+	}
+
+	/**
+	 * Deletar uma resposta do banco de dados
+	 * @param resposta é a resposta a ser deletada
+	 * @param idPergunta é o id da pergunta associado a essa resposta
+	 */
+	public void deletar(Resposta resposta, int idPergunta) {
+		respostas.update(resposta, resposta.getId());
+		respostasUsuario.delete(resposta.getIdUsuario(), resposta.getId());
+		perguntasRespostas.delete(idPergunta, resposta.getId());
 	}
 
 	/**
@@ -150,4 +160,5 @@ public class RespostasCRUD implements RespostasInterface {
 
 		return resp;
 	}
+	
 }
