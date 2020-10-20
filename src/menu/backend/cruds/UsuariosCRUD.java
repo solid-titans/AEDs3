@@ -97,7 +97,7 @@ public class UsuariosCRUD implements UsuarioInterface {
 	}
 
 	public boolean isSenha(String senhaInserida, String senhaRegistrada) {	
-		return hasheador.verificarSenha(senhaInserida,senhaRegistrada);
+		return hasheador.verificarSenha(senhaRegistrada,senhaInserida);
 	}
 
 }
