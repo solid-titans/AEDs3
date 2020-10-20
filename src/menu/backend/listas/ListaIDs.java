@@ -148,25 +148,31 @@ public class ListaIDs implements ListaIDsInterface {
         int[] idsPerguntas = null;
 
         try {
-            this.indice.seek(idUsuario*12);
-            
-            int numElementos = this.indice.readInt();
-            long posCabeca   = this.indice.readLong();
-            
-            this.pilhaIds.seek(posCabeca);
-            this.pilhaIds.readInt();
-            this.pilhaIds.seek(this.pilhaIds.readLong());
-
-            idsPerguntas = new int[numElementos];
-
-            long proxPos = -1;
-            for(int i = 0; i < numElementos; i++) {
-                idsPerguntas[i] = this.pilhaIds.readInt();
+            // Verificando se existe a posicao no arquivo
+            if(idUsuario*12 < this.indice.length()) {
+                this.indice.seek(idUsuario*12);
                 
-                proxPos = this.pilhaIds.readLong();
-                if(proxPos != -1)
-                    this.pilhaIds.seek(proxPos);
-
+                int numElementos = this.indice.readInt();
+                long posCabeca   = this.indice.readLong();
+                
+                // Verificar se a posição mesmo que válida, possui algum elemento válido
+                if(posCabeca != -1) {
+                    this.pilhaIds.seek(posCabeca);
+                    this.pilhaIds.readInt();
+                    this.pilhaIds.seek(this.pilhaIds.readLong());
+        
+                    idsPerguntas = new int[numElementos];
+        
+                    long proxPos = -1;
+                    for(int i = 0; i < numElementos; i++) {
+                        idsPerguntas[i] = this.pilhaIds.readInt();
+                        
+                        proxPos = this.pilhaIds.readLong();
+                        if(proxPos != -1)
+                            this.pilhaIds.seek(proxPos);
+        
+                    }
+                }
             }
     
         } catch(Exception e) { e.printStackTrace(); }
