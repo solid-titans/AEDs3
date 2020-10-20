@@ -147,9 +147,6 @@ public class RespostasCRUD implements RespostasInterface {
 				Resposta temp = respostas.read(i);
 				if (temp == null)
 					continue;
-				if (temp.getIdPergunta() != idPergunta) {
-					System.out.println("ue");
-				}
 
 				resp[contador] = temp;
 				contador++;
