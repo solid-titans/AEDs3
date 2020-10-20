@@ -165,14 +165,15 @@ public class UsuariosAPI {
         email = customInput.inserir("Insira o seu email", TAM_MIN_EMAIL, TAM_MAX_EMAIL, false);
         if (email.equals("")) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
-            return null;
+            customInput.esperarUsuario();
+            return resultado;
         }
 
         usuario = usuarios.achar(email);
 
         if (usuario == null) {
             System.err.println("Erro! E-mail inválido");
-            return null;
+            return resultado;
         }
 
         senhaTemporaria = Regex.gerarSenha();
@@ -196,16 +197,20 @@ public class UsuariosAPI {
         CodigoDeProtocolo acertouAsenha = CodigoDeProtocolo.ERRO;
         CelulaResposta resultado = new CelulaResposta();
 
-        resultado.setUsuario(usuarios.achar(idUsuario));
-        acertouAsenha = usuariosFrontEnd.inserirSenha(usuarios, resultado.getUsuario().getSenha(), 3);
+        Usuario usuario = usuarios.achar(idUsuario);
+
+        acertouAsenha = usuariosFrontEnd.inserirSenha(usuarios, usuario.getSenha(), 3);
 
         if (acertouAsenha == CodigoDeProtocolo.ERRO) {
             System.err.println("Erro! Senhas não se correspondem!");
-            return null;
+            return resultado;
+
         } else if (acertouAsenha == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
-            return null;
+            return resultado;
         }
+
+        resultado.setUsuario(usuario);
 
         novaSenha = usuariosFrontEnd.novaSenha();
         resultado.getUsuario().setSenha(novaSenha);
