@@ -92,12 +92,12 @@ public class UsuariosCRUD implements UsuarioInterface {
 	}
 	private Usuario hasharSenha(Usuario usuario){
 		String senha = usuario.getSenha();
-		usuario.setSenha(hasheador.hash(senha));
+		usuario.setSenha(hasheador.hashearSenha(senha));
 		return usuario;
 	}
 
-	public boolean isSenha(String senhaInserida, String senhaRegistrada) {
-		return hasheador.verificarHash(senhaInserida,senhaRegistrada );
+	public boolean isSenha(String senhaInserida, String senhaRegistrada) {	
+		return hasheador.verificarSenha(senhaInserida,senhaRegistrada);
 	}
 
 }

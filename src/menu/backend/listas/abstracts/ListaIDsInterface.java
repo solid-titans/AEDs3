@@ -1,8 +1,8 @@
-package menu.pergunta.indices;
+package menu.backend.listas.abstracts;
 
 public interface ListaIDsInterface {
     public boolean create(int idUsuario, int idPergunta);
     public int[]   read(int idUsuario);
-    public boolean delete(int idPergunta);
+    public boolean delete(int idUsuario,int idPergunta);
 
 }

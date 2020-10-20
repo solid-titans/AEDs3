@@ -10,22 +10,22 @@ import produtos.Pergunta;
 public class PerguntasCRUD implements PerguntaInferface {
     
 	// Path dos Cruds
-    private final String            path;
+    private final String path;
     
-    private static Crud<Pergunta>   perguntas;
-    private static ListaInvertida   listaDeChaves;
-    private static ListaIDs         perguntasUsuario;
+    private static Crud<Pergunta> perguntas;
+    private static ListaInvertida listaDeChaves;
+    private static ListaIDs       perguntasUsuario;
 
 	public PerguntasCRUD(String path) {
 
 		this.path = path;
 		try {
 			//Usuarios
-			perguntasUsuario   = new ListaIDs(this.path + "/" + "perguntasUsuarioIDs");
+			perguntasUsuario = new ListaIDs(this.path + "/" + "perguntasUsuarioIDs");
 			
 			//Perguntas
-			perguntas          = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
-			listaDeChaves      = new ListaInvertida(10,"Dados/indice.dict","Dados/indice.dictBlock");
+			perguntas     = new Crud<>("Perguntas",  Pergunta.class.getConstructor());
+			listaDeChaves = new ListaInvertida(10,"Dados/indice.dict","Dados/indice.dictBlock");
             
         } catch(Exception e) { e.printStackTrace(); }
 	}
