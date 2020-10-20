@@ -1,6 +1,6 @@
 package produtos;
 
-import menu.sistema.controle.CodigoDeProtocolo;
+import menu.backend.misc.CodigoDeProtocolo;
 
 /**
  * Classe criada para armazenar respostas do CrudAPI

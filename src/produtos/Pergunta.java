@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import menu.sistema.abstracts.frontend.RegistroVisualplus;
+import produtos.abstracts.RegistroVisualplus;
 
 public class Pergunta implements RegistroVisualplus {
 

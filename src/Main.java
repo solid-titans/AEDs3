@@ -1,12 +1,10 @@
 import java.io.File;
 import menu.*;
-import menu.pergunta.*;
-import menu.resposta.*;
-import menu.sistema.controle.APIControle;
-import menu.sistema.controle.crudmanagers.*;
-import menu.sistema.input.*;
-import menu.usuario.*;
-import menu.sistema.graficos.*;
+import menu.api.*;
+import menu.backend.cruds.*;
+import menu.backend.input.*;
+import menu.frontend.*;
+import menu.frontend.graficos.*;
 
 public class Main {
 

@@ -1,9 +1,9 @@
 package menu;
 
-import menu.sistema.graficos.CustomPrint;
-import menu.sistema.input.Input;
-import menu.sistema.controle.CodigoDeProtocolo;
-import menu.sistema.controle.APIControle;
+import menu.frontend.graficos.CustomPrint;
+import menu.api.APIControle;
+import menu.backend.input.Input;
+import menu.backend.misc.CodigoDeProtocolo;
 import produtos.CelulaResposta;
 import produtos.Pergunta;
 import produtos.Usuario;
@@ -212,9 +212,9 @@ public class Menu {
             if (opcaoEscolhida != CodigoDeProtocolo.NULL) {
                 resultadoVerificacao = minhaAPI.requisicaoEmInicio(opcaoEscolhida, idUsuario);
                 input.esperarUsuario();
-                if (resultadoVerificacao.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) {
+
+                if (resultadoVerificacao.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) 
                     navegarPergunta(resultadoVerificacao.getPergunta(), resultadoVerificacao.getUsuario());
-                }
 
             }
 
@@ -236,7 +236,7 @@ public class Menu {
         do {
             myPrint.limparTela();
 
-            System.out.println(pergunta.imprimir());
+            System.out.println(myPrint.imprimir(pergunta.imprimir()));
 
             opcao = selecao.imprimirTela(menuIndex, (byte) -1);
 
@@ -304,6 +304,7 @@ public class Menu {
 
         } while (!opcao.equals("03"));
 
+        myPrint.getInterface().setBorda(113);
         return opcaoEscolhida;
     }
 

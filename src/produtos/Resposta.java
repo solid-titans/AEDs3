@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import menu.sistema.abstracts.frontend.RegistroVisualResposta;
+import produtos.abstracts.RegistroVisualResposta;
 
 public class Resposta implements RegistroVisualResposta {
 
@@ -206,17 +206,15 @@ public class Resposta implements RegistroVisualResposta {
     }
 
     public String imprimir() {
-        // TODO Auto-generated method stub
-        return null;
+        return "([" + getData()+"]) \n["+ resposta +"]";
     }
+    
     public String imprimirSimplificado() {
-        // TODO Auto-generated method stub
-        return null;
+        return "([" + getData()+"]) \n{"+ resposta +"}";
     }
 
     public String imprimir(String nome) {
-        // TODO Auto-generated method stub
-        return null;
+        return "([" + getData()+"]) \n["+ resposta +"] + \n Resposta criada por: " + nome;
     }
 
 

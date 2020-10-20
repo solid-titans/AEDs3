@@ -10,7 +10,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import menu.sistema.abstracts.frontend.RegistroVisual;
+import produtos.abstracts.RegistroVisual;
 
 public class Usuario implements RegistroVisual {
     private String nome;

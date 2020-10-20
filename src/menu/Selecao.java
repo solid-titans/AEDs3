@@ -1,7 +1,7 @@
 package menu;
 
-import menu.sistema.input.Input;
-import menu.sistema.graficos.CustomPrint;
+import menu.backend.input.Input;
+import menu.frontend.graficos.CustomPrint;
 
 /**
  * Classe para armazenar todos os menus de seleção do programa
