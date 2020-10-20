@@ -1,34 +1,41 @@
 package menu;
 
-import menu.sistema.graficos.*;
-import menu.sistema.*;
+import menu.frontend.graficos.CustomPrint;
+import menu.api.APIControle;
+import menu.backend.input.Input;
+import menu.backend.misc.CodigoDeProtocolo;
 import produtos.CelulaResposta;
 import produtos.Pergunta;
 import produtos.Usuario;
-import menu.pergunta.PerguntasFrontEnd;
 
 /**
+ *
  * Classe para gerenciar as escolhas do usuário e a comunicação com a CrudAPI
- * @author  MysteRys337
+ * 
+ * @author MysteRys337
  * @version 0.0.1
  */
 public class Menu {
 
-    private ASCIInterface       graficos;
+    private CustomPrint myPrint; // Interface gráfica
 
-    private int                 idUsuario;                  //Id do Usuario que usar o sistema
-    private CrudAPI             minhaAPI;                   //Gerenciador do Crud e para direcionar as decisões do usuário
+    private int         idUsuario; // Id do Usuario que usar o sistema
+    private APIControle minhaAPI; // Gerenciador do Crud e para direcionar as decisões do usuário
+    private Selecao     selecao;
+    private Input       input;
 
     /**
      * Configura a id do usuário que vai acessar o programa
+     * 
      * @param id
      */
+    public Menu(CustomPrint myPrint, APIControle minhaAPI, Selecao selecao) {
 
-    public Menu() {
-
-        idUsuario      = -1;
-        minhaAPI       = new CrudAPI();
-        graficos       = new ASCIInterface();
+        this.idUsuario = -1;         // Inicia como '-1' pois nenhum usuário estará logado de imediato
+        this.minhaAPI  = minhaAPI;
+        this.myPrint   = myPrint;
+        this.selecao   = selecao;
+        this.input     = new Input();
     }
 
     /**
@@ -41,34 +48,30 @@ public class Menu {
 
         CodigoDeProtocolo opcaoEscolhida;
 
-        ASCIInterface.limparTela();
+        myPrint.limparTela();
         do {
 
-            System.out.println(graficos.caixa("PERGUNTAS 1.0"));
-            opcao          = Selecao.Acesso();
+            System.out.println(myPrint.imprimir("[PERGUNTAS 1.0]"));
+            opcao = selecao.Acesso();
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
-            //Fazendo a interação com o acesso
+            // Fazendo a interação com o acesso
             /*
-            *   O acesso ao sistema funciona a partir de um
-            *   switch, com o char 'opcao', cada case representa
-            *   a opcao escolhida pelo usuario
-            *
-            *   Lista de opções:
-            *
-            *   0 - Sair
-            *   1 - Acessando o Sistema
-            *   2 - Criacao de usuario
-            *   3 - Senha temporaria
-            *
-            *   Obs: Se o usuario apenas apertou 'enter' deixando a String
-            *   vazia, o programa contara isso como um erro.
-            */
-            switch(opcao) {
+             * O acesso ao sistema funciona a partir de um switch, com o char 'opcao', cada
+             * case representa a opcao escolhida pelo usuario
+             *
+             * Lista de opções:
+             *
+             * 0 - Sair 1 - Acessando o Sistema 2 - Criacao de usuario 3 - Senha temporaria
+             *
+             * Obs: Se o usuario apenas apertou 'enter' deixando a String vazia, o programa
+             * contara isso como um erro.
+             */
+            switch (opcao) {
 
-            //Menu Acesso
+                // Menu Acesso
 
-                case '0': //Saindo do programa
+                case '0': // Saindo do programa
                     System.out.println("Obrigado por usar o Pergunta 1.0\nTenha um bom dia!");
                     break;
 
@@ -84,24 +87,27 @@ public class Menu {
                     opcaoEscolhida = CodigoDeProtocolo.CRIARSENHATEMPORARIA;
                     break;
 
-                //Operacao Invalida
+                // Operacao Invalida
                 default:
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
             }
 
-            if(opcaoEscolhida != CodigoDeProtocolo.NULL) {
-                resultadoVerificacao = minhaAPI.verificarRequisicaoEmAcesso(opcaoEscolhida);
-                if(resultadoVerificacao.getCdp() == CodigoDeProtocolo.MUDARUSUARIO) {
-                    graficos.setBorda(63);
+            if (opcaoEscolhida != CodigoDeProtocolo.NULL) {
+
+                resultadoVerificacao = minhaAPI.requisicaoEmAcesso(opcaoEscolhida);
+                input.esperarUsuario();
+                if (resultadoVerificacao.getCdp() == CodigoDeProtocolo.MUDARUSUARIO) {
+
+                    myPrint.getInterface().setBorda(113);
                     idUsuario = resultadoVerificacao.getUsuario().getId();
                     acessoGarantido();
-                    
+
                 }
 
             }
-            
-        ASCIInterface.limparTela();
+
+            myPrint.limparTela();
         } while (opcao != '0');
     }
 
@@ -112,47 +118,50 @@ public class Menu {
 
         String opcao = "";
 
-        byte menuIndex    = 1;
+        byte menuIndex = 1;
         byte notificacoes = 0;
 
         CelulaResposta resultadoVerificacao = new CelulaResposta();
 
         CodigoDeProtocolo opcaoEscolhida;
 
-        //Loop do menu
+        // Loop do menu
         do {
-            ASCIInterface.limparTela();
+            myPrint.limparTela();
 
-            System.out.println(graficos.caixa("PERGUNTAS 1.0"));
-            opcao          = Selecao.imprimirTela(menuIndex,notificacoes);
+            System.out.println(myPrint.imprimir("[PERGUNTAS 1.0]"));
+            opcao = selecao.imprimirTela(menuIndex, notificacoes);
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
 
-            //Fazendo a mudança do menu
+            // Fazendo a mudança do menu
             /*
-            *   Eis aqui uma explicacao de como o sistema de menu funciona
-            *   Primeiro o programa faz a leitura do teclado , 
-            *   apos isso, ele soma o valor da variavel 'menuIndex' 
-            *   com o que foi lido. O resultado disso era uma String 
-            *   de 2 caracteres, sendo o primeiro a opcao escolhida 
-            *   pelo usuario, e a segunda o menu na qual ele esta atualmente.
-            *
-            *   Lista de menus:
-            *
-            *   1 - Inicio
-            *   2 - Criacao de Perguntas
-            *
-            *   Obs: Se o usuario apenas apertou 'enter' deixando a String
-            *   vazia, o programa contara isso como um erro.
-            */
-            switch(opcao) {
+             * Eis aqui uma explicacao de como o sistema de menu funciona Primeiro o
+             * programa faz a leitura do teclado , apos isso, ele soma o valor da variavel
+             * 'menuIndex' com o que foi lido. O resultado disso era uma String de 2
+             * caracteres, sendo o primeiro a opcao escolhida pelo usuario, e a segunda o
+             * menu na qual ele esta atualmente.
+             *
+             * Lista de menus:
+             *
+             * 1 - Inicio 2 - Criacao de Perguntas
+             *
+             * Obs: Se o usuario apenas apertou 'enter' deixando a String vazia, o programa
+             * contara isso como um erro.
+             */
+            switch (opcao) {
 
-                //Menu Inicio
+                // Menu Inicio
 
                 case "01": // Saindo do programa
-                    System.out.println("Obrigado por usar o programa!\nTenha um excelente dia\n");
+                    System.out.println("\n+-----------------------------------------------------+");
+                    System.out.println("|          Obrigado por usar o programa!              |");
+                    System.out.println("|              Tenha um excelente dia                 |");
+                    System.out.println("+-----------------------------------------------------+\n");
+
+                    input.esperarUsuario();
                     idUsuario = -1;
-                    graficos.setBorda(1);
+                    myPrint.getInterface().setBorda(27);
                     break;
 
                 case "11": // Indo para a tela de criacao de perguntas
@@ -167,11 +176,11 @@ public class Menu {
                     opcaoEscolhida = CodigoDeProtocolo.OLHARNOTIFICACOES;
                     break;
 
-                case "41": 
+                case "41":
                     opcaoEscolhida = CodigoDeProtocolo.NOVASENHA;
-                    break;                       
+                    break;
 
-                //Menu Criacao de Perguntas
+                // Menu Criacao de Perguntas
 
                 case "02": // Voltando a tela de Inicio
                     menuIndex = 1;
@@ -193,46 +202,47 @@ public class Menu {
                     opcaoEscolhida = CodigoDeProtocolo.ARQUIVARPERGUNTA;
                     break;
 
-                //Operacao Invalida
+                // Operacao Invalida
 
                 default:
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;
             }
 
-            if(opcaoEscolhida != CodigoDeProtocolo.NULL) {
-                resultadoVerificacao = minhaAPI.verificarRequisicaoDoUsuario(opcaoEscolhida,idUsuario);
-                if(resultadoVerificacao.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) {
+            if (opcaoEscolhida != CodigoDeProtocolo.NULL) {
+                resultadoVerificacao = minhaAPI.requisicaoEmInicio(opcaoEscolhida, idUsuario);
+                input.esperarUsuario();
+
+                if (resultadoVerificacao.getCdp() == CodigoDeProtocolo.IRPARAPERGUNTA) 
                     navegarPergunta(resultadoVerificacao.getPergunta(), resultadoVerificacao.getUsuario());
-                }
 
             }
 
-        }while (!opcao.equals("01"));
+        } while (!opcao.equals("01"));
 
     }
 
-    public CodigoDeProtocolo navegarPergunta(Pergunta p,Usuario u) {
+    public CodigoDeProtocolo navegarPergunta(Pergunta pergunta, Usuario u) {
 
-        Selecao.graficos.setBorda(220);
-        
+        selecao.mudarCorBorda(220);
+
         String opcao = "";
-        
+
         byte menuIndex = 3;
 
         CelulaResposta resultadoVerificacao = new CelulaResposta();
         CodigoDeProtocolo opcaoEscolhida;
 
         do {
-            ASCIInterface.limparTela();
+            myPrint.limparTela();
 
-            System.out.println(PerguntasFrontEnd.toString(p, u.getNome()));
+            System.out.println(myPrint.imprimir(pergunta.imprimir()));
 
-            opcao = Selecao.imprimirTela(menuIndex,(byte)-1);
+            opcao = selecao.imprimirTela(menuIndex, (byte) -1);
 
             opcaoEscolhida = CodigoDeProtocolo.NULL;
 
-            switch(opcao) {
+            switch (opcao) {
                 case "03":
                     System.out.println("Ok! Voltando ao menu...");
                     break;
@@ -240,11 +250,11 @@ public class Menu {
                 case "13":
                     opcaoEscolhida = CodigoDeProtocolo.LISTARRESPOSTASGERAL;
                     break;
-                
+
                 case "23":
                     opcaoEscolhida = CodigoDeProtocolo.LISTARCOMENTARIOSGERAL;
                     break;
-                
+
                 case "33":
                     menuIndex = 4;
                     break;
@@ -264,15 +274,15 @@ public class Menu {
                 case "14":
                     opcaoEscolhida = CodigoDeProtocolo.LISTARRESPOSTASUSUARIO;
                     break;
-                
+
                 case "24":
                     opcaoEscolhida = CodigoDeProtocolo.INCLUIRRESPOSTA;
                     break;
-                
+
                 case "34":
                     opcaoEscolhida = CodigoDeProtocolo.ALTERARRESPOSTA;
                     break;
-                
+
                 case "44":
                     opcaoEscolhida = CodigoDeProtocolo.ARQUIVARRESPOSTA;
                     break;
@@ -286,14 +296,15 @@ public class Menu {
                     break;
             }
 
-            if(opcaoEscolhida != CodigoDeProtocolo.NULL) {
-                resultadoVerificacao = minhaAPI.verificarRequisicaoEmPergunta(opcaoEscolhida,p.getId(),idUsuario);
+            if (opcaoEscolhida != CodigoDeProtocolo.NULL) {
+                resultadoVerificacao = minhaAPI.requisicaoEmPerguntas(opcaoEscolhida, pergunta.getId(),idUsuario);
+                input.esperarUsuario();
 
             }
 
-        } while(!opcao.equals("03"));
+        } while (!opcao.equals("03"));
 
-
+        myPrint.getInterface().setBorda(113);
         return opcaoEscolhida;
     }
 

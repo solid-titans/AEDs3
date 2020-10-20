@@ -1,4 +1,4 @@
-package menu.pergunta.indices;
+package menu.backend.listas;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

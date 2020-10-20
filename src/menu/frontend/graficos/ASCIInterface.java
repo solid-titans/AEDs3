@@ -1,4 +1,4 @@
-package menu.sistema.graficos;
+package menu.frontend.graficos;
 
 /**
  * Criação de interface gráfica no terminal usando ASCII e ANSI 
@@ -135,7 +135,7 @@ public class ASCIInterface {
             array = texto.split(" ");
             altura  += ALTURA_SEGURANCA;
             
-            if(encaixa(largura,altura) && StringManipulation.calcularTamanho(array, largura) < altura) {
+            if(encaixa(largura,altura) && calcularTamanho(array, largura) < altura) {
                 resp = caixa((short)largura,(short)altura,array);
             }
         }
@@ -168,7 +168,7 @@ public class ASCIInterface {
             largura  = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
             altura  += ALTURA_SEGURANCA;
             
-            if(encaixa(largura,altura) && StringManipulation.calcularTamanho(array, largura) < altura) {
+            if(encaixa(largura,altura) && calcularTamanho(array, largura) < altura) {
                 resp = caixa((short)largura,(short)altura,array);
             }
         }
@@ -202,7 +202,7 @@ public class ASCIInterface {
         if(texto.length() > LARGURA_PADRAO) {
             array = texto.split(" ");
             largura = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
-            altura  = StringManipulation.calcularTamanho(array, largura) + ALTURA_SEGURANCA;
+            altura  = calcularTamanho(array, largura) + ALTURA_SEGURANCA;
             
             if(encaixa(largura,altura)) {
                 resp = caixa((short)largura,(short)altura,array);
@@ -285,28 +285,29 @@ public class ASCIInterface {
         return caixa;
     }
 
-    /**
-     * Limpar a tela do terminal
-     * @implNote o programa verifica se o sistema operacional é um Windows ou do tipo Unix 
+    /** Calcular quanto tamanho vertical(de linhas) é necessario para 
+     ** colocar um array
+     * 
+     * @param array é o array de Strings com o conteúdo que o usuário quer inserir
+     * @param largura é o tamanho máximo de linhas 
+     * @return numero de linhas necessaria para colocar um array
      */
-    public static void limparTela(){
-
-        String OS = System.getProperty("os.name").toLowerCase();
-        //String clear;
-
-        if(OS.equals("linux") || OS.equals("mac")) {
-
-            ANSILibrary.limparTelaUnix();
-        }
-        else {
-
-            try {
-                Runtime.getRuntime().exec("cls");
+    private int calcularTamanho(String[] array,int largura) {
+        
+        int tamanhoString = 0;
+        int numDeArrays   = 1;
+        
+        for ( String i : array) {
+            if (tamanhoString + i.length() < largura) {
+                tamanhoString += i.length() + 1;
             }
-            catch (Exception e) {
-                System.err.println("Deu ruim");
+            else {
+                tamanhoString = i.length() + 1;
+                numDeArrays++;
+                
             }
         }
+        return numDeArrays;
     }
 
     /**

@@ -10,9 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import crud.Registro;
+import produtos.abstracts.RegistroVisualplus;
 
-public class Pergunta implements Registro {
+public class Pergunta implements RegistroVisualplus {
 
     private int idPergunta;
     private int idUsuario;
@@ -216,6 +216,18 @@ public class Pergunta implements Registro {
         resp = resp.replaceAll("ç","c");
 
         return resp;
+    }
+
+    public String imprimir() {
+        return "(Título: " + titulo +"\n[" + getData()+"]) \n["+ pergunta +"] {Palavras Chaves: "  +palavrasChave + "}";
+    }
+
+    public String imprimirSimplificado() {
+        return "{Título: " + titulo + "}" + "\n(Palavras Chaves:"  +palavrasChave + ")";
+    }
+
+    public String imprimir(String nome) {
+        return "(Título: " + titulo +"\n[" + getData()+"]) "+ pergunta +"{Pergunta feita por: "+nome + "Palavras Chaves: "+palavrasChave + "}";
     }
 
 } 

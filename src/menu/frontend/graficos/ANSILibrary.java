@@ -1,4 +1,4 @@
-package menu.sistema.graficos;
+package menu.frontend.graficos;
 
 /**
  * Classe para gerenciamento de códigos de saída ANSI pro terminal

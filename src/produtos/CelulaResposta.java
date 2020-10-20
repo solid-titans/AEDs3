@@ -1,41 +1,42 @@
 package produtos;
 
-import menu.sistema.CodigoDeProtocolo;
+import menu.backend.misc.CodigoDeProtocolo;
 
 /**
  * Classe criada para armazenar respostas do CrudAPI
+ * 
  * @author MysteRys337 ( Gustavo Lopes )
  */
 public class CelulaResposta {
-    
-    private Usuario u;
-    private Pergunta p;
-    private Resposta r;
+
+    private Usuario usuario;
+    private Pergunta pergunta;
+    private Resposta resposta;
     private CodigoDeProtocolo cdp;
 
     public Usuario getUsuario() {
-		return this.u;
-	}
+        return this.usuario;
+    }
 
-    public void setUsuario(Usuario u ) {
-		this.u = u;
-	}
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
     public Pergunta getPergunta() {
-		return this.p;
-	}
+        return this.pergunta;
+    }
 
-    public void setPergunta(Pergunta p) {
-		this.p = p;
-	}
+    public void setPergunta(Pergunta pergunta) {
+        this.pergunta = pergunta;
+    }
 
     public Resposta getResposta() {
-		return this.r;
-	}
+        return this.resposta;
+    }
 
-    public void setResposta(Resposta r) {
-		this.r = r;
-	}
+    public void setResposta(Resposta resposta) {
+        this.resposta = resposta;
+    }
 
     public CodigoDeProtocolo getCdp() {
         return this.cdp;
@@ -46,17 +47,17 @@ public class CelulaResposta {
     }
 
     public CelulaResposta() {
-        u   = null;
-        p   = null;
-        r   = null;
-        cdp = CodigoDeProtocolo.ERRO;
+        this.usuario  = null;
+        this.pergunta = null;
+        this.resposta = null;
+        cdp           = CodigoDeProtocolo.ERRO;
     }
 
     public CelulaResposta(Usuario usuario, Pergunta pergunta, Resposta resposta, CodigoDeProtocolo codigoDeProtocolo) {
-        u   = usuario;
-        p   = pergunta;
-        r   = resposta;
-        cdp = codigoDeProtocolo;        
+        this.usuario  = usuario;
+        this.pergunta = pergunta;
+        this.resposta = resposta;
+        this.cdp      = codigoDeProtocolo;
     }
 
 }

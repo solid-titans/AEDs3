@@ -12,7 +12,7 @@
  * Implementado pelo Prof. Marcos Kutova
  * v1.0 - 2020
  */
-package menu.pergunta.indices;
+package menu.backend.listas;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
