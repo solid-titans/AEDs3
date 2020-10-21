@@ -10,20 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import menu.sistema.graficos.*;
-import crud.Registro;
+import produtos.abstracts.RegistroVisualplus;
 
-public class Pergunta implements Registro {
-
-	//Atributos
-    private static ASCIInterface graficos  = new ASCIInterface(199, 231 , 232, 184);
-    private static ANSILibrary   destaque = new ANSILibrary(15, 27, ANSILibrary.TEXTO_SUBLINHADO);
+public class Pergunta implements RegistroVisualplus {
 
     private int idPergunta;
     private int idUsuario;
     private short nota;
     private boolean ativa;
     private long criacao;
+    private String titulo;
     private String pergunta;
     private String palavrasChave;
 
@@ -34,17 +30,19 @@ public class Pergunta implements Registro {
         this.nota          = 0;
         this.ativa         = false;
         this.criacao       = -1;
+        this.titulo        = "";
         this.pergunta      = "";
         this.palavrasChave = "";
     }
 
     //Construtor de uma pergunta
-    public Pergunta(int idUsuario,String pergunta,String palavrasChaves) {
+    public Pergunta(int idUsuario,String titulo,String pergunta,String palavrasChaves) {
         this.idPergunta    = -1;
         this.idUsuario     = idUsuario;
         this.nota          = 0;
         this.ativa         = true;
         this.criacao       = new Date().getTime();
+        this.titulo        = titulo;
         this.pergunta      = pergunta;
         this.palavrasChave = consertarPalavrasChave(palavrasChaves);
     }
@@ -64,6 +62,10 @@ public class Pergunta implements Registro {
 
     public void setNota(short nota) {
         this.nota = nota;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public void setPergunta(String pergunta) {
@@ -99,6 +101,10 @@ public class Pergunta implements Registro {
         return this.nota;
     }
 
+    public String getTitulo() {
+        return this.titulo;
+    }
+
     public String getPergunta() {
         return this.pergunta;
     }
@@ -109,12 +115,6 @@ public class Pergunta implements Registro {
 
     public boolean getAtiva() {
         return this.ativa;
-    }
-
-    public String toString() {
-        return        destaque.imprimir(getData()) + 
-               "\n" + graficos.caixa(getPergunta()) + 
-               "Palavras-chave: " + destaque.imprimir(getPalavrasChave()) + "\n";
     }
 
     // Serializar objeto
@@ -132,6 +132,7 @@ public class Pergunta implements Registro {
         data.writeBoolean(this.ativa);
         data.writeShort((int)this.nota); //O unico jeito de escrever short é usando int
         data.writeLong(this.criacao);
+        data.writeUTF(this.titulo);
         data.writeUTF(this.pergunta);
         data.writeUTF(this.palavrasChave);
 
@@ -153,22 +154,29 @@ public class Pergunta implements Registro {
         this.ativa         = data.readBoolean();
         this.nota          = data.readShort();
         this.criacao       = data.readLong();
+        this.titulo        = data.readUTF();
         this.pergunta      = data.readUTF();
         this.palavrasChave = data.readUTF();
     }
 
+    /**
+     * Função que pega o conteúdo de ofLongToStringData e o ajusta 
+     * @return a Data de criação da pergunta
+     */
     public String getData() {
         String   resp = "";
         String[] array = null;
 
         array = ofLongToStringData(this.criacao).split(" ");
-        resp += "Data: " + array[0] + " às " + array[1];
+        resp += array[0] + " às " + array[1];
         return resp;
     }
-    /** ofLongToStringData - a contribution by Homecas
-     *  
-     * @param data
-     * @return
+    /** 
+     * Função para converter o horário de milisegundos para o formato: dia/mes/ano - hora:minutos em uma String
+     * Obrigado a Homenique Vieira por ter feito essa função
+     * 
+     * @param data é os mililisegundos em long
+     * @return uma String contendo a data representada por data
      */
     private String ofLongToStringData(long data){
 
@@ -186,6 +194,11 @@ public class Pergunta implements Registro {
         return dataFormatada.format(SistemaData);
     }
 
+    /**
+     * Função para ajustar Strings a um formato de palavras-chave reconhecido pelo sistema
+     * @param palavrasChaves é a String contendo todas as palavras-chave separada por espaço em branco ' '
+     * @return a String inserida porém com todos os desvio do padrão consertada
+     */
     public static String consertarPalavrasChave(String palavrasChaves) {
 
         String resp = palavrasChaves.trim().toLowerCase();
@@ -203,6 +216,18 @@ public class Pergunta implements Registro {
         resp = resp.replaceAll("ç","c");
 
         return resp;
+    }
+
+    public String imprimir() {
+        return "(Título: " + titulo +"\n[" + getData()+"]) \n["+ pergunta +"] {Palavras Chaves: "  +palavrasChave + "}";
+    }
+
+    public String imprimirSimplificado() {
+        return "{Título: " + titulo + "}" + "\n(Palavras Chaves:"  +palavrasChave + ")";
+    }
+
+    public String imprimir(String nome) {
+        return "(Título: " + titulo +"\n[" + getData()+"]) "+ pergunta +"{Pergunta feita por: "+nome + "Palavras Chaves: "+palavrasChave + "}";
     }
 
 } 

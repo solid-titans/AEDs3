@@ -1,6 +1,5 @@
 package crud;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
@@ -67,6 +66,7 @@ public class Crud <T extends Registro> {
 
         // Retornando a id usada na criacao do objeto
         if(id != -1) this.create(objeto, id);
+
         return id;
     }
 

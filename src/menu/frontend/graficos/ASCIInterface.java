@@ -1,42 +1,31 @@
-/*
-*   Classe para a criação de interface gráfica em
-*   terminal, usando ASCII e ANSI
-*   Criada por: Gustavo Lopes Rodrigues
-*   Versão : 0.0.2
-*/
-package menu.sistema.graficos;
+package menu.frontend.graficos;
 
+/**
+ * Criação de interface gráfica no terminal usando ASCII e ANSI 
+ * @author MysteRys337 (Gustavo Lopes)
+ */
 public class ASCIInterface {
-
-    //Classe
-    private final StringManipulation s = new StringManipulation();
 
     //Definindo a altura e largura maxima dos elementos
     private final short ALTURA_MAX       = 1000;
     private final short LARGURA_MAX      = 1000;
 
-    //Espaço que fica entre o texto para 
+    //Espaço que fica entre o texto 
     private short LARGURA_SEGURANCA;
     private short ALTURA_SEGURANCA;
 
     //Espaço antes que o texto se divida em linhas
     private short LARGURA_PADRAO;
 
-    //Declarando os elementos que guardam as informações de texto
-    /*
-    *   A ANSILibrary foi uma classe criada por mim para que
-    *   eu possa ter controle da cor,cor de fundo e destaque
-    *   do texto que eu quero imprimir, eu apenas envio uma
-    *   cor entre 0 e 255 e a classe já configura o resto para
-    *   imprimir.
-    *   OBS:
-    *   Para mais detalhes sobre a classe, consule ANSILibrary.java
-    */
+    //Padrões de cores de cada elemento da interface
     private ANSILibrary borda;
     private ANSILibrary janela;
     private ANSILibrary texto_primario;
     private ANSILibrary texto_secundario;
 
+    /**
+     * Construtor 1: Criar uma interface com configurações genéricas
+     */
     public ASCIInterface () {
 
         //Iniciando todos os objetos
@@ -52,6 +41,12 @@ public class ASCIInterface {
 
     }
 
+    /**
+     * Construtor 2: Criar uma interface mas já configurando os limites de largura e altura
+     * @param larguraPadrao é o inteiro correspondendo ao tamanho máximo antes que o texto se divida em linhas
+     * @param larguraSeguranca é o inteiro que corresponde ao espaço que ficará entre a primeira linha e a borda na largura
+     * @param alturaSeguranca é o inteiro que corresponde ao espaço que ficará entre a primeira linha e a borda na altura
+     */
     public ASCIInterface(int larguraPadrao, int larguraSeguranca, int alturaSeguranca) {
     
         //Iniciando todos os objetos
@@ -67,6 +62,13 @@ public class ASCIInterface {
 
     }
 
+    /**
+     * Construtor 3: Criar uma interface mas já com os padrões de cor já definidos
+     * @param corBorda é o int correspondendo a cor da borda das janelas
+     * @param corJanela é o int correspondendo a cor de fundo das janelas
+     * @param corTexto é o int correspondendo a cor dos textos principais nas interfaces
+     * @param corTextoSecundario é o int correspondendo a cor dos textos secundarios nas interfaces
+     */
     public ASCIInterface(int corBorda, int corJanela, int corTexto,int corTextoSecundario) {
     
         //Iniciando todos os objetos
@@ -115,27 +117,13 @@ public class ASCIInterface {
         texto_secundario.setCor(cor);
     }
 
-    //Instanciando uma caixa
-    /** 
-    *   A caixa é um espaço retangular ou quadricular
-    *   Onde tem uma borda e o um único texto.
-    *
-    *   Existe duas tipos de caixas:
-    *
-    *  -> A que recebe como parâmetro as duas medidas
-    *   (altura e largura) e a String que será inserida
-    *
-    *  -> A que recebe apenas a altura e String, a largura
-    *   é inferida como sendo a largura da String.
-    *
-    *  -> A que recebe apenas o String, a largura e altura
-    *   é tomado como referência a String
-    *   
-    *   OBS: Por enquanto, nos dois casos, a String estará
-    *   centralizada na caixa.
-    */
-
-    //Caixa 1: largura,altura e texto.
+    /**
+     * Função de criar caixa 1: largura e altura especificado
+     * @param largura é o tamanho em inteiro da largura da caixa
+     * @param altura é o tamanho em inteiro da altura da caixa
+     * @param texto é a String que contém o texto que será inserido na caixa
+     * @return a String que contem a caixa a ser imprimida
+     */
     public String caixa(int largura, int altura, String texto) {
 
         String resp    = "";
@@ -147,7 +135,7 @@ public class ASCIInterface {
             array = texto.split(" ");
             altura  += ALTURA_SEGURANCA;
             
-            if(encaixa(largura,altura) && s.calcularTamanho(array, largura) < altura) {
+            if(encaixa(largura,altura) && calcularTamanho(array, largura) < altura) {
                 resp = caixa((short)largura,(short)altura,array);
             }
         }
@@ -162,7 +150,13 @@ public class ASCIInterface {
         return resp;
     }
 
-    //Caixa 2: altura e texto(a largura é inferida como sendo o tamanho de 'texto' + a largura de seguranca)
+    /**
+     * Função de criar caixa 2: altura especificada
+     * @param altura é o tamanho em inteiro da altura da caixa
+     * @param texto é a String que contém o texto que será inserido na caixa
+     * @implNote a largura da caixa será a largura do texto
+     * @return a String que contem a caixa a ser imprimida
+     */
     public String caixa(int altura, String texto) {
 
         String resp    = "";
@@ -174,7 +168,7 @@ public class ASCIInterface {
             largura  = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
             altura  += ALTURA_SEGURANCA;
             
-            if(encaixa(largura,altura) && s.calcularTamanho(array, largura) < altura) {
+            if(encaixa(largura,altura) && calcularTamanho(array, largura) < altura) {
                 resp = caixa((short)largura,(short)altura,array);
             }
         }
@@ -191,8 +185,12 @@ public class ASCIInterface {
         return resp;
     }
 
-    //Caixa 3: apenas texto(a largura é inferida como sendo o tamanho de 'texto' + a largura de seguranca)
-    //                      e a altura é inferida como sendo a altura de seguranca)
+    /**
+     * Função de criar caixa 2: Nenhuma dimensão especificada
+     * @param texto é a String que contém o texto que será inserido na caixa
+     * @implNote a largura e a altura da caixa será controlada a partir das necessidades da string
+     * @return a String que contem a caixa a ser imprimida
+     */
     public String caixa(String texto) {
 
         String   resp  = "";
@@ -204,7 +202,7 @@ public class ASCIInterface {
         if(texto.length() > LARGURA_PADRAO) {
             array = texto.split(" ");
             largura = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
-            altura  = s.calcularTamanho(array, largura) + ALTURA_SEGURANCA;
+            altura  = calcularTamanho(array, largura) + ALTURA_SEGURANCA;
             
             if(encaixa(largura,altura)) {
                 resp = caixa((short)largura,(short)altura,array);
@@ -287,38 +285,37 @@ public class ASCIInterface {
         return caixa;
     }
 
-    //Limpar a tela
-    /*
-    *   Para uma melhor navegação pelas interfaces
-    *   essa função ajudara na limpeza da tela
-    *   
-    *   Em MAC e LINUX, a limpeza é feita usando
-    *   o código ANSI.
-    *
-    *   Em WINDOWS ele tentará executar o código
-    *   'cls' no terminal
-    */
-    public void limparTela(){
-
-        String OS = System.getProperty("os.name").toLowerCase();
-        //String clear;
-
-        if(OS.equals("linux") || OS.equals("mac")) {
-
-            ANSILibrary.limparTelaUnix();
-        }
-        else {
-
-            try {
-                Runtime.getRuntime().exec("cls");
+    /** Calcular quanto tamanho vertical(de linhas) é necessario para 
+     ** colocar um array
+     * 
+     * @param array é o array de Strings com o conteúdo que o usuário quer inserir
+     * @param largura é o tamanho máximo de linhas 
+     * @return numero de linhas necessaria para colocar um array
+     */
+    private int calcularTamanho(String[] array,int largura) {
+        
+        int tamanhoString = 0;
+        int numDeArrays   = 1;
+        
+        for ( String i : array) {
+            if (tamanhoString + i.length() < largura) {
+                tamanhoString += i.length() + 1;
             }
-            catch (Exception e) {
-                System.err.println("Deu ruim");
+            else {
+                tamanhoString = i.length() + 1;
+                numDeArrays++;
+                
             }
         }
+        return numDeArrays;
     }
 
-    //Função que returna 'true' ou false, se as medidas da caixa são validas
+    /**
+     * Função que verifica se a largura e altura especificado estavam dentro do esperado
+     * @param largura é o inteiro que corresponde a largura da caixa
+     * @param altura é o inteiro que corresponde a altura da caixa
+     * @return true ou false se as especificações estão dentro do conforme
+     */
     private boolean encaixa(int largura, int altura) {
         return (largura > 0 && altura > 2 && largura < LARGURA_MAX && altura < ALTURA_MAX);
     }

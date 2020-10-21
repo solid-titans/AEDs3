@@ -1,14 +1,9 @@
+package menu.frontend.graficos;
 
-/*
-*   Classe com configurações para imprensão 
-*   personalizada no terminal
-*
-*   Criada por: MysteRys337
-*   Versão : 0.0.1
-*/
-
-package menu.sistema.graficos;
-
+/**
+ * Classe para gerenciamento de códigos de saída ANSI pro terminal
+ * @author MysteRys337 ( Gustavo Lopes )
+ */
 public class ANSILibrary{
 
     //  Variavel para resetar 
@@ -24,7 +19,9 @@ public class ANSILibrary{
     private short cor;
     private String destaque;
 
-    //Construtor
+    /**
+     * Construtor 1: nenhum dado inserido
+     */
     public ANSILibrary() { 
 
         fundo = cor = -1;
@@ -32,6 +29,10 @@ public class ANSILibrary{
 
     }
     
+    /**
+     * Construtor 2 : a cor do texto foi inserida
+     * @param cor é o inteiro que corresponde a cor do texto
+     */
     public ANSILibrary(int cor) { 
     
 		setCor(cor);
@@ -39,6 +40,11 @@ public class ANSILibrary{
         destaque = "";
     }
     
+    /**
+     * Construtor 3 : a cor do texto e do fundo foi inserida
+     * @param cor é o inteiro que corresponde a cor do texto
+     * @param fundo é o inteiro que corresponde a cor do fundo do texto
+     */
     public ANSILibrary(int cor,int fundo) { 
     
     	setCor(cor);
@@ -46,6 +52,12 @@ public class ANSILibrary{
         destaque = "";
     }
     
+    /**
+     * Construtor 4 : Todos os parámetros foram configurados
+     * @param cor é o inteiro que corresponde a cor do texto
+     * @param fundo é o inteiro que corresponde a cor do fundo do texto
+     * @param destaque é a String que corresponde ao tipo de destaque do texto
+     */
     public ANSILibrary(int cor,int fundo,String destaque) { 
     
     	setCor(cor);
@@ -54,11 +66,6 @@ public class ANSILibrary{
     }
 
     //  Funções de 'set'
-    /*
-    *	As funções 'set' que estão em privado existem
-    *	para tratar a entrada de numeros que não podem serem
-    *	considerados números
-    */
     public void setFundo(int fundo) {
     	if (ehCorValida(fundo)) 
 			setFundo((short)fundo);
@@ -115,31 +122,21 @@ public class ANSILibrary{
         return resp;
     }
 
-    //  Imprimir
-    /*
-    *   Pega os dados nas variaveis 'fundo', 'cor'
-    *   e 'destaque', e as combina com a String
-    *   'saida', que foi inserida pelo usuario
-    *   para resultar o texto personalizado.
-    *
-    *   O uso da "ANSI_RESETAR" serve para
-    *   dizer ao "System.out.print" que a 
-    *   impressão nessas configurações acabou.
-    */
+    /**
+     * Imprimir o texto com as configurações já definidas
+     * @param saida é o texto especial que deva ser imprimido
+     * @return a String com os padrões ANSI inseridos
+     */
     public String imprimir(String saida) {
 
         return getFundo() + getCor() + destaque + saida + ANSI_RESETAR;
     }
 
-    //  Verificando a entrada do usuario
-    /*
-    *   Como o usuario pode enviar literalmente
-    *   qualquer String para ser usada como
-    *   parâmetro de customização de texto,
-    *   essa função serve para verificar
-    *   se o que o usuário inseriu é um
-    *   parâmetro válido.
-    */
+    /**
+     * Verificar se o que o usuário inseriu como destaque corresponde a um padrão de texto real
+     * @param entrada é o código ANSI que o usuário inseriu
+     * @return true ou false se a entrada corresponde ao padrão esperado
+     */
     private boolean acharPadrao(String entrada) {
 
         boolean resp = false;
@@ -152,10 +149,18 @@ public class ANSILibrary{
         return resp;        
     }
     
+    /**
+     * Verificar se a cor inserida é valida, se ela está no escopo previsto
+     * @param n é a cor inserida
+     * @return true ou false se n está entre 0 e 256
+     */
     private boolean ehCorValida(int n) {
     	return (n > 0 && n < 256);
     }
 
+    /**
+     * Função para limpar a tela de terminais em sistemas Unix(Linux e MAC)
+     */
     public static void limparTelaUnix() {
         System.out.print("\033[H\033[2J");   
         System.out.flush(); 

@@ -2,7 +2,9 @@ package crud.lixo;
 
 import java.io.RandomAccessFile;
 
-/** Sistema de lixo eficiente
+/** 
+ * {@code Lixo}
+ * Sistema de lixo eficiente
  * @author Lucas Santiago
  * @funcao create -> Recebe um int com o tamanho do registro deletado e a posição de exclusão dele
  * @funcao Read   -> Recebe um int com o tamanho de uma nova entidade para sobreescrever um registro
@@ -133,7 +135,7 @@ public class Lixo {
         
         pagina = null;
         
-        return enderecoRegistro;
+        return -1;
     }
     
     /** Apagar registros do arquivo lixo

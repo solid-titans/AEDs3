@@ -23,6 +23,15 @@ import java.util.ArrayList;
 // CHAVE: String  (usado para algum atributo textual da entidade como Nome, Título, ...)
 // VALOR: Int     (usado para o identificador dessa entidade)
 
+/******************************************************************************
+ * A {@code ArvoreBMais_String_Int}
+ *  
+ * 
+ * 
+ * @version 0.0.0
+ * @category Indice Indireto 
+ ******************************************************************************/
+
 public class ArvoreBMais_String_Int {
 
     private int  ordem;                 // Número máximo de filhos que uma página pode conter
