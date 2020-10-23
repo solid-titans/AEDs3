@@ -52,7 +52,7 @@ public class RespostasAPI {
 
         if (array == null) {
             System.err.println("\n\n                   ¯\\_(ツ)_/¯");
-            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
+            System.err.println("Ops.. parece que ninguém submeteu uma resposta a essa pergunta...\n");
 
         } else {
             System.out.println(respostasFrontEnd.listarGeral(usuarios, array));
@@ -77,7 +77,7 @@ public class RespostasAPI {
 
         if (array == null) {
             System.err.println("\n\n                   ¯\\_(ツ)_/¯");
-            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
+            System.err.println("Ops.. parece que ninguém submeteu uma resposta a essa pergunta...\n");
 
         } else {
             System.out.println(respostasFrontEnd.listar(array));

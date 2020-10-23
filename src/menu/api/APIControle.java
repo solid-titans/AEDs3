@@ -50,7 +50,7 @@ public class APIControle {
 
 			case CRIARNOVOUSUARIO: // Criar um novo usuário no banco de dados
 				cr = usuariosAPI.criarNovoUsuario(usuariosCRUD);
-				if (cr.getUsuario() != null)
+				if (cr.getUsuario() != null && cr.getCdp() != CodigoDeProtocolo.OPERACAOCANCELADA)
 					usuariosCRUD.inserir(cr.getUsuario());
 
 				break;
