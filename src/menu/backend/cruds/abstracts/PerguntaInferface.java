@@ -7,6 +7,7 @@ public interface PerguntaInferface {
     public Pergunta   achar(int id);
     public void       atualizar(Pergunta novo);
     public void       desativar(Pergunta pergunta);
+    public void       remover(Pergunta pergunta);
     public Pergunta[] getPerguntaArray(int idUsuario);
     public Pergunta[] getPerguntasPalavrasChave(String[] palavrasChave,int idUsuario);
     

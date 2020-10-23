@@ -65,12 +65,20 @@ public class PerguntasCRUD implements PerguntaInferface {
 	 * @param novo é a pergunta que será atualizada
 	 */
 	public void atualizar(Pergunta novo) {
-		Pergunta antiga = achar(novo.getId());
+		this.remover(novo);
+		this.inserir(novo,novo.getIdUsuario());
+	}
+
+	/**
+	 * Função para remover uma pergunta no banco de dados
+	 * @param pergunta a ser removida
+	 */
+	public void remover(Pergunta pergunta) {
+		Pergunta antiga = achar(pergunta.getId());
 
 		removerPalavrasChave(antiga);
-		inserirPalavrasChave(novo);
-
-		perguntas.update(novo,novo.getId());
+		perguntas.delete(pergunta.getId());
+		perguntasUsuario.delete(pergunta.getId(),pergunta.getIdUsuario());
 	}
 
 	/**

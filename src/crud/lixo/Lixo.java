@@ -135,7 +135,7 @@ public class Lixo {
         
         pagina = null;
         
-        return -1;
+        return enderecoRegistro;
     }
     
     /** Apagar registros do arquivo lixo
