@@ -32,10 +32,12 @@ public class Votos {
         this.voto      = voto;
     }
 
+    /*
     public String chaveSecundaria() {
         return idUsuario + "|" + (tipo?'P':'R') + "|" + idPR;
     }
-
+    */
+    
     //Funções 'get'
     public byte getTipo() {
         return this.tipo;
