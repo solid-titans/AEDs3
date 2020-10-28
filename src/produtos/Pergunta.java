@@ -14,14 +14,14 @@ import produtos.abstracts.RegistroVisualplus;
 
 public class Pergunta implements RegistroVisualplus {
 
-    private int idPergunta;
-    private int idUsuario;
-    private short nota;
+    private int     idPergunta;
+    private int     idUsuario;
+    private short   nota;
     private boolean ativa;
-    private long criacao;
-    private String titulo;
-    private String pergunta;
-    private String palavrasChave;
+    private long    criacao;
+    private String  titulo;
+    private String  pergunta;
+    private String  palavrasChave;
 
     //Construtor de uma pergunta vazia
     public Pergunta(){

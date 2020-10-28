@@ -6,13 +6,15 @@ import produtos.CelulaResposta;
 
 public class APIControle {
 
-	UsuariosAPI usuariosAPI;
+	UsuariosAPI  usuariosAPI;
 	PerguntasAPI perguntasAPI;
 	RespostasAPI respostasAPI;
+	VotosAPI     votosAPI;
 
-	UsuariosCRUD usuariosCRUD;
+	UsuariosCRUD  usuariosCRUD;
 	PerguntasCRUD perguntasCRUD;
 	RespostasCRUD respostasCRUD;
+	VotosCRUD     votosCRUD; // Em desenvolvimento
 
 	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI,
 			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD) {
@@ -181,6 +183,16 @@ public class APIControle {
 				cr = respostasAPI.arquivarResposta(respostasCRUD,idPergunta, idUsuario);
 				if (cr.getResposta() != null)
 					respostasCRUD.deletar(cr.getResposta(),idPergunta);
+
+				break;
+
+			case VOTAREMPERGUNTA:
+				cr = votosAPI.votarPergunta(votosCRUD,idPergunta, idUsuario);
+
+				break;
+				
+			case VOTAREMRESPOSTA:
+				cr = votosAPI.votarResposta(votosCRUD,RespostasAPI, idUsuario);
 
 				break;
 

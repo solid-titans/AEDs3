@@ -31,6 +31,10 @@ public enum CodigoDeProtocolo {
     ALTERARRESPOSTA         ("34"),
     ARQUIVARRESPOSTA        ("44"),
 
+    //Votos
+    VOTAREMPERGUNTA         ("33-1"),
+    VOTAREMRESPOSTA         ("33-2"),
+
     //Comentários
     LISTARCOMENTARIOSGERAL  ("23"),
     

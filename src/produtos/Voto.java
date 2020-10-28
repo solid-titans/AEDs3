@@ -5,17 +5,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import produtos.abstracts.RegistroVisual;
 
-public class Votos {
+public class Voto implements RegistroVisual{
     
-    private byte tipo;
-    private int idUsuario;
-    private int idVoto;
-    private int idPR;
+    private byte    tipo;
+    private int     idUsuario;
+    private int     idVoto;
+    private int     idPR;
     private boolean voto;
 
     //Construtor de votos vazia
-    public Votos() {
+    public Voto() {
         this.tipo      = -1;
         this.idVoto    = -1;
         this.idUsuario = -1;
@@ -24,26 +25,29 @@ public class Votos {
     }
 
     //Construtor de votos
-    public Votos(byte tipo, int idUsuario, int idVoto, int idPR, boolean voto) {
+    public Voto(byte tipo, int idUsuario, int idPR) {
         this.tipo      = tipo;
-        this.idVoto    = idVoto;
+        this.idVoto    = -1;
         this.idUsuario = idUsuario;
         this.idPR      = idPR;
-        this.voto      = voto;
+        this.voto      = true;
     }
 
-    /*
     public String chaveSecundaria() {
-        return idUsuario + "|" + (tipo?'P':'R') + "|" + idPR;
+        return idUsuario + "|" + getTipoChar() + "|" + idPR;
     }
-    */
+    
     
     //Funções 'get'
     public byte getTipo() {
         return this.tipo;
     }
+    
+    public char getTipoChar() {
+        return getTipo() == 0 ? 'P':'R';
+    }
 
-    public int getIdVoto() {
+    public int getId() {
         return this.idVoto;
     }
 
@@ -64,7 +68,7 @@ public class Votos {
         this.tipo = tipo;
     }
 
-    public void setIdVoto(int idVoto) {
+    public void setId(int idVoto) {
         this.idVoto = idVoto;
     }
 
@@ -109,10 +113,16 @@ public class Votos {
         ByteArrayInputStream byteArray = new ByteArrayInputStream(arrayObjeto);
         DataInputStream      data      = new DataInputStream(byteArray);
 
-        this.tipo          = data.readByte();
-        this.idVoto        = data.readInt();
-        this.idUsuario     = data.readInt();
-        this.idPR          = data.readInt();
-        this.voto          = data.readBoolean();
+        this.tipo      = data.readByte();
+        this.idVoto    = data.readInt();
+        this.idUsuario = data.readInt();
+        this.idPR      = data.readInt();
+        this.voto      = data.readBoolean();
+    }
+
+    @Override
+    public String imprimir() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
