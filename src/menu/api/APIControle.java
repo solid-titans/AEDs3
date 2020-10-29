@@ -188,11 +188,17 @@ public class APIControle {
 
 			case VOTAREMPERGUNTA:
 				cr = votosAPI.votarPergunta(votosCRUD,idPergunta, idUsuario);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO)
+					votosCRUD.inserir(cr.getVoto());
 
 				break;
 				
 			case VOTAREMRESPOSTA:
-				cr = votosAPI.votarResposta(votosCRUD,RespostasAPI, idUsuario);
+				cr = respostasAPI.escolherResposta(respostasCRUD, idPergunta, idUsuario);				
+				if(cr.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+					cr = votosAPI.votarResposta(votosCRUD,cr.getResposta(), idUsuario);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO)
+					votosCRUD.inserir(cr.getVoto());
 
 				break;
 

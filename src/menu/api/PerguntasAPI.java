@@ -2,7 +2,7 @@ package menu.api;
 
 import produtos.CelulaResposta;
 import produtos.Pergunta;
-import menu.backend.cruds.abstracts.PerguntaInferface;
+import menu.backend.cruds.abstracts.PerguntaInterface;
 import menu.backend.input.CustomInput;
 import menu.backend.misc.CodigoDeProtocolo;
 import menu.frontend.PerguntasFrontEnd;
@@ -59,7 +59,7 @@ public class PerguntasAPI {
      *                  ver as perguntas
      * @return um Codigo de Protocolo que representa o resultado da operação
      */
-    public CelulaResposta listarPerguntas(PerguntaInferface perguntas, int idUsuario) {
+    public CelulaResposta listarPerguntas(PerguntaInterface perguntas, int idUsuario) {
 
         CelulaResposta resultado = new CelulaResposta();
         Pergunta[] array = perguntas.getPerguntaArray(idUsuario);
@@ -116,7 +116,7 @@ public class PerguntasAPI {
      *                  trocar a pergunta
      * @return a Pergunta que será alterada
      */
-    public CelulaResposta alterarPergunta(PerguntaInferface perguntas, int idUsuario) {
+    public CelulaResposta alterarPergunta(PerguntaInterface perguntas, int idUsuario) {
 
         Pergunta perguntaAlterada = null;
         int idPerguntaAlterada = -1;
@@ -158,7 +158,7 @@ public class PerguntasAPI {
      *                  arquivar uma pergunta
      * @return a Pergunta que será registrada
      */
-    public CelulaResposta arquivarPergunta(PerguntaInferface perguntas, int idUsuario) {
+    public CelulaResposta arquivarPergunta(PerguntaInterface perguntas, int idUsuario) {
 
         Pergunta perguntaAlterada = null;
         CodigoDeProtocolo confirmarOperacao = CodigoDeProtocolo.ERRO;
@@ -195,7 +195,7 @@ public class PerguntasAPI {
      * @param idUsuario é o número da ID do usuário que está acessando essa função
      * @return a Pergunta que o usuário escolheu
      */
-    public CelulaResposta consultarPergunta(PerguntaInferface perguntas, int idUsuario) {
+    public CelulaResposta consultarPergunta(PerguntaInterface perguntas, int idUsuario) {
 
         String entrada = "";
 
@@ -272,7 +272,7 @@ public class PerguntasAPI {
      *                  escolher uma de suas próprias perguntas
      * @return a Pergunta que foi propriamente escolhida
      */
-    private CelulaResposta escolherPergunta(PerguntaInferface perguntas, int idUsuario) {
+    private CelulaResposta escolherPergunta(PerguntaInterface perguntas, int idUsuario) {
         int id = -1;
         Pergunta[] array = null;
 
