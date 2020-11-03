@@ -9,9 +9,10 @@ import menu.backend.misc.CodigoDeProtocolo;
  */
 public class CelulaResposta {
 
-    private Usuario usuario;
-    private Pergunta pergunta;
-    private Resposta resposta;
+    private Usuario           usuario;
+    private Pergunta          pergunta;
+    private Resposta          resposta;
+    private Voto              voto;
     private CodigoDeProtocolo cdp;
 
     public Usuario getUsuario() {
@@ -38,6 +39,14 @@ public class CelulaResposta {
         this.resposta = resposta;
     }
 
+    public Voto getVoto() {
+        return this.voto;
+    }
+
+    public void setVoto(Voto voto) {
+        this.voto = voto;
+    }
+
     public CodigoDeProtocolo getCdp() {
         return this.cdp;
     }
@@ -50,13 +59,15 @@ public class CelulaResposta {
         this.usuario  = null;
         this.pergunta = null;
         this.resposta = null;
+        this.voto     = null;
         cdp           = CodigoDeProtocolo.ERRO;
     }
 
-    public CelulaResposta(Usuario usuario, Pergunta pergunta, Resposta resposta, CodigoDeProtocolo codigoDeProtocolo) {
+    public CelulaResposta(Usuario usuario, Pergunta pergunta, Resposta resposta, Voto voto, CodigoDeProtocolo codigoDeProtocolo) {
         this.usuario  = usuario;
         this.pergunta = pergunta;
         this.resposta = resposta;
+        this.voto     = voto;
         this.cdp      = codigoDeProtocolo;
     }
 

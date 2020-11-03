@@ -290,7 +290,19 @@ public class Menu {
                 case "05":
                     menuIndex = 3;
                     break;
+      
+                case "06":
+                    menuIndex = 3;
+                    break;
 
+                case "16":
+                    opcaoEscolhida = CodigoDeProtocolo.VOTAREMPERGUNTA;
+                    break;
+
+                case "26":
+                    opcaoEscolhida = CodigoDeProtocolo.VOTAREMRESPOSTA;
+                    break;
+                    
                 default:
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;

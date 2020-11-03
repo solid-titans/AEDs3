@@ -205,7 +205,7 @@ public class RespostasAPI {
      *                  escolher uma de suas próprias respostas
      * @return a Resposta que foi propriamente escolhida
      */
-    private CelulaResposta escolherResposta(RespostasInterface respostas, int idPergunta, int idUsuario) {
+    public CelulaResposta escolherResposta(RespostasInterface respostas, int idPergunta, int idUsuario) {
         int id = -1;
         Resposta[] array = null;
 

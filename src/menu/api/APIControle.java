@@ -6,24 +6,28 @@ import produtos.CelulaResposta;
 
 public class APIControle {
 
-	UsuariosAPI usuariosAPI;
+	UsuariosAPI  usuariosAPI;
 	PerguntasAPI perguntasAPI;
 	RespostasAPI respostasAPI;
+	VotosAPI     votosAPI;
 
-	UsuariosCRUD usuariosCRUD;
+	UsuariosCRUD  usuariosCRUD;
 	PerguntasCRUD perguntasCRUD;
 	RespostasCRUD respostasCRUD;
+	VotosCRUD     votosCRUD; // Em desenvolvimento
 
-	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI,
-			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD) {
+	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI, VotosAPI votosAPI,
+			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD, VotosCRUD votosCRUD) {
 
-		this.usuariosAPI = usuariosAPI;
+		this.usuariosAPI  = usuariosAPI;
 		this.perguntasAPI = perguntasAPI;
 		this.respostasAPI = respostasAPI;
+		this.votosAPI     = votosAPI;
 
-		this.usuariosCRUD = usuariosCRUD;
+		this.usuariosCRUD  = usuariosCRUD;
 		this.perguntasCRUD = perguntasCRUD;
 		this.respostasCRUD = respostasCRUD;
+		this.votosCRUD	   = votosCRUD;
 	}
 
 	/**
@@ -181,6 +185,22 @@ public class APIControle {
 				cr = respostasAPI.arquivarResposta(respostasCRUD,idPergunta, idUsuario);
 				if (cr.getResposta() != null)
 					respostasCRUD.deletar(cr.getResposta(),idPergunta);
+
+				break;
+
+			case VOTAREMPERGUNTA:
+				cr = votosAPI.votarPR(votosCRUD,idPergunta,idUsuario,false);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO)
+					votosCRUD.inserir(cr.getVoto());
+
+				break;
+				
+			case VOTAREMRESPOSTA:
+				cr = respostasAPI.escolherResposta(respostasCRUD, idPergunta, idUsuario);				
+				if(cr.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+					cr = votosAPI.votarPR(votosCRUD,cr.getResposta().getId(),idUsuario,true);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO)
+					votosCRUD.inserir(cr.getVoto());
 
 				break;
 

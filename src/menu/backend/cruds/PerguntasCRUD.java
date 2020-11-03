@@ -3,11 +3,11 @@ package menu.backend.cruds;
 import java.util.ArrayList;
 
 import crud.Crud;
-import menu.backend.cruds.abstracts.PerguntaInferface;
+import menu.backend.cruds.abstracts.PerguntaInterface;
 import menu.backend.listas.*;
 import produtos.Pergunta;
 
-public class PerguntasCRUD implements PerguntaInferface {
+public class PerguntasCRUD implements PerguntaInterface {
     
 	// Path dos Cruds
     private final String path;

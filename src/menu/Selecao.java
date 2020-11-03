@@ -107,11 +107,14 @@ public class Selecao {
     }
 
     /**
-     * Função com a tela de avaliação
-     * @return a String com as instruções sobre digitar a nota
+     * Função com a tela de criação de comentarios
+     * @return uma String com todas as opções do menu de criação de comentarios
      */
-    public static String menuDeAvaliacaoString() {
-        return "Digite a nota\n";
+    public static String menuDeVotosString() {
+        return "1) Avaliar pergunta\n"                +
+               "2) Avaliar respostas da pergunta\n\n" +
+               "0) Retornar ao menu anterior\n\n"     +
+               "Opção: ";
     }
 
 
@@ -175,7 +178,7 @@ public class Selecao {
             
                 //Menu de avaliação
                 case 6:
-                    System.out.print(menuDeAvaliacaoString());
+                    System.out.print(menuDeVotosString());
                     break;
 
                 //Caso a variavel tenha alguma variavel diferente

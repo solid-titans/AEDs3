@@ -2,7 +2,7 @@ package menu.backend.cruds.abstracts;
 
 import produtos.Pergunta;
 
-public interface PerguntaInferface {
+public interface PerguntaInterface {
     public int        inserir(Pergunta pergunta, int idUsuario);
     public Pergunta   achar(int id);
     public void       atualizar(Pergunta novo);
