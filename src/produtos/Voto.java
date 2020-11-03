@@ -44,7 +44,7 @@ public class Voto implements RegistroVisual{
     }
     
     public char getTipoChar() {
-        return getTipo() == 0 ? 'P':'R';
+        return getTipo() == 0 ? 'R':'P';
     }
 
     public int getId() {
@@ -94,10 +94,8 @@ public class Voto implements RegistroVisual{
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         DataOutputStream      data      = new DataOutputStream(byteArray);
 
-        data.writeByte(this.tipo);
         data.writeInt(this.idVoto);
-        data.writeInt(this.idUsuario);
-        data.writeInt(this.idPR);
+        data.writeUTF(this.chaveSecundaria());
         data.writeBoolean(this.voto);
 
         return byteArray.toByteArray();
@@ -112,17 +110,21 @@ public class Voto implements RegistroVisual{
     public void fromByteArray(byte[] arrayObjeto) throws IOException {
         ByteArrayInputStream byteArray = new ByteArrayInputStream(arrayObjeto);
         DataInputStream      data      = new DataInputStream(byteArray);
+        String   aux   = "";
+        String[] split = null;
 
-        this.tipo      = data.readByte();
         this.idVoto    = data.readInt();
-        this.idUsuario = data.readInt();
-        this.idPR      = data.readInt();
+        aux            = data.readUTF();
+
+        split          = aux.split("[|]");
+        this.idUsuario = Integer.parseInt(split[0]);
+        this.idPR      = Integer.parseInt(split[2]);
+
         this.voto      = data.readBoolean();
     }
 
     @Override
     public String imprimir() {
-        // TODO Auto-generated method stub
-        return null;
+        return "(Seu voto: ){" + (this.voto ? "positivo" : "negativo") + "}";
     }
 }

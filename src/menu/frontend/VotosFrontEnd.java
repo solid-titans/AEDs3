@@ -18,6 +18,7 @@ public class VotosFrontEnd implements FrontEnd {
 
     @Override
     public CodigoDeProtocolo verificar(RegistroVisual objeto) {
+
         String confirmar = "";
         CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
 

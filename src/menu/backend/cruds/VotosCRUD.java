@@ -50,4 +50,22 @@ public class VotosCRUD implements VotosInterface {
     public void atualizar(Voto voto) {
 		votos.update(voto, voto.getId());
     }
+
+    public String recuperarNota(String regex) {
+        String resp = "Sua nota: ";
+
+        Voto voto = this.achar(regex);
+
+        if(voto == null) {
+            resp+= "nulo( você não deu nota )";
+        }
+        else if ( voto.getVoto() == true ) {
+            resp+= "positivo";
+        }
+        else {
+            resp+= "negativo";
+        }
+
+        return resp;
+    }
 }

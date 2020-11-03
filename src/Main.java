@@ -32,7 +32,7 @@ public class Main {
         ASCIInterface usuariosGraficos      = new ASCIInterface(92, 226, 93, 232);
         ASCIInterface perguntasGraficos     = new ASCIInterface(21, 111, 232, 15);
         ASCIInterface respostasGraficos     = new ASCIInterface(40, 121, 232, 15);
-        ASCIInterface votosGraficos         = new ASCIInterface(57, 88, 232, 15);
+        ASCIInterface votosGraficos         = new ASCIInterface(206, 104, 232, 15);
 
         //CustomPrints
         CustomPrint usuariosPrint           = new CustomPrint(usuariosGraficos,destaqueTitulo,destaqueObs);

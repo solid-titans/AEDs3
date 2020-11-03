@@ -65,8 +65,21 @@ public class PerguntasCRUD implements PerguntaInterface {
 	 * @param novo é a pergunta que será atualizada
 	 */
 	public void atualizar(Pergunta novo) {
-		this.remover(novo);
-		this.inserir(novo,novo.getIdUsuario());
+		perguntas.update(novo,novo.getId());
+	}
+
+	public void atualizar(Pergunta novo,boolean nota) {
+		short notaPergunta = novo.getNota();
+
+		if(nota == true) {
+			notaPergunta++;
+		}
+		else {
+			notaPergunta--;
+		}
+		novo.setNota(notaPergunta);
+
+		perguntas.update(novo,novo.getId());
 	}
 
 	/**

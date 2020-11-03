@@ -7,4 +7,5 @@ public interface VotosInterface {
     public Voto achar(int id);
     public Voto achar(String regex);
     public void atualizar(Voto voto);
+    public String recuperarNota(String regex);
 }

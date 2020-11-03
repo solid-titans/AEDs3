@@ -160,7 +160,7 @@ public class APIControle {
 				break;
 
 			case LISTARRESPOSTASGERAL:
-				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,idPergunta);
+				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,votosCRUD,idPergunta);
 				break;
 
 			case LISTARRESPOSTASUSUARIO: // Pedir para acessar o sistema
@@ -190,17 +190,21 @@ public class APIControle {
 
 			case VOTAREMPERGUNTA:
 				cr = votosAPI.votarPR(votosCRUD,idPergunta,idUsuario,false);
-				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO)
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) {
 					votosCRUD.inserir(cr.getVoto());
+					perguntasCRUD.atualizar(perguntasCRUD.achar(idPergunta),cr.getVoto().getVoto());
+				}
 
 				break;
 				
 			case VOTAREMRESPOSTA:
-				cr = respostasAPI.escolherResposta(respostasCRUD, idPergunta, idUsuario);				
-				if(cr.getCdp().equals(CodigoDeProtocolo.SUCESSO))
-					cr = votosAPI.votarPR(votosCRUD,cr.getResposta().getId(),idUsuario,true);
-				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO)
+				CelulaResposta respostaEscolhida = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);				
+				if(respostaEscolhida.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+					cr = votosAPI.votarPR(votosCRUD,respostaEscolhida.getResposta().getId(),idUsuario,true);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
 					votosCRUD.inserir(cr.getVoto());
+					respostasCRUD.atualizar(respostaEscolhida.getResposta(),cr.getVoto().getVoto());
+				}
 
 				break;
 
@@ -211,5 +215,9 @@ public class APIControle {
 		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
 
 		return cr;
+	}
+
+	public String recuperarNota(String regex) {
+		return votosCRUD.recuperarNota(regex);
 	}
 }

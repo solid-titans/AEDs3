@@ -236,7 +236,8 @@ public class Menu {
         do {
             myPrint.limparTela();
 
-            System.out.println(myPrint.imprimir(pergunta.imprimir()));
+            System.out.println(myPrint.imprimir(pergunta.imprimir(u.getNome())));
+            System.out.println("\n" + minhaAPI.recuperarNota(idUsuario + "|P|" + pergunta.getId()) + "\n");
 
             opcao = selecao.imprimirTela(menuIndex, (byte) -1);
 

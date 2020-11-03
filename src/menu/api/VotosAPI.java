@@ -17,35 +17,41 @@ public class VotosAPI {
     }
 
     public CelulaResposta votarPR(VotosInterface votos, int idPR, int idUsuario, boolean ehResp) {
-        CelulaResposta resultado = new CelulaResposta();
-        char verificaBool = ehResp ? 'R':'P';
-
-        //System.out.println(votos.achar(idUsuario + "|" + verificaBool + "|" + idPR));
-        System.out.println(idUsuario + "|" + verificaBool + "|" + idPR);
+        CelulaResposta resultado    = new CelulaResposta();
+        CodigoDeProtocolo confirmar = CodigoDeProtocolo.ERRO;
+        char verificaBool           = ehResp ? 'R':'P';
+        Voto voto                   = null;
 
         if(votos.achar(idUsuario + "|" + verificaBool + "|" + idPR) != null) {
+            System.out.println("ATENÇÃO! Você já avaliou essa " + (ehResp ? "Resposta" : "Pergunta") );
             resultado.setCdp(CodigoDeProtocolo.ERRO);
 
         } else {
-            String indice = entrada.inserir("Insira o seu indice: ", "Obs: Insira positivo(P) ou negativo(N)", 1, 8, false);
-            Voto voto = new Voto((byte)1, idUsuario, idPR);
+            String indice = entrada.inserir("Insira o seu voto: ", "Obs: Insira positivo(P) ou negativo(N)", 1, 8, false);
+            voto = new Voto((byte)1, idUsuario, idPR);
 
-            if(indice.equals("positivo") || indice.equals("P")) {
+            indice = indice.toLowerCase();
+
+            if(indice.equals("positivo") || indice.equals("p")) {
                 voto.setVoto(true);
-                resultado.setVoto(voto);
-                resultado.setCdp(CodigoDeProtocolo.SUCESSO);
 
-            } else if(indice.equals("negativo") || indice.equals("N")) {
+            } else if(indice.equals("negativo") || indice.equals("n")) {
                 voto.setVoto(false);
-                resultado.setVoto(voto);
-                resultado.setCdp(CodigoDeProtocolo.SUCESSO);
 
             } else if(indice.equals("")) {
                 resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             
             } else {
                 resultado.setCdp(CodigoDeProtocolo.ERRO);
-            }         
+                return resultado;
+            }     
+
+            if ( resultado.getCdp() != CodigoDeProtocolo.OPERACAOCANCELADA) {
+                confirmar = frontEnd.verificar(voto);
+                resultado.setCdp(confirmar);
+                resultado.setVoto(voto);
+                
+            }    
         }
 
         return resultado;
