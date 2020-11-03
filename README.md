@@ -61,7 +61,7 @@ Quer ver as grandes atualizações do meu projeto.
 | V2.0    | 08/08/2020 | [Download](https://github.com/lusantisuper/AEDs3/releases/tag/V2.0) |
 | V3.0    | 22/08/2020 | [Download](https://github.com/solid-titans/AEDs3/releases/tag/V3.0) |
 | V4.0    | 29/08/2020 | [Download](https://github.com/solid-titans/AEDs3/releases/tag/V4.0) |
-| V5.0    | 20/09/2020 | [Download](https://github.com/solid-titans/AEDs3/releases/tag/V5.0) |
+| V5.0    | 20/08/2020 | [Download](https://github.com/solid-titans/AEDs3/releases/tag/V5.0) |
 
 
 # License
