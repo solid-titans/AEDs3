@@ -32,43 +32,50 @@ public class Main {
         ASCIInterface usuariosGraficos      = new ASCIInterface(92, 226, 93, 232);
         ASCIInterface perguntasGraficos     = new ASCIInterface(21, 111, 232, 15);
         ASCIInterface respostasGraficos     = new ASCIInterface(40, 121, 232, 15);
+        ASCIInterface votosGraficos         = new ASCIInterface(206, 104, 232, 15);
 
         //CustomPrints
         CustomPrint usuariosPrint           = new CustomPrint(usuariosGraficos,destaqueTitulo,destaqueObs);
         CustomPrint perguntasPrint          = new CustomPrint(perguntasGraficos,destaqueTitulo,destaqueObs);
         CustomPrint respostasPrint          = new CustomPrint(respostasGraficos,destaqueTitulo,destaqueObs);
+        CustomPrint votosPrint              = new CustomPrint(votosGraficos,destaqueTitulo,destaqueObs);
 
         CustomPrint usuariosInputPrint      = new CustomPrint(usuariosGraficos,destaqueTitulo,destaqueTam);
         CustomPrint perguntasInputPrint     = new CustomPrint(perguntasGraficos,destaqueTitulo,destaqueTam);
         CustomPrint respostasInputPrint     = new CustomPrint(respostasGraficos,destaqueTitulo,destaqueTam);
+        CustomPrint votosInputPrint         = new CustomPrint(votosGraficos,destaqueTitulo,destaqueTam);
 
         // Definicoes
         CustomInput usuariosCustomInput     = new CustomInput(usuariosInputPrint);
         CustomInput perguntasCustomInput    = new CustomInput(perguntasInputPrint);
         CustomInput respostasCustomInput    = new CustomInput(respostasInputPrint);
+        CustomInput votosCustomInput        = new CustomInput(votosInputPrint);
 
         // Interface
         UsuariosFrontEnd  usuariosFrontEnd  = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput);
         PerguntasFrontEnd perguntasFrontEnd = new PerguntasFrontEnd(perguntasPrint, input);
         RespostasFrontEnd respostasFrontEnd = new RespostasFrontEnd(respostasPrint, input);
+        VotosFrontEnd     votosFrontEnd     = new VotosFrontEnd(votosPrint, input);
 
         // APIS
         UsuariosAPI  usuariosAPI            = new UsuariosAPI(usuariosFrontEnd, usuariosCustomInput);
         PerguntasAPI perguntasAPI           = new PerguntasAPI(perguntasFrontEnd, perguntasCustomInput);
         RespostasAPI respostasAPI           = new RespostasAPI(respostasFrontEnd, respostasCustomInput);
+        VotosAPI     votosAPI               = new VotosAPI(votosFrontEnd, votosCustomInput);
 
         // Cruds
         UsuariosCRUD  usuariosCRUD          = new UsuariosCRUD();
         PerguntasCRUD perguntasCRUD         = new PerguntasCRUD("Dados");
         RespostasCRUD respostasCRUD         = new RespostasCRUD("Dados");
+        VotosCRUD     votosCRUD             = new VotosCRUD();
 
         // Menu
         ASCIInterface graficos              = new ASCIInterface(27,255 , 232, 232);
         CustomPrint   myPrint               = new CustomPrint(graficos,destaqueData,destaqueObs);
 
         Selecao       selecao               = new Selecao(myPrint, input);
-        APIControle   minhaAPI              = new APIControle(usuariosAPI, perguntasAPI, respostasAPI, usuariosCRUD, perguntasCRUD,
-                                              respostasCRUD);
+        APIControle   minhaAPI              = new APIControle(usuariosAPI, perguntasAPI, respostasAPI, votosAPI, 
+                                                              usuariosCRUD, perguntasCRUD,respostasCRUD, votosCRUD);
 
         //Iniciar ao menu
         Menu m = new Menu(myPrint, minhaAPI, selecao);

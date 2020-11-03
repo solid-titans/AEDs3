@@ -206,7 +206,7 @@ public class Resposta implements RegistroVisualResposta {
     }
 
     public String imprimir() {
-        return "([" + getData()+"]) \n["+ resposta +"]";
+        return "([" + getData()+"]) \n["+ resposta +"] (nota :" + this.nota + ")";
     }
     
     public String imprimirSimplificado() {

@@ -6,24 +6,28 @@ import produtos.CelulaResposta;
 
 public class APIControle {
 
-	UsuariosAPI usuariosAPI;
+	UsuariosAPI  usuariosAPI;
 	PerguntasAPI perguntasAPI;
 	RespostasAPI respostasAPI;
+	VotosAPI     votosAPI;
 
-	UsuariosCRUD usuariosCRUD;
+	UsuariosCRUD  usuariosCRUD;
 	PerguntasCRUD perguntasCRUD;
 	RespostasCRUD respostasCRUD;
+	VotosCRUD     votosCRUD; // Em desenvolvimento
 
-	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI,
-			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD) {
+	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI, VotosAPI votosAPI,
+			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD, VotosCRUD votosCRUD) {
 
-		this.usuariosAPI = usuariosAPI;
+		this.usuariosAPI  = usuariosAPI;
 		this.perguntasAPI = perguntasAPI;
 		this.respostasAPI = respostasAPI;
+		this.votosAPI     = votosAPI;
 
-		this.usuariosCRUD = usuariosCRUD;
+		this.usuariosCRUD  = usuariosCRUD;
 		this.perguntasCRUD = perguntasCRUD;
 		this.respostasCRUD = respostasCRUD;
+		this.votosCRUD	   = votosCRUD;
 	}
 
 	/**
@@ -50,7 +54,7 @@ public class APIControle {
 
 			case CRIARNOVOUSUARIO: // Criar um novo usuário no banco de dados
 				cr = usuariosAPI.criarNovoUsuario(usuariosCRUD);
-				if (cr.getUsuario() != null)
+				if (cr.getUsuario() != null && cr.getCdp() != CodigoDeProtocolo.OPERACAOCANCELADA)
 					usuariosCRUD.inserir(cr.getUsuario());
 
 				break;
@@ -156,7 +160,7 @@ public class APIControle {
 				break;
 
 			case LISTARRESPOSTASGERAL:
-				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,idPergunta);
+				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,votosCRUD,idPergunta);
 				break;
 
 			case LISTARRESPOSTASUSUARIO: // Pedir para acessar o sistema
@@ -184,6 +188,26 @@ public class APIControle {
 
 				break;
 
+			case VOTAREMPERGUNTA:
+				cr = votosAPI.votarPR(votosCRUD,idPergunta,idUsuario,false);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) {
+					votosCRUD.inserir(cr.getVoto());
+					perguntasCRUD.atualizar(perguntasCRUD.achar(idPergunta),cr.getVoto().getVoto());
+				}
+
+				break;
+				
+			case VOTAREMRESPOSTA:
+				CelulaResposta respostaEscolhida = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);				
+				if(respostaEscolhida.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+					cr = votosAPI.votarPR(votosCRUD,respostaEscolhida.getResposta().getId(),idUsuario,true);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
+					votosCRUD.inserir(cr.getVoto());
+					respostasCRUD.atualizar(respostaEscolhida.getResposta(),cr.getVoto().getVoto());
+				}
+
+				break;
+
 			default:
 				break;
 		}
@@ -191,5 +215,9 @@ public class APIControle {
 		CodigoDeProtocolo.verificarCodigo(cr.getCdp());
 
 		return cr;
+	}
+
+	public String recuperarNota(String regex) {
+		return votosCRUD.recuperarNota(regex);
 	}
 }

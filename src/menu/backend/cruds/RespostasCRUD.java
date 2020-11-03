@@ -74,6 +74,19 @@ public class RespostasCRUD implements RespostasInterface {
 		respostas.update(resposta, resposta.getId());
 	}
 
+	public void atualizar(Resposta resposta,boolean nota) {
+		short notaResposta = resposta.getNota();
+
+		if(nota == true) {
+			notaResposta++;
+		}
+		else {
+			notaResposta--;
+		}
+		resposta.setNota(notaResposta);
+		respostas.update(resposta, resposta.getId());
+	}
+
 	/**
 	 * Deletar uma resposta do banco de dados
 	 * @param resposta é a resposta a ser deletada

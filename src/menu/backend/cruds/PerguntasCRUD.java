@@ -3,11 +3,11 @@ package menu.backend.cruds;
 import java.util.ArrayList;
 
 import crud.Crud;
-import menu.backend.cruds.abstracts.PerguntaInferface;
+import menu.backend.cruds.abstracts.PerguntaInterface;
 import menu.backend.listas.*;
 import produtos.Pergunta;
 
-public class PerguntasCRUD implements PerguntaInferface {
+public class PerguntasCRUD implements PerguntaInterface {
     
 	// Path dos Cruds
     private final String path;
@@ -65,12 +65,33 @@ public class PerguntasCRUD implements PerguntaInferface {
 	 * @param novo é a pergunta que será atualizada
 	 */
 	public void atualizar(Pergunta novo) {
-		Pergunta antiga = achar(novo.getId());
+		perguntas.update(novo,novo.getId());
+	}
 
-		removerPalavrasChave(antiga);
-		inserirPalavrasChave(novo);
+	public void atualizar(Pergunta novo,boolean nota) {
+		short notaPergunta = novo.getNota();
+
+		if(nota == true) {
+			notaPergunta++;
+		}
+		else {
+			notaPergunta--;
+		}
+		novo.setNota(notaPergunta);
 
 		perguntas.update(novo,novo.getId());
+	}
+
+	/**
+	 * Função para remover uma pergunta no banco de dados
+	 * @param pergunta a ser removida
+	 */
+	public void remover(Pergunta pergunta) {
+		Pergunta antiga = achar(pergunta.getId());
+
+		removerPalavrasChave(antiga);
+		perguntas.delete(pergunta.getId());
+		perguntasUsuario.delete(pergunta.getId(),pergunta.getIdUsuario());
 	}
 
 	/**

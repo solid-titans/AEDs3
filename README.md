@@ -8,13 +8,13 @@ Este repositório é dedicado a fazer o CRUD de AEDs 3.
 
 # Quer testar?
 
-Entre no meu [Replit](https://repl.it/github/solid-titans/AEDs3)!
+## Entre no meu [Replit](https://repl.it/github/solid-titans/AEDs3)!
 
-## Já está no meu Replit?
+# Já está no meu Replit?
 
 Para usar você precisa apenas clicar no botão ```RUN``` e o código irá compilar e executar o programa!
 
-### [Github do Projeto](https://github.com/lusantisuper/AEDs3/)
+## [Github do Projeto](https://github.com/lusantisuper/AEDs3/)
 
 # O que já está funcionando:
 - [x] Crud Funcional
@@ -22,11 +22,16 @@ Para usar você precisa apenas clicar no botão ```RUN``` e o código irá compi
 - [x] Método de leitura dos objetos do disco.
 - [x] Método de atualizar registros em disco.
 - [x] Método de deletar objetos do disco.
-- [x] Menu iterativo de usuário
+- [x] Menu iterativo de usuário.
+- [x] Perguntas funcionando.
+- [x] Respostas funcionando.
+- [x] Sistema de votos funcionando.
 - [x] Desafio 1: Limite percentual máximo para esse espaço deve provocar a movimentação do registro caso excedido.
 - [x] Desafio 2: Crud de Lixo para aproveitar melhor os registros excluídos
 - [x] Desafio 3: Simular um envio de email para trocar a senha do usuário
 - [x] Desafio opcional: Usar algum algoritmo de hashing para escrever a senha do usuário no banco de dados. Algoritmo usado: SHA3-512 bits.
+- [x] Desafio 4: Implementado.
+- [x] Desafio 5: Implementado.
 
 Considerações: **Crud suficiente!**
 
@@ -56,6 +61,7 @@ Quer ver as grandes atualizações do meu projeto.
 | V2.0    | 08/08/2020 | [Download](https://github.com/lusantisuper/AEDs3/releases/tag/V2.0) |
 | V3.0    | 22/08/2020 | [Download](https://github.com/solid-titans/AEDs3/releases/tag/V3.0) |
 | V4.0    | 29/08/2020 | [Download](https://github.com/solid-titans/AEDs3/releases/tag/V4.0) |
+| V5.0    | 20/08/2020 | [Download](https://github.com/solid-titans/AEDs3/releases/tag/V5.0) |
 
 
 # License

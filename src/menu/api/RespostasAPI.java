@@ -2,6 +2,7 @@ package menu.api;
 
 import menu.backend.cruds.abstracts.RespostasInterface;
 import menu.backend.cruds.abstracts.UsuarioInterface;
+import menu.backend.cruds.abstracts.VotosInterface;
 import menu.backend.input.CustomInput;
 import menu.backend.misc.CodigoDeProtocolo;
 import menu.frontend.RespostasFrontEnd;
@@ -44,7 +45,7 @@ public class RespostasAPI {
      * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
      * @return uma CelulaResposta com os resultados da operação
      */
-    public CelulaResposta listarRespostasDoGeral(UsuarioInterface usuarios, RespostasInterface respostas,
+    public CelulaResposta listarRespostasDoGeral(UsuarioInterface usuarios, RespostasInterface respostas,  VotosInterface votos,
             int idPergunta) {
 
         CelulaResposta resultado = new CelulaResposta();
@@ -52,10 +53,10 @@ public class RespostasAPI {
 
         if (array == null) {
             System.err.println("\n\n                   ¯\\_(ツ)_/¯");
-            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
+            System.err.println("Ops.. parece que ninguém submeteu uma resposta a essa pergunta...\n");
 
         } else {
-            System.out.println(respostasFrontEnd.listarGeral(usuarios, array));
+            System.out.println(respostasFrontEnd.listarGeral(usuarios, votos, array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
@@ -77,7 +78,7 @@ public class RespostasAPI {
 
         if (array == null) {
             System.err.println("\n\n                   ¯\\_(ツ)_/¯");
-            System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
+            System.err.println("Ops.. parece que ninguém submeteu uma resposta a essa pergunta...\n");
 
         } else {
             System.out.println(respostasFrontEnd.listar(array));
@@ -205,13 +206,13 @@ public class RespostasAPI {
      *                  escolher uma de suas próprias respostas
      * @return a Resposta que foi propriamente escolhida
      */
-    private CelulaResposta escolherResposta(RespostasInterface respostas, int idPergunta, int idUsuario) {
+    public CelulaResposta escolherResposta(RespostasInterface respostas, int idPergunta, int idUsuario) {
         int id = -1;
         Resposta[] array = null;
 
         CelulaResposta resultado = new CelulaResposta();
 
-        array = respostas.getRespostaArrayUser(idUsuario);
+        array = (idUsuario != -1 ? respostas.getRespostaArrayUser(idUsuario) : respostas.getRespostaArrayGeral(idPergunta));
 
         if (array != null) {
             id = respostasFrontEnd.escolherResposta(array);
@@ -223,7 +224,7 @@ public class RespostasAPI {
                 }
 
         } else {
-            System.err.println("ERRO! nenhuma pergunta encontrada!");
+            System.err.println("ERRO! nenhuma resposta encontrada!");
         }
 
         return resultado;

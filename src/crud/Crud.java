@@ -78,7 +78,8 @@ public class Crud <T extends Registro> {
         T entidade = null;
         
         // Procurar uma entidade a partir de sua chave secundaria
-        entidade = this.read(this.arquivoIndiceIndireto.read(chaveSecundaria));
+        int posPesquisa = this.arquivoIndiceIndireto.read(chaveSecundaria);
+        if(posPesquisa != -1) entidade = this.read(posPesquisa);
 
         return entidade;
     }
@@ -92,7 +93,9 @@ public class Crud <T extends Registro> {
         T entidade = null;
         
         // Procurando a ID da entidade no índice direto, nao achar gera uma exceção
-        this.arquivo.seek(this.arquivoIndiceDireto.read(id));
+        long posPesquisa = this.arquivoIndiceDireto.read(id);
+        if(posPesquisa != -1) this.arquivo.seek(posPesquisa);
+        else return null;
 
         long tamEntidade = this.arquivo.readLong();  // Ler tamanho da entidade
         byte[] registro = new byte[(int)tamEntidade];   // Criar um byte array do registro
@@ -148,7 +151,7 @@ public class Crud <T extends Registro> {
     }
 
     // Apagar um elemento do arquivo
-    private boolean delete(int id) {
+    public boolean delete(int id) {
         // Criando uma entidade para receber o byteArray
         boolean encontrar = false;
         long pos = -1;

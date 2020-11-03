@@ -2,6 +2,7 @@ package menu.frontend;
 
 import produtos.abstracts.*;
 import menu.backend.cruds.abstracts.UsuarioInterface;
+import menu.backend.cruds.abstracts.VotosInterface;
 import menu.backend.input.Input;
 import menu.backend.misc.CodigoDeProtocolo;
 import menu.frontend.abstracts.RespostaFrontEndInterface;
@@ -51,7 +52,7 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
      * @param array é o array de respostas que foi enviado
      * @return a String correspondente a listagem das respostas
      */
-    public String listarGeral(UsuarioInterface usuarios, RegistroVisualResposta[] array) {
+    public String listarGeral(UsuarioInterface usuarios,VotosInterface votos, RegistroVisualResposta[] array) {
 
         String resp = "";
         String nome = "";
@@ -67,6 +68,9 @@ public class RespostasFrontEnd implements RespostaFrontEndInterface {
             nome = usuarios.achar(i.getIdUsuario()).getNome();
 
             resp += "\n" + myPrint.imprimir(contador + "." + i.imprimir(nome) + "\n");
+
+            resp += votos.recuperarNota(usuarios.achar(i.getIdUsuario()).getId() + "|R|" + i.getId());
+            
             contador++;
 
         }

@@ -236,7 +236,8 @@ public class Menu {
         do {
             myPrint.limparTela();
 
-            System.out.println(myPrint.imprimir(pergunta.imprimir()));
+            System.out.println(myPrint.imprimir(pergunta.imprimir(u.getNome())));
+            System.out.println("\n" + minhaAPI.recuperarNota(idUsuario + "|P|" + pergunta.getId()) + "\n");
 
             opcao = selecao.imprimirTela(menuIndex, (byte) -1);
 
@@ -290,7 +291,19 @@ public class Menu {
                 case "05":
                     menuIndex = 3;
                     break;
+      
+                case "06":
+                    menuIndex = 3;
+                    break;
 
+                case "16":
+                    opcaoEscolhida = CodigoDeProtocolo.VOTAREMPERGUNTA;
+                    break;
+
+                case "26":
+                    opcaoEscolhida = CodigoDeProtocolo.VOTAREMRESPOSTA;
+                    break;
+                    
                 default:
                     System.err.println("Erro! Entrada inválida, tente novamente.");
                     break;

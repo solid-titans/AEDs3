@@ -130,9 +130,9 @@ public class ASCIInterface {
         String[] array = null;
         largura += LARGURA_SEGURANCA + 1;
 
-        if(texto.length() > largura) {
+        if(texto.length() > largura || texto.contains("\n")) {
 
-            array = texto.split(" ");
+            array = splitar(texto);
             altura  += ALTURA_SEGURANCA;
             
             if(encaixa(largura,altura) && calcularTamanho(array, largura) < altura) {
@@ -163,8 +163,8 @@ public class ASCIInterface {
         int largura    = -1;
         String[] array = null;
 
-        if(texto.length() > LARGURA_PADRAO) {
-            array    = texto.split(" ");
+        if(texto.length() > LARGURA_PADRAO || texto.contains("\n")) {
+            array    = splitar(texto);
             largura  = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
             altura  += ALTURA_SEGURANCA;
             
@@ -199,8 +199,8 @@ public class ASCIInterface {
         int altura  = -1;
 
 
-        if(texto.length() > LARGURA_PADRAO) {
-            array = texto.split(" ");
+        if(texto.length() > LARGURA_PADRAO || texto.contains("\n")) {
+            array   = splitar(texto);
             largura = LARGURA_PADRAO + LARGURA_SEGURANCA + 1;
             altura  = calcularTamanho(array, largura) + ALTURA_SEGURANCA;
             
@@ -241,7 +241,7 @@ public class ASCIInterface {
                     caixa += borda.imprimir("■");
                 }
                 else {
-                    if ( !textoInserido && i >= altura/2 && j > largura - texto.length() - j - 2) {
+                    if ( !textoInserido && i >= altura/2 && j > largura - texto.length() - j - 2 && j > 1) {
                         caixa += texto_primario.imprimir(texto);
                         j += texto.length() - 1;
                         textoInserido = true;
@@ -269,7 +269,7 @@ public class ASCIInterface {
                     caixa += borda.imprimir("■");
                 }
                 else {
-                    if ( textoIndex < texto.length  && i > 1 && j + texto[textoIndex].length() < largura -1 ) {
+                    if ( textoIndex < texto.length  && i > 1 && j + texto[textoIndex].length() < largura -1 && j > 1) {
                         texto[textoIndex] += " ";
                         caixa += texto_primario.imprimir(texto[textoIndex]);
                         j += texto[textoIndex].length() -1 ;
@@ -285,6 +285,54 @@ public class ASCIInterface {
         return caixa;
     }
 
+
+    /**
+     * Função para fazer o split de uma String
+     * @param entrada é a String que será separada
+     * @return um array com as Strings separadas
+     */
+    private String[] splitar(String entrada) {
+        String[] resp     = null;
+        String[] aux      = null;
+        int      contador = 0;
+
+        if(entrada.contains("\n")) 
+            return entrada.split("\n");
+    
+        resp = entrada.split(" ");
+
+        for(String i : resp) 
+            if(i.length() > LARGURA_PADRAO)
+                contador += i.length() / LARGURA_PADRAO + 1;
+        
+        if(contador == 0)
+            return resp;
+        
+        aux = new String[resp.length + contador];
+
+        for(int i = 0; i < resp.length; i++) {
+            if (resp[i].length() < LARGURA_PADRAO) {
+                aux[i] = resp[i];
+
+            } else {
+
+                int k              = i;
+                int subStringIndex = resp[i].length() * (resp[i].length() / LARGURA_PADRAO);
+                for(int j = 0;j < resp[i].length() && k < aux.length; j++, k++) {
+
+                    if( subStringIndex > resp[i].length() - 7 )
+                        subStringIndex = resp[i].length();
+
+                    String substring = resp[i].substring(j,subStringIndex);
+                    aux[k] = substring;
+                    j += resp[i].length() / LARGURA_PADRAO;
+                }
+            }
+
+        }
+
+        return aux;
+    }
     /** Calcular quanto tamanho vertical(de linhas) é necessario para 
      ** colocar um array
      * 
