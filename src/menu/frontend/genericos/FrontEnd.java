@@ -26,7 +26,7 @@ public class FrontEnd implements FrontEndInterface {
         String entrada = "";
         CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
 
-        System.out.println(myPrint.imprimir("[Confira o seu " + this.name  + "]"));
+        System.out.println(myPrint.imprimir("[Conferindo " + this.name  + "]"));
         System.out.print(myPrint.imprimir(objeto.imprimir()));
 
         entrada = myInput.lerString("\nOs dados estão corretos?(s/n) : ");

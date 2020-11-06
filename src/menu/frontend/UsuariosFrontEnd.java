@@ -13,14 +13,9 @@ import menu.frontend.genericos.FrontEnd;
  * @author MysteRys337 (Gustavo Lopes)
  */
 public class UsuariosFrontEnd extends FrontEnd {
-
-    // Variaveis de controle de grafico
-    private CustomPrint myPrint;
  
     private final byte  TAM_MIN_SENHA;// Tamanho padrao 05 
     private final byte  TAM_MAX_SENHA;// Tamanho padrao 64
-
-    private CustomInput customInput;
 
     public UsuariosFrontEnd(CustomPrint myPrint, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA, CustomInput myInput, String name) {
         super(myPrint, myInput, name);
@@ -47,7 +42,7 @@ public class UsuariosFrontEnd extends FrontEnd {
         boolean acertouSenha = false;
 
         do {
-            entradaDoUsuario = customInput.inserir("Insira a senha", "\nNumero de tentativas : " + tentativas,
+            entradaDoUsuario = myInput.inserir("Insira a senha", "\nNumero de tentativas : " + tentativas,
                                                    TAM_MIN_SENHA, TAM_MAX_SENHA, false);
 
             if (entradaDoUsuario.equals("")) {
@@ -62,7 +57,7 @@ public class UsuariosFrontEnd extends FrontEnd {
 
                 tentativas--;
                 System.err.println("Erro! As senhas não são iguais!");
-                customInput.esperarUsuario();
+                myInput.esperarUsuario();
                 myPrint.limparTela();
 
             } else {
@@ -87,11 +82,11 @@ public class UsuariosFrontEnd extends FrontEnd {
         boolean senhasIguais = false;
 
         do {
-            senha = customInput.inserir("Criando senha", TAM_MIN_SENHA, TAM_MAX_SENHA, true);
+            senha = myInput.inserir("Criando senha", TAM_MIN_SENHA, TAM_MAX_SENHA, true);
             if (senha.equals("")) {
                 return "";
             }
-            confirmarSenha = customInput.inserir("Confirmar senha", TAM_MIN_SENHA, TAM_MAX_SENHA, false);
+            confirmarSenha = myInput.inserir("Confirmar senha", TAM_MIN_SENHA, TAM_MAX_SENHA, false);
             if (confirmarSenha.equals("")) {
                 return "";
             }
@@ -115,7 +110,7 @@ public class UsuariosFrontEnd extends FrontEnd {
                         + "Obs: Recomendamos no mínimo uma senha de força 3.\n"
                         + "Pressione \"Enter\" para continuar...");
 
-                customInput.lerString();
+                myInput.lerString();
                 myPrint.limparTela();
             }
         } while (senhasIguais == false || forcaDaSenha <= 2);
