@@ -4,6 +4,8 @@ import menu.api.*;
 import menu.backend.cruds.*;
 import menu.backend.input.*;
 import menu.frontend.*;
+import menu.frontend.genericos.FrontEnd;
+import menu.frontend.genericos.FrontEndPlus;
 import menu.frontend.graficos.*;
 
 public class Main {
@@ -52,10 +54,10 @@ public class Main {
         CustomInput votosCustomInput        = new CustomInput(votosInputPrint);
 
         // Interface
-        UsuariosFrontEnd  usuariosFrontEnd  = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput);
-        PerguntasFrontEnd perguntasFrontEnd = new PerguntasFrontEnd(perguntasPrint, input);
-        RespostasFrontEnd respostasFrontEnd = new RespostasFrontEnd(respostasPrint, input);
-        VotosFrontEnd     votosFrontEnd     = new VotosFrontEnd(votosPrint, input);
+        UsuariosFrontEnd  usuariosFrontEnd  = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput, "usuario");
+        FrontEndPlus      perguntasFrontEnd = new FrontEndPlus(perguntasPrint, perguntasCustomInput , "pergunta");
+        RespostasFrontEnd respostasFrontEnd = new RespostasFrontEnd(respostasPrint, respostasCustomInput, "resposta");
+        FrontEnd          votosFrontEnd     = new FrontEnd(votosPrint, votosCustomInput, "voto");
 
         // APIS
         UsuariosAPI  usuariosAPI            = new UsuariosAPI(usuariosFrontEnd, usuariosCustomInput);

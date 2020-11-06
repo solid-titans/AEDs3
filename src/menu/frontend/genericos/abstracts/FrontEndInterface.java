@@ -1,8 +1,8 @@
-package menu.frontend.abstracts;
+package menu.frontend.genericos.abstracts;
 
 import menu.backend.misc.CodigoDeProtocolo;
 import produtos.abstracts.RegistroVisual;
 
-public interface FrontEnd {
+public interface FrontEndInterface {
     public CodigoDeProtocolo verificar(RegistroVisual objeto);
 }

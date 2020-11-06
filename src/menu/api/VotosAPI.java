@@ -3,15 +3,15 @@ package menu.api;
 import menu.backend.cruds.abstracts.VotosInterface;
 import menu.backend.input.CustomInput;
 import menu.backend.misc.CodigoDeProtocolo;
-import menu.frontend.VotosFrontEnd;
+import menu.frontend.genericos.FrontEnd;
 import produtos.CelulaResposta;
 import produtos.Voto;
 
 public class VotosAPI {
     CustomInput   entrada;
-    VotosFrontEnd frontEnd;
+    FrontEnd frontEnd;
 
-    public VotosAPI(VotosFrontEnd frontEnd, CustomInput entrada) {
+    public VotosAPI(FrontEnd frontEnd, CustomInput entrada) {
         this.entrada  = entrada;
         this.frontEnd = frontEnd;
     }

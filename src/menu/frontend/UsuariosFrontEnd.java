@@ -5,15 +5,14 @@ import menu.backend.cruds.abstracts.UsuarioInterface;
 import menu.backend.input.CustomInput;
 import menu.backend.misc.CodigoDeProtocolo;
 import menu.backend.misc.Regex;
-import menu.frontend.abstracts.FrontEnd;
-import produtos.abstracts.RegistroVisual;
+import menu.frontend.genericos.FrontEnd;
 
 /**
  * Classe para administrar casos específicos da admnistração visual dos Usuários
  * 
  * @author MysteRys337 (Gustavo Lopes)
  */
-public class UsuariosFrontEnd implements FrontEnd {
+public class UsuariosFrontEnd extends FrontEnd {
 
     // Variaveis de controle de grafico
     private CustomPrint myPrint;
@@ -23,22 +22,16 @@ public class UsuariosFrontEnd implements FrontEnd {
 
     private CustomInput customInput;
 
-    public UsuariosFrontEnd(CustomPrint myPrint, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA, CustomInput customInput) {
+    public UsuariosFrontEnd(CustomPrint myPrint, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA, CustomInput myInput, String name) {
+        super(myPrint, myInput, name);
         this.TAM_MIN_SENHA = TAM_MIN_SENHA;
         this.TAM_MAX_SENHA = TAM_MAX_SENHA;
-
-        this.myPrint       = myPrint;
-
-        this.customInput   = customInput;
     }
 
-    public UsuariosFrontEnd(CustomPrint myPrint, CustomInput customInput) {
+    public UsuariosFrontEnd(CustomPrint myPrint, CustomInput myInput, String name) {
+        super(myPrint, myInput, name);
         this.TAM_MIN_SENHA = 5;
         this.TAM_MAX_SENHA = 64;
-
-        this.myPrint       = myPrint;
-
-        this.customInput   = customInput;
     }
     /**
      * Função para dar n tentativas ao usuário de inserir a senha
@@ -126,38 +119,8 @@ public class UsuariosFrontEnd implements FrontEnd {
                 myPrint.limparTela();
             }
         } while (senhasIguais == false || forcaDaSenha <= 2);
-        ;
 
         return senha;
-    }
-
-    /**
-     * Função para verificar se o usuário a ser registrado é o desejado
-     * 
-     * @param novoUsuario é o usuário a ser conferido
-     * @return um codigo de protocolo referente ao resultado da verificacao
-     */
-    public CodigoDeProtocolo verificar(RegistroVisual novoUsuario) {
-        CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
-        String confirmar = "";
-
-        System.out.print(myPrint.imprimir("{Vamos então conferir o cadastro:}\n[Dados do usuário]") + "\n" + 
-                         myPrint.imprimir(novoUsuario.imprimir()));
-
-        confirmar = customInput.lerString("\nEstá tudo de acordo?(s/n) : ");
-
-        myPrint.limparTela();
-        if (confirmar.equals("") || confirmar.toLowerCase().equals("s")) {
-
-            sucesso = CodigoDeProtocolo.SUCESSO;
-            System.out.println("Usuário confirmou a operação");
-
-        } else {
-            sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
-            System.err.println("Processo cancelado!\nVoltando para o menu...");
-        }
-
-        return sucesso;
     }
 
 }
