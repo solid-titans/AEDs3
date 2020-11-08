@@ -5,6 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import produtos.abstracts.RegistroVisual;
 
 public class Comentario implements RegistroVisual{
@@ -13,6 +17,7 @@ public class Comentario implements RegistroVisual{
     private int    idUsuario;
     private int    idComentario;
     private int    idPR;
+    private long   criacao;
     private String comentario;
 
     //Construtor de votos vazia
@@ -21,16 +26,22 @@ public class Comentario implements RegistroVisual{
         this.idComentario = -1;
         this.idUsuario    = -1;
         this.idPR         = -1;
+        this.criacao      =  0;
         this.comentario   = "";
     }
 
     //Construtor de votos
-    public Comentario(byte tipo, int idUsuario, int idPR) {
+    public Comentario(byte tipo, int idComentario, int idUsuario, int idPR, long criacao, String comentario) {
         this.tipo         = tipo;
-        this.idComentario = -1;
+        this.idComentario = idComentario;
         this.idUsuario    = idUsuario;
         this.idPR         = idPR;
-        this.comentario   = "";
+        this.criacao      = criacao;
+        this.comentario   = comentario;
+    }
+
+    public Comentario(int idUsuario, int idPR, String comentario) {
+        this((byte)1,-1,idUsuario,idPR,new Date().getTime(),comentario);
     }
 
     public String chaveSecundaria() {
@@ -58,7 +69,11 @@ public class Comentario implements RegistroVisual{
         return this.idPR;
     }
 
-    public String getVoto() {
+    public long getCriacao(){
+        return this.criacao;
+    }
+
+    public String getComentario() {
         return this.comentario;
     }
 
@@ -79,7 +94,11 @@ public class Comentario implements RegistroVisual{
         this.idPR = idPR;
     }
 
-    public void setVoto(String comentario) {
+    public void setCriacao(long criacao){
+        this.criacao = criacao;
+    }
+
+    public void setComentario(String comentario) {
         this.comentario = comentario;
     }
 
@@ -115,10 +134,51 @@ public class Comentario implements RegistroVisual{
         this.comentario   = data.readUTF();
     }
 
-    
-    @Override
-    public String imprimir() {
-        return null;
+     /**
+     * Função que pega o conteúdo de ofLongToStringData e o ajusta 
+     * @return a Data de criação da pergunta
+     */
+    public String getData() {
+        String   resp = "";
+        String[] array = null;
+
+        array = ofLongToStringData(this.criacao).split(" ");
+        resp += array[0] + " às " + array[1];
+        return resp;
     }
     
+    /** 
+     * Função para converter o horário de milisegundos para o formato: dia/mes/ano - hora:minutos em uma String
+     * Obrigado a Homenique Vieira por ter feito essa função
+     * 
+     * @param data é os mililisegundos em long
+     * @return uma String contendo a data representada por data
+     */
+    private String ofLongToStringData(long data){
+
+        // Definir o tempo Sistema
+        Date SistemaData = new Date(data);
+        // Caledario para setar o fuso horario
+        Calendar caledario = Calendar.getInstance();
+        // Formatacao de como data 
+        DateFormat dataFormatada = new SimpleDateFormat ("dd/MM/yyyy HH:mm");
+                
+        // Formanto a formatacao da data apatir do fuso horario do sistema 
+        dataFormatada.setTimeZone(caledario.getTimeZone());
+                
+        
+        return dataFormatada.format(SistemaData);
+    }
+
+    public String imprimir() {
+        return "([" + getData()+"]) \n["+ comentario +"]" ;
+    }
+    
+    public String imprimirSimplificado() {
+        return "([" + getData()+"]) \n{"+ comentario +"}";
+    }
+
+    public String imprimir(String nome) {
+        return "([" + getData()+"]) \n["+ comentario +"] {Resposta criada por: " + nome + "}";
+    }    
 }

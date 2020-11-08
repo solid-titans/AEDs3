@@ -8,8 +8,8 @@ import produtos.CelulaResposta;
 import produtos.Voto;
 
 public class VotosAPI {
-    CustomInput   entrada;
-    FrontEnd frontEnd;
+    CustomInput entrada;
+    FrontEnd    frontEnd;
 
     public VotosAPI(FrontEnd frontEnd, CustomInput entrada) {
         this.entrada  = entrada;

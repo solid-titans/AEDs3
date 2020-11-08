@@ -253,7 +253,7 @@ public class Menu {
                     break;
 
                 case "23":
-                    opcaoEscolhida = CodigoDeProtocolo.LISTARCOMENTARIOSGERAL;
+                    opcaoEscolhida = CodigoDeProtocolo.COMENTARIOSPERGUNTA;
                     break;
 
                 case "33":
@@ -291,7 +291,15 @@ public class Menu {
                 case "05":
                     menuIndex = 3;
                     break;
-      
+
+                case "15":
+                    opcaoEscolhida = CodigoDeProtocolo.COMENTARPERGUNTA;
+                    break;
+                  
+                case "25":
+                    opcaoEscolhida = CodigoDeProtocolo.COMENTARRESPOSTA;
+                    break;
+
                 case "06":
                     menuIndex = 3;
                     break;

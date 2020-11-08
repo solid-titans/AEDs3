@@ -6,28 +6,32 @@ import produtos.CelulaResposta;
 
 public class APIControle {
 
-	UsuariosAPI  usuariosAPI;
-	PerguntasAPI perguntasAPI;
-	RespostasAPI respostasAPI;
-	VotosAPI     votosAPI;
+	UsuariosAPI    usuariosAPI;
+	PerguntasAPI   perguntasAPI;
+	RespostasAPI   respostasAPI;
+	VotosAPI       votosAPI;
+	ComentariosAPI comentariosAPI;
 
-	UsuariosCRUD  usuariosCRUD;
-	PerguntasCRUD perguntasCRUD;
-	RespostasCRUD respostasCRUD;
-	VotosCRUD     votosCRUD; // Em desenvolvimento
+	UsuariosCRUD    usuariosCRUD;
+	PerguntasCRUD   perguntasCRUD;
+	RespostasCRUD   respostasCRUD;
+	VotosCRUD       votosCRUD;
+	ComentariosCRUD comentariosCRUD;
 
-	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI, VotosAPI votosAPI,
-			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD, VotosCRUD votosCRUD) {
+	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI, VotosAPI votosAPI, ComentariosAPI comentariosAPI,
+			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD, VotosCRUD votosCRUD, ComentariosCRUD comentariosCRUD) {
 
 		this.usuariosAPI  = usuariosAPI;
 		this.perguntasAPI = perguntasAPI;
 		this.respostasAPI = respostasAPI;
 		this.votosAPI     = votosAPI;
+		this.comentariosAPI = comentariosAPI;
 
 		this.usuariosCRUD  = usuariosCRUD;
 		this.perguntasCRUD = perguntasCRUD;
 		this.respostasCRUD = respostasCRUD;
 		this.votosCRUD	   = votosCRUD;
+		this.comentariosCRUD = comentariosCRUD;
 	}
 
 	/**
@@ -204,6 +208,24 @@ public class APIControle {
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
 					votosCRUD.inserir(cr.getVoto());
 					respostasCRUD.atualizar(respostaEscolhida.getResposta(),cr.getVoto().getVoto());
+				}
+
+				break;
+
+			case COMENTARPERGUNTA:
+				cr = comentariosAPI.comentarPR(comentariosCRUD,idPergunta,idUsuario,false);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) {
+					comentariosCRUD.inserirPergunta(cr.getComentario(), idPergunta);
+				}
+
+				break;
+				
+			case COMENTARRESPOSTA:
+				CelulaResposta respostaEscolhidaC = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);				
+				if(respostaEscolhida.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+					cr = comentariosAPI.comentarPR(comentariosCRUD,respostaEscolhidaC.getResposta().getId(),idUsuario,true);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
+					comentariosCRUD.inserirResposta(cr.getComentario(), cr.getResposta().getId());
 				}
 
 				break;
