@@ -159,8 +159,9 @@ public class APIControle {
 
 		switch (cdp) {
 
-			case LISTARCOMENTARIOSGERAL:
-				System.out.println("Comentarios...");
+			case COMENTARIOSPERGUNTA:
+			//System.out.println("Deu certo!");
+				cr = comentariosAPI.listarComentariosDaPergunta(comentariosCRUD,idPergunta, idUsuario);
 				break;
 
 			case LISTARRESPOSTASGERAL:
@@ -213,7 +214,7 @@ public class APIControle {
 				break;
 
 			case COMENTARPERGUNTA:
-				cr = comentariosAPI.comentarPR(comentariosCRUD,idPergunta,idUsuario,false);
+				cr = comentariosAPI.comentarPR(comentariosCRUD,idPergunta,idUsuario);
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) {
 					comentariosCRUD.inserirPergunta(cr.getComentario(), idPergunta);
 				}
@@ -222,8 +223,8 @@ public class APIControle {
 				
 			case COMENTARRESPOSTA:
 				CelulaResposta respostaEscolhidaC = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);				
-				if(respostaEscolhida.getCdp().equals(CodigoDeProtocolo.SUCESSO))
-					cr = comentariosAPI.comentarPR(comentariosCRUD,respostaEscolhidaC.getResposta().getId(),idUsuario,true);
+				if(respostaEscolhidaC.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+					cr = comentariosAPI.comentarPR(comentariosCRUD,respostaEscolhidaC.getResposta().getId(),idUsuario);
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
 					comentariosCRUD.inserirResposta(cr.getComentario(), cr.getResposta().getId());
 				}

@@ -9,9 +9,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import produtos.abstracts.RegistroVisual;
+import produtos.abstracts.RegistroVisualplus;
 
-public class Comentario implements RegistroVisual{
+public class Comentario implements RegistroVisualplus{
     
     private byte   tipo;
     private int    idUsuario;
@@ -113,6 +113,8 @@ public class Comentario implements RegistroVisual{
         DataOutputStream      data      = new DataOutputStream(byteArray);
 
         data.writeInt(this.idComentario);
+        data.writeInt(this.idPR);
+        data.writeInt(this.idUsuario);
         data.writeUTF(this.comentario);
 
         return byteArray.toByteArray();
@@ -129,8 +131,8 @@ public class Comentario implements RegistroVisual{
         DataInputStream      data      = new DataInputStream(byteArray);
 
         this.idComentario = data.readInt();
-        //this.idUsuario    = data.readInt();
-        //this.idPR         = data.readInt();
+        this.idPR         = data.readInt();
+        this.idUsuario    = data.readInt();
         this.comentario   = data.readUTF();
     }
 
@@ -180,5 +182,10 @@ public class Comentario implements RegistroVisual{
 
     public String imprimir(String nome) {
         return "([" + getData()+"]) \n["+ comentario +"] {Resposta criada por: " + nome + "}";
-    }    
+    }
+
+    @Override
+    public boolean getAtiva() {
+        return true;
+    }
 }

@@ -98,9 +98,8 @@ public class Selecao {
      * @return uma String com todas as opções do menu de criação de comentarios
      */
     public static String menuDeComentariosString() {
-        return "1) Listar comentarios da pergunta\n"      +
-               "2) Comentar pergunta\n"                   +
-               "3) Comentar uma resposta da pergunta\n\n" +
+        return "1) Comentar pergunta\n"                   +
+               "2) Comentar uma resposta da pergunta\n\n" +
                "0) Retornar ao menu anterior\n\n"         +
                "Opção: ";
     }

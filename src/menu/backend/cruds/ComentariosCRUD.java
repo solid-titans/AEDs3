@@ -31,7 +31,7 @@ public class ComentariosCRUD implements ComentariosInterface {
 
 		idComentario = comentarios.create(comentario);
 		comentario.setId(idComentario);
-		comentPerguntasIDs.create(comentario.getId(), idPergunta);
+		comentPerguntasIDs.create(idPergunta, comentario.getId());
 
         return idComentario;
     }
@@ -42,7 +42,7 @@ public class ComentariosCRUD implements ComentariosInterface {
 
 		idComentario = comentarios.create(comentario);
 		comentario.setId(idComentario);
-		comentRespostasIDs.create(comentario.getId(), idResposta);
+		comentRespostasIDs.create(idResposta, comentario.getId());
 
         return idComentario;
     }
@@ -64,8 +64,8 @@ public class ComentariosCRUD implements ComentariosInterface {
         Comentario[] resp = null;
 		int[] idsComentarios = null;
 
-		idsComentarios = comentPerguntasIDs.read(idPergunta);
-
+        idsComentarios = comentPerguntasIDs.read(idPergunta);
+        
 		if (idsComentarios == null)
 			return null;
 

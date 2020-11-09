@@ -38,6 +38,8 @@ public class RespostasFrontEnd extends FrontEndPlus {
 
             resp += votos.recuperarNota(usuarios.achar(i.getIdUsuario()).getId() + "|R|" + i.getId());
             
+            //resp += 
+
             contador++;
 
         }
