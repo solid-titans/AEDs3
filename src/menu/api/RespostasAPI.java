@@ -222,6 +222,7 @@ public class RespostasAPI {
                     resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
                 } else {
                     resultado.setResposta(respostas.achar(id));
+                    resultado.setCdp(CodigoDeProtocolo.SUCESSO);
                 }
 
         } else {

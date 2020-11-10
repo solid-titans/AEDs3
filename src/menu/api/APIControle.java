@@ -206,6 +206,7 @@ public class APIControle {
 				CelulaResposta respostaEscolhida = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);
 				if(respostaEscolhida.getCdp().equals(CodigoDeProtocolo.SUCESSO))
 					cr = votosAPI.votarPR(votosCRUD,respostaEscolhida.getResposta().getId(),idUsuario,true);
+
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
 					votosCRUD.inserir(cr.getVoto());
 					respostasCRUD.atualizar(respostaEscolhida.getResposta(),cr.getVoto().getVoto());
@@ -216,6 +217,7 @@ public class APIControle {
 			case COMENTARPERGUNTA:
 				cr = comentariosAPI.comentarPR(comentariosCRUD,idPergunta,idUsuario,(byte)0);
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) {
+
 					comentariosCRUD.inserirPergunta(cr.getComentario(), idPergunta);
 				}
 
@@ -224,8 +226,10 @@ public class APIControle {
 			case COMENTARRESPOSTA:
 				CelulaResposta respostaEscolhidaC = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);
 				if(respostaEscolhidaC.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+
 					cr = comentariosAPI.comentarPR(comentariosCRUD,respostaEscolhidaC.getResposta().getId(),idUsuario,(byte)1);
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
+
 					comentariosCRUD.inserirResposta(cr.getComentario(), respostaEscolhidaC.getResposta().getId());
 				}
 
