@@ -116,8 +116,8 @@ public class PerguntasAPI {
      */
     public CelulaResposta alterarPergunta(PerguntaInterface perguntas, int idUsuario) {
 
-        Pergunta perguntaAlterada = null;
-        int idPerguntaAlterada = -1;
+        Pergunta perguntaAlterada   = null;
+        int idPerguntaAlterada      = -1;
         CodigoDeProtocolo confirmar = CodigoDeProtocolo.ERRO;
 
         CelulaResposta resultado = new CelulaResposta();
@@ -135,6 +135,11 @@ public class PerguntasAPI {
         idPerguntaAlterada = perguntaAlterada.getId();
 
         perguntaAlterada = inserirDadosDaPergunta(idUsuario);
+        if(perguntaAlterada == null) {
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            return resultado;
+        }
+
         perguntaAlterada.setId(idPerguntaAlterada);
 
         confirmar = frontEnd.verificar(perguntaAlterada);
@@ -230,6 +235,37 @@ public class PerguntasAPI {
     }
 
     /**
+     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
+     * 
+     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de
+     *                  escolher uma de suas próprias perguntas
+     * @return a Pergunta que foi propriamente escolhida
+     */
+    private CelulaResposta escolherPergunta(PerguntaInterface perguntas, int idUsuario) {
+        int id = -1;
+        Pergunta[] array = null;
+
+        CelulaResposta resultado = new CelulaResposta();
+
+        array = perguntas.getPerguntaArray(idUsuario);
+
+        if (array != null) {
+            id = frontEnd.escolher(array);
+            if (id != -1)
+                if (id == -3) {
+                    resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+                } else {
+                    resultado.setPergunta(perguntas.achar(id));
+                }
+
+        } else {
+            System.err.println("ERRO! nenhuma pergunta encontrada!");
+        }
+
+        return resultado;
+    }
+
+    /**
      * Função genérica para inserir dados de uma pergunta
      * 
      * @param idUsuario é o numero que corresponde a ID do usuário que será dono da
@@ -261,37 +297,6 @@ public class PerguntasAPI {
         p = new Pergunta(idUsuario, titulo, pergunta, palavras_chave);
 
         return p;
-    }
-
-    /**
-     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
-     * 
-     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de
-     *                  escolher uma de suas próprias perguntas
-     * @return a Pergunta que foi propriamente escolhida
-     */
-    private CelulaResposta escolherPergunta(PerguntaInterface perguntas, int idUsuario) {
-        int id = -1;
-        Pergunta[] array = null;
-
-        CelulaResposta resultado = new CelulaResposta();
-
-        array = perguntas.getPerguntaArray(idUsuario);
-
-        if (array != null) {
-            id = frontEnd.escolher(array);
-            if (id != -1)
-                if (id == -3) {
-                    resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
-                } else {
-                    resultado.setPergunta(perguntas.achar(id));
-                }
-
-        } else {
-            System.err.println("ERRO! nenhuma pergunta encontrada!");
-        }
-
-        return resultado;
     }
 
     

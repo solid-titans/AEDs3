@@ -165,7 +165,7 @@ public class APIControle {
 				break;
 
 			case LISTARRESPOSTASGERAL:
-				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,comentariosCRUD,votosCRUD,idPergunta);
+				cr = respostasAPI.listarRespostasDoGeral(idUsuario, usuariosCRUD,respostasCRUD,comentariosCRUD,votosCRUD,idPergunta);
 				break;
 
 			case LISTARRESPOSTASUSUARIO: // Pedir para acessar o sistema

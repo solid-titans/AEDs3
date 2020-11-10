@@ -46,7 +46,7 @@ public class RespostasAPI {
      * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
      * @return uma CelulaResposta com os resultados da operação
      */
-    public CelulaResposta listarRespostasDoGeral(UsuarioInterface usuarios, RespostasInterface respostas, ComentariosInterface comentarios, VotosInterface votos,
+    public CelulaResposta listarRespostasDoGeral(int idUsuario, UsuarioInterface usuarios, RespostasInterface respostas, ComentariosInterface comentarios, VotosInterface votos,
             int idPergunta) {
 
         CelulaResposta resultado = new CelulaResposta();
@@ -57,7 +57,7 @@ public class RespostasAPI {
             System.err.println("Ops.. parece que ninguém submeteu uma resposta a essa pergunta...\n");
 
         } else {
-            System.out.println(frontEnd.listarGeral(usuarios, votos,comentarios, array));
+            System.out.println(frontEnd.listarGeral(idUsuario,usuarios, votos,comentarios, array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 

@@ -28,7 +28,7 @@ public class VotosAPI {
 
         } else {
             String indice = entrada.inserir("Insira o seu voto: ", "Obs: Insira positivo(P) ou negativo(N)", 1, 8, false);
-            voto = new Voto((byte)1, idUsuario, idPR);
+            voto = new Voto((byte)(ehResp ? 0 : 1), idUsuario, idPR);
 
             indice = indice.toLowerCase();
 

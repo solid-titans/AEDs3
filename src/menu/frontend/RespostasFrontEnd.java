@@ -20,7 +20,7 @@ public class RespostasFrontEnd extends FrontEndPlus {
      * @param array é o array de respostas que foi enviado
      * @return a String correspondente a listagem das respostas
      */
-    public String listarGeral(UsuarioInterface usuarios, VotosInterface votos, ComentariosInterface comentarios, RegistroVisualResposta[] array) {
+    public String listarGeral(int idUsuario, UsuarioInterface usuarios, VotosInterface votos, ComentariosInterface comentarios, RegistroVisualResposta[] array) {
 
         String resp = "";
         String nome = "";
@@ -37,10 +37,11 @@ public class RespostasFrontEnd extends FrontEndPlus {
 
             resp += "\n" + myPrint.imprimir(contador + "." + i.imprimir(nome) + "\n");
 
-            resp += votos.recuperarNota(usuarios.achar(i.getIdUsuario()).getId() + "|R|" + i.getId()) + "\n";
+            resp += votos.recuperarNota(idUsuario + "|R|" + i.getId()) + "\n";
             
-            if(comentarios.achar(i.getId()).getTipo() != (byte)0)
-            resp += comentarios.getComentarioArray(i.getId());
+           // if(comentarios.achar(i.getId()).getTipo() != (byte)0)
+
+           // resp += comentarios.getComentarioArray(i.getId());
 
             contador++;
 
