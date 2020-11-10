@@ -40,7 +40,7 @@ public class RespostasFrontEnd extends FrontEndPlus {
             resp += votos.recuperarNota(usuarios.achar(i.getIdUsuario()).getId() + "|R|" + i.getId()) + "\n";
             
             if(comentarios.achar(i.getId()).getTipo() != (byte)0)
-            resp += comentarios.achar(i.getId()).getComentario();
+            resp += comentarios.getComentarioArray(i.getId());
 
             contador++;
 
