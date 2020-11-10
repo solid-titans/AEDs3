@@ -186,7 +186,7 @@ public class Comentario implements RegistroVisualComentario{
     }
 
     public String imprimir(String nome) {
-        return "([" + getData()+"]) \n["+ comentario +"] {Resposta criada por: " + nome + "}";
+        return "([" + getData()+"]) \n["+ comentario +"] {Comentário feito por: " + nome + "}";
     }
 
     @Override
