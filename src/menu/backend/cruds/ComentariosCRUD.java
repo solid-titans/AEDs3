@@ -61,6 +61,7 @@ public class ComentariosCRUD implements ComentariosInterface {
 
     @Override
     public Comentario[] getComentarioArray(int idPergunta) {
+        
         Comentario[] resp = null;
 		int[] idsComentarios = null;
 

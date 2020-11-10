@@ -1,16 +1,14 @@
 package menu.frontend;
 
 import produtos.abstracts.*;
-import menu.backend.cruds.abstracts.ComentariosInterface;
 import menu.backend.cruds.abstracts.UsuarioInterface;
-import menu.backend.cruds.abstracts.VotosInterface;
 import menu.backend.input.CustomInput;
 import menu.frontend.genericos.FrontEndPlus;
 import menu.frontend.graficos.*;
 
-public class RespostasFrontEnd extends FrontEndPlus {
+public class ComentariosFrontEnd extends FrontEndPlus {
 
-    public RespostasFrontEnd(CustomPrint myPrint, CustomInput myInput, String name) {
+    public ComentariosFrontEnd(CustomPrint myPrint, CustomInput myInput, String name) {
         super(myPrint, myInput, name);
     }
 
@@ -20,7 +18,7 @@ public class RespostasFrontEnd extends FrontEndPlus {
      * @param array é o array de respostas que foi enviado
      * @return a String correspondente a listagem das respostas
      */
-    public String listarGeral(UsuarioInterface usuarios, VotosInterface votos, ComentariosInterface comentarios, RegistroVisualResposta[] array) {
+    public String listar(UsuarioInterface usuarios, RegistroVisualComentario[] array) {
 
         String resp = "";
         String nome = "";
@@ -29,19 +27,14 @@ public class RespostasFrontEnd extends FrontEndPlus {
 
         resp += myPrint.imprimir("[" + (this.name + "s").toUpperCase() +  "]");
 
-        for (RegistroVisualResposta i : array) {
+        for (RegistroVisualComentario i : array) {
             if (i.getAtiva() == false)
                 continue;
 
             nome = usuarios.achar(i.getIdUsuario()).getNome();
 
             resp += "\n" + myPrint.imprimir(contador + "." + i.imprimir(nome) + "\n");
-
-            resp += votos.recuperarNota(usuarios.achar(i.getIdUsuario()).getId() + "|R|" + i.getId()) + "\n";
             
-            if(comentarios.achar(i.getId()).getTipo() != (byte)0)
-            resp += comentarios.achar(i.getId()).getComentario();
-
             contador++;
 
         }

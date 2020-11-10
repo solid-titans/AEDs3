@@ -9,9 +9,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import produtos.abstracts.RegistroVisualplus;
 
-public class Comentario implements RegistroVisualplus{
+import produtos.abstracts.RegistroVisualComentario;
+
+public class Comentario implements RegistroVisualComentario{
     
     private byte   tipo;
     private int    idUsuario;
@@ -40,8 +41,8 @@ public class Comentario implements RegistroVisualplus{
         this.comentario   = comentario;
     }
 
-    public Comentario(int idUsuario, int idPR, String comentario) {
-        this((byte)1,-1,idUsuario,idPR,new Date().getTime(),comentario);
+    public Comentario(int idUsuario, int idPR, String comentario, byte tipo) {
+        this(tipo,-1,idUsuario,idPR,new Date().getTime(),comentario);
     }
 
     public String chaveSecundaria() {
@@ -112,9 +113,11 @@ public class Comentario implements RegistroVisualplus{
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         DataOutputStream      data      = new DataOutputStream(byteArray);
 
+        data.writeByte(this.tipo);
         data.writeInt(this.idComentario);
         data.writeInt(this.idPR);
         data.writeInt(this.idUsuario);
+        data.writeLong(this.criacao);
         data.writeUTF(this.comentario);
 
         return byteArray.toByteArray();
@@ -130,9 +133,11 @@ public class Comentario implements RegistroVisualplus{
         ByteArrayInputStream byteArray = new ByteArrayInputStream(arrayObjeto);
         DataInputStream      data      = new DataInputStream(byteArray);
 
+        this.tipo         = data.readByte();
         this.idComentario = data.readInt();
         this.idPR         = data.readInt();
         this.idUsuario    = data.readInt();
+        this.criacao      = data.readLong();
         this.comentario   = data.readUTF();
     }
 
@@ -188,4 +193,5 @@ public class Comentario implements RegistroVisualplus{
     public boolean getAtiva() {
         return true;
     }
+
 }

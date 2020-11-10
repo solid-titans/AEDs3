@@ -59,18 +59,18 @@ public class Main {
         CustomInput comentariosCustomInput  = new CustomInput(comentariosInputPrint);
 
         // Interface
-        UsuariosFrontEnd  usuariosFrontEnd    = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput, "usuario");
-        FrontEndPlus      perguntasFrontEnd   = new FrontEndPlus(perguntasPrint, perguntasCustomInput , "pergunta");
-        RespostasFrontEnd respostasFrontEnd   = new RespostasFrontEnd(respostasPrint, respostasCustomInput, "resposta");
-        FrontEnd          votosFrontEnd       = new FrontEnd(votosPrint, votosCustomInput, "voto");
-        FrontEndPlus      comentariosFrontEnd = new FrontEndPlus(comentariosPrint, comentariosCustomInput, "comentario");
+        UsuariosFrontEnd  usuariosFrontEnd      = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput, "usuario");
+        FrontEndPlus      perguntasFrontEnd     = new FrontEndPlus(perguntasPrint, perguntasCustomInput , "pergunta");
+        RespostasFrontEnd respostasFrontEnd     = new RespostasFrontEnd(respostasPrint, respostasCustomInput, "resposta");
+        FrontEnd          votosFrontEnd         = new FrontEnd(votosPrint, votosCustomInput, "voto");
+        ComentariosFrontEnd comentariosFrontEnd = new ComentariosFrontEnd(comentariosPrint, comentariosCustomInput, "comentario");
 
         // APIS
         UsuariosAPI   usuariosAPI           = new UsuariosAPI(usuariosFrontEnd, usuariosCustomInput);
         PerguntasAPI  perguntasAPI          = new PerguntasAPI(perguntasFrontEnd, perguntasCustomInput);
         RespostasAPI  respostasAPI          = new RespostasAPI(respostasFrontEnd, respostasCustomInput);
         VotosAPI      votosAPI              = new VotosAPI(votosFrontEnd, votosCustomInput);
-        ComentariosAPI comentariosAPI        = new ComentariosAPI(comentariosFrontEnd, comentariosCustomInput);
+        ComentariosAPI comentariosAPI       = new ComentariosAPI(comentariosFrontEnd, comentariosCustomInput);
 
         // Cruds
         UsuariosCRUD    usuariosCRUD        = new UsuariosCRUD();

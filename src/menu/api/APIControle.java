@@ -161,11 +161,11 @@ public class APIControle {
 
 			case COMENTARIOSPERGUNTA:
 			//System.out.println("Deu certo!");
-				cr = comentariosAPI.listarComentariosDaPergunta(comentariosCRUD,idPergunta, idUsuario);
+				cr = comentariosAPI.listarComentariosDaPergunta(comentariosCRUD,usuariosCRUD,idPergunta);
 				break;
 
 			case LISTARRESPOSTASGERAL:
-				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,votosCRUD,idPergunta);
+				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,comentariosCRUD,votosCRUD,idPergunta);
 				break;
 
 			case LISTARRESPOSTASUSUARIO: // Pedir para acessar o sistema
@@ -203,7 +203,7 @@ public class APIControle {
 				break;
 				
 			case VOTAREMRESPOSTA:
-				CelulaResposta respostaEscolhida = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);				
+				CelulaResposta respostaEscolhida = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);
 				if(respostaEscolhida.getCdp().equals(CodigoDeProtocolo.SUCESSO))
 					cr = votosAPI.votarPR(votosCRUD,respostaEscolhida.getResposta().getId(),idUsuario,true);
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
@@ -214,7 +214,7 @@ public class APIControle {
 				break;
 
 			case COMENTARPERGUNTA:
-				cr = comentariosAPI.comentarPR(comentariosCRUD,idPergunta,idUsuario);
+				cr = comentariosAPI.comentarPR(comentariosCRUD,idPergunta,idUsuario,(byte)0);
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) {
 					comentariosCRUD.inserirPergunta(cr.getComentario(), idPergunta);
 				}
@@ -222,11 +222,11 @@ public class APIControle {
 				break;
 				
 			case COMENTARRESPOSTA:
-				CelulaResposta respostaEscolhidaC = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);				
+				CelulaResposta respostaEscolhidaC = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);
 				if(respostaEscolhidaC.getCdp().equals(CodigoDeProtocolo.SUCESSO))
-					cr = comentariosAPI.comentarPR(comentariosCRUD,respostaEscolhidaC.getResposta().getId(),idUsuario);
+					cr = comentariosAPI.comentarPR(comentariosCRUD,respostaEscolhidaC.getResposta().getId(),idUsuario,(byte)1);
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
-					comentariosCRUD.inserirResposta(cr.getComentario(), cr.getResposta().getId());
+					comentariosCRUD.inserirResposta(cr.getComentario(), respostaEscolhidaC.getResposta().getId());
 				}
 
 				break;
