@@ -26,6 +26,7 @@ Para usar você precisa apenas clicar no botão ```RUN``` e o código irá compi
 - [x] Perguntas funcionando.
 - [x] Respostas funcionando.
 - [x] Sistema de votos funcionando.
+- [x] Sistema de comentários funcionando.
 - [x] Desafio 1: Limite percentual máximo para esse espaço deve provocar a movimentação do registro caso excedido.
 - [x] Desafio 2: Crud de Lixo para aproveitar melhor os registros excluídos
 - [x] Desafio 3: Simular um envio de email para trocar a senha do usuário

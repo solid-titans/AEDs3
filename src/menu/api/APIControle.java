@@ -6,28 +6,32 @@ import produtos.CelulaResposta;
 
 public class APIControle {
 
-	UsuariosAPI  usuariosAPI;
-	PerguntasAPI perguntasAPI;
-	RespostasAPI respostasAPI;
-	VotosAPI     votosAPI;
+	UsuariosAPI    usuariosAPI;
+	PerguntasAPI   perguntasAPI;
+	RespostasAPI   respostasAPI;
+	VotosAPI       votosAPI;
+	ComentariosAPI comentariosAPI;
 
-	UsuariosCRUD  usuariosCRUD;
-	PerguntasCRUD perguntasCRUD;
-	RespostasCRUD respostasCRUD;
-	VotosCRUD     votosCRUD; // Em desenvolvimento
+	UsuariosCRUD    usuariosCRUD;
+	PerguntasCRUD   perguntasCRUD;
+	RespostasCRUD   respostasCRUD;
+	VotosCRUD       votosCRUD;
+	ComentariosCRUD comentariosCRUD;
 
-	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI, VotosAPI votosAPI,
-			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD, VotosCRUD votosCRUD) {
+	public APIControle(UsuariosAPI usuariosAPI, PerguntasAPI perguntasAPI, RespostasAPI respostasAPI, VotosAPI votosAPI, ComentariosAPI comentariosAPI,
+			UsuariosCRUD usuariosCRUD, PerguntasCRUD perguntasCRUD, RespostasCRUD respostasCRUD, VotosCRUD votosCRUD, ComentariosCRUD comentariosCRUD) {
 
 		this.usuariosAPI  = usuariosAPI;
 		this.perguntasAPI = perguntasAPI;
 		this.respostasAPI = respostasAPI;
 		this.votosAPI     = votosAPI;
+		this.comentariosAPI = comentariosAPI;
 
 		this.usuariosCRUD  = usuariosCRUD;
 		this.perguntasCRUD = perguntasCRUD;
 		this.respostasCRUD = respostasCRUD;
 		this.votosCRUD	   = votosCRUD;
+		this.comentariosCRUD = comentariosCRUD;
 	}
 
 	/**
@@ -155,12 +159,13 @@ public class APIControle {
 
 		switch (cdp) {
 
-			case LISTARCOMENTARIOSGERAL:
-				System.out.println("Comentarios...");
+			case COMENTARIOSPERGUNTA:
+			//System.out.println("Deu certo!");
+				cr = comentariosAPI.listarComentariosDaPergunta(comentariosCRUD,usuariosCRUD,idPergunta);
 				break;
 
 			case LISTARRESPOSTASGERAL:
-				cr = respostasAPI.listarRespostasDoGeral(usuariosCRUD,respostasCRUD,votosCRUD,idPergunta);
+				cr = respostasAPI.listarRespostasDoGeral(idUsuario, usuariosCRUD,respostasCRUD,comentariosCRUD,votosCRUD,idPergunta);
 				break;
 
 			case LISTARRESPOSTASUSUARIO: // Pedir para acessar o sistema
@@ -198,12 +203,34 @@ public class APIControle {
 				break;
 				
 			case VOTAREMRESPOSTA:
-				CelulaResposta respostaEscolhida = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);				
+				CelulaResposta respostaEscolhida = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);
 				if(respostaEscolhida.getCdp().equals(CodigoDeProtocolo.SUCESSO))
 					cr = votosAPI.votarPR(votosCRUD,respostaEscolhida.getResposta().getId(),idUsuario,true);
+
 				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
 					votosCRUD.inserir(cr.getVoto());
 					respostasCRUD.atualizar(respostaEscolhida.getResposta(),cr.getVoto().getVoto());
+				}
+
+				break;
+
+			case COMENTARPERGUNTA:
+				cr = comentariosAPI.comentarPR(comentariosCRUD,idPergunta,idUsuario,(byte)0);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) {
+
+					comentariosCRUD.inserirPergunta(cr.getComentario(), idPergunta);
+				}
+
+				break;
+				
+			case COMENTARRESPOSTA:
+				CelulaResposta respostaEscolhidaC = respostasAPI.escolherResposta(respostasCRUD, idPergunta, -1);
+				if(respostaEscolhidaC.getCdp().equals(CodigoDeProtocolo.SUCESSO))
+
+					cr = comentariosAPI.comentarPR(comentariosCRUD,respostaEscolhidaC.getResposta().getId(),idUsuario,(byte)1);
+				if (cr.getCdp() == CodigoDeProtocolo.SUCESSO) { 
+
+					comentariosCRUD.inserirResposta(cr.getComentario(), respostaEscolhidaC.getResposta().getId());
 				}
 
 				break;

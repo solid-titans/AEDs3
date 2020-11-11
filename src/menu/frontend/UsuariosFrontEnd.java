@@ -5,40 +5,28 @@ import menu.backend.cruds.abstracts.UsuarioInterface;
 import menu.backend.input.CustomInput;
 import menu.backend.misc.CodigoDeProtocolo;
 import menu.backend.misc.Regex;
-import menu.frontend.abstracts.FrontEnd;
-import produtos.abstracts.RegistroVisual;
+import menu.frontend.genericos.FrontEnd;
 
 /**
  * Classe para administrar casos específicos da admnistração visual dos Usuários
  * 
  * @author MysteRys337 (Gustavo Lopes)
  */
-public class UsuariosFrontEnd implements FrontEnd {
-
-    // Variaveis de controle de grafico
-    private CustomPrint myPrint;
+public class UsuariosFrontEnd extends FrontEnd {
  
     private final byte  TAM_MIN_SENHA;// Tamanho padrao 05 
     private final byte  TAM_MAX_SENHA;// Tamanho padrao 64
 
-    private CustomInput customInput;
-
-    public UsuariosFrontEnd(CustomPrint myPrint, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA, CustomInput customInput) {
+    public UsuariosFrontEnd(CustomPrint myPrint, byte TAM_MIN_SENHA, byte TAM_MAX_SENHA, CustomInput myInput, String name) {
+        super(myPrint, myInput, name);
         this.TAM_MIN_SENHA = TAM_MIN_SENHA;
         this.TAM_MAX_SENHA = TAM_MAX_SENHA;
-
-        this.myPrint       = myPrint;
-
-        this.customInput   = customInput;
     }
 
-    public UsuariosFrontEnd(CustomPrint myPrint, CustomInput customInput) {
+    public UsuariosFrontEnd(CustomPrint myPrint, CustomInput myInput, String name) {
+        super(myPrint, myInput, name);
         this.TAM_MIN_SENHA = 5;
         this.TAM_MAX_SENHA = 64;
-
-        this.myPrint       = myPrint;
-
-        this.customInput   = customInput;
     }
     /**
      * Função para dar n tentativas ao usuário de inserir a senha
@@ -54,7 +42,7 @@ public class UsuariosFrontEnd implements FrontEnd {
         boolean acertouSenha = false;
 
         do {
-            entradaDoUsuario = customInput.inserir("Insira a senha", "\nNumero de tentativas : " + tentativas,
+            entradaDoUsuario = myInput.inserir("Insira a senha", "\nNumero de tentativas : " + tentativas,
                                                    TAM_MIN_SENHA, TAM_MAX_SENHA, false);
 
             if (entradaDoUsuario.equals("")) {
@@ -69,7 +57,7 @@ public class UsuariosFrontEnd implements FrontEnd {
 
                 tentativas--;
                 System.err.println("Erro! As senhas não são iguais!");
-                customInput.esperarUsuario();
+                myInput.esperarUsuario();
                 myPrint.limparTela();
 
             } else {
@@ -94,11 +82,11 @@ public class UsuariosFrontEnd implements FrontEnd {
         boolean senhasIguais = false;
 
         do {
-            senha = customInput.inserir("Criando senha", TAM_MIN_SENHA, TAM_MAX_SENHA, true);
+            senha = myInput.inserir("Criando senha", TAM_MIN_SENHA, TAM_MAX_SENHA, true);
             if (senha.equals("")) {
                 return "";
             }
-            confirmarSenha = customInput.inserir("Confirmar senha", TAM_MIN_SENHA, TAM_MAX_SENHA, false);
+            confirmarSenha = myInput.inserir("Confirmar senha", TAM_MIN_SENHA, TAM_MAX_SENHA, false);
             if (confirmarSenha.equals("")) {
                 return "";
             }
@@ -122,42 +110,12 @@ public class UsuariosFrontEnd implements FrontEnd {
                         + "Obs: Recomendamos no mínimo uma senha de força 3.\n"
                         + "Pressione \"Enter\" para continuar...");
 
-                customInput.lerString();
+                myInput.lerString();
                 myPrint.limparTela();
             }
         } while (senhasIguais == false || forcaDaSenha <= 2);
-        ;
 
         return senha;
-    }
-
-    /**
-     * Função para verificar se o usuário a ser registrado é o desejado
-     * 
-     * @param novoUsuario é o usuário a ser conferido
-     * @return um codigo de protocolo referente ao resultado da verificacao
-     */
-    public CodigoDeProtocolo verificar(RegistroVisual novoUsuario) {
-        CodigoDeProtocolo sucesso = CodigoDeProtocolo.ERRO;
-        String confirmar = "";
-
-        System.out.print(myPrint.imprimir("{Vamos então conferir o cadastro:}\n[Dados do usuário]") + "\n" + 
-                         myPrint.imprimir(novoUsuario.imprimir()));
-
-        confirmar = customInput.lerString("\nEstá tudo de acordo?(s/n) : ");
-
-        myPrint.limparTela();
-        if (confirmar.equals("") || confirmar.toLowerCase().equals("s")) {
-
-            sucesso = CodigoDeProtocolo.SUCESSO;
-            System.out.println("Usuário confirmou a operação");
-
-        } else {
-            sucesso = CodigoDeProtocolo.OPERACAOCANCELADA;
-            System.err.println("Processo cancelado!\nVoltando para o menu...");
-        }
-
-        return sucesso;
     }
 
 }

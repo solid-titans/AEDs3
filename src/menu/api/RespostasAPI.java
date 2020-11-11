@@ -1,5 +1,6 @@
 package menu.api;
 
+import menu.backend.cruds.abstracts.ComentariosInterface;
 import menu.backend.cruds.abstracts.RespostasInterface;
 import menu.backend.cruds.abstracts.UsuarioInterface;
 import menu.backend.cruds.abstracts.VotosInterface;
@@ -19,24 +20,24 @@ public class RespostasAPI {
     private final byte TAM_MIN_RESPOSTA; // Tamanho minimo para as respostas
     private final byte TAM_MAX_RESPOSTA; // Tamanho maximo para as respostas
 
-    private RespostasFrontEnd respostasFrontEnd;
+    private RespostasFrontEnd frontEnd;
 
     private CustomInput customInput;
 
-    public RespostasAPI(byte TAM_MIN_RESPOSTA, byte TAM_MAX_RESPOSTA, RespostasFrontEnd respostasFrontEnd,
+    public RespostasAPI(byte TAM_MIN_RESPOSTA, byte TAM_MAX_RESPOSTA, RespostasFrontEnd frontEnd,
             CustomInput customInput) {
         this.TAM_MIN_RESPOSTA = TAM_MIN_RESPOSTA;
         this.TAM_MAX_RESPOSTA = TAM_MAX_RESPOSTA;
 
-        this.respostasFrontEnd = respostasFrontEnd;
+        this.frontEnd = frontEnd;
     }
 
-    public RespostasAPI(RespostasFrontEnd respostasFrontEnd, CustomInput customInput) {
+    public RespostasAPI(RespostasFrontEnd frontEnd, CustomInput customInput) {
         this.TAM_MIN_RESPOSTA = 1;
         this.TAM_MAX_RESPOSTA = 120;
 
-        this.respostasFrontEnd = respostasFrontEnd;
-        this.customInput       = customInput;
+        this.frontEnd    = frontEnd;
+        this.customInput = customInput;
     }
 
     /**
@@ -45,7 +46,7 @@ public class RespostasAPI {
      * @param idPergunta é a ID da pergunta que será usado como base na pesquisa
      * @return uma CelulaResposta com os resultados da operação
      */
-    public CelulaResposta listarRespostasDoGeral(UsuarioInterface usuarios, RespostasInterface respostas,  VotosInterface votos,
+    public CelulaResposta listarRespostasDoGeral(int idUsuario, UsuarioInterface usuarios, RespostasInterface respostas, ComentariosInterface comentarios, VotosInterface votos,
             int idPergunta) {
 
         CelulaResposta resultado = new CelulaResposta();
@@ -56,7 +57,7 @@ public class RespostasAPI {
             System.err.println("Ops.. parece que ninguém submeteu uma resposta a essa pergunta...\n");
 
         } else {
-            System.out.println(respostasFrontEnd.listarGeral(usuarios, votos, array));
+            System.out.println(frontEnd.listarGeral(idUsuario,usuarios, votos,comentarios, array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
@@ -81,7 +82,7 @@ public class RespostasAPI {
             System.err.println("Ops.. parece que ninguém submeteu uma resposta a essa pergunta...\n");
 
         } else {
-            System.out.println(respostasFrontEnd.listar(array));
+            System.out.println(frontEnd.listar(array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }
 
@@ -109,7 +110,7 @@ public class RespostasAPI {
 
         resultado.setResposta(new Resposta(idPergunta, idUsuario, resposta));
 
-        confirmarOperacao = respostasFrontEnd.verificar(resultado.getResposta());
+        confirmarOperacao = frontEnd.verificar(resultado.getResposta());
         if (confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
@@ -149,7 +150,7 @@ public class RespostasAPI {
 
         respostaAlterada.setResposta(resposta);
 
-        confirmarOperacao = respostasFrontEnd.verificar(respostaAlterada);
+        confirmarOperacao = frontEnd.verificar(respostaAlterada);
         if (confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
@@ -185,7 +186,7 @@ public class RespostasAPI {
             return resultado;
         }
 
-        confirmarOperacao = respostasFrontEnd.verificar(respostaAlterada);
+        confirmarOperacao = frontEnd.verificar(respostaAlterada);
         if (confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
             return resultado;
@@ -215,12 +216,13 @@ public class RespostasAPI {
         array = (idUsuario != -1 ? respostas.getRespostaArrayUser(idUsuario) : respostas.getRespostaArrayGeral(idPergunta));
 
         if (array != null) {
-            id = respostasFrontEnd.escolherResposta(array);
+            id = frontEnd.escolher(array);
             if (id != -1)
                 if (id == -3) {
                     resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
                 } else {
                     resultado.setResposta(respostas.achar(id));
+                    resultado.setCdp(CodigoDeProtocolo.SUCESSO);
                 }
 
         } else {
