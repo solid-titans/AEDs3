@@ -68,14 +68,14 @@ public class Selecao {
      * @return uma String com todas as opções do menu de interação com pergunta
      */
     public static String navegarPelaPerguntaString() {
-        return "INÍCIO > PERGUNTAS \n\n"              +
-               "Escolha uma das opções abaixo: \n\n"  +
-               "1) Listar respostas\n"                +
-               "2) Listar comentarios\n\n"            +
-               "3) Responder\n"                       +
-               "4) Comentar\n"                        +
-               "5) Avaliar\n\n"                       +
-               "0) Retornar\n\n"                      +
+        return "INÍCIO > PERGUNTAS \n\n"               +
+               "Escolha uma das opções abaixo: \n\n"   +
+               "1) Listar respostas\n"                 +
+               "2) Listar comentarios da pergunta\n\n" +
+               "3) Responder\n"                        +
+               "4) Comentar\n"                         +
+               "5) Avaliar\n\n"                        +
+               "0) Retornar\n\n"                       +
                "Opção: ";
     }
 
@@ -98,11 +98,9 @@ public class Selecao {
      * @return uma String com todas as opções do menu de criação de comentarios
      */
     public static String menuDeComentariosString() {
-        return "1) Listar suas comentarios\n"       +
-               "2) Incluir uma comentarios\n"       +
-               "3) Alterar uma comentarios\n"       +
-               "4) Arquivar uma comentarios\n\n"    +
-               "0) Retornar ao menu anterior\n\n"   +
+        return "1) Comentar pergunta\n"                   +
+               "2) Comentar uma resposta da pergunta\n\n" +
+               "0) Retornar ao menu anterior\n\n"         +
                "Opção: ";
     }
 

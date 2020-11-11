@@ -13,6 +13,7 @@ public class CelulaResposta {
     private Pergunta          pergunta;
     private Resposta          resposta;
     private Voto              voto;
+    private Comentario        comentario;
     private CodigoDeProtocolo cdp;
 
     public Usuario getUsuario() {
@@ -47,6 +48,14 @@ public class CelulaResposta {
         this.voto = voto;
     }
 
+    public Comentario getComentario() {
+        return this.comentario;
+    }
+
+    public void setComentario(Comentario comentario) {
+        this.comentario = comentario;
+    }
+
     public CodigoDeProtocolo getCdp() {
         return this.cdp;
     }
@@ -56,19 +65,21 @@ public class CelulaResposta {
     }
 
     public CelulaResposta() {
-        this.usuario  = null;
-        this.pergunta = null;
-        this.resposta = null;
-        this.voto     = null;
-        cdp           = CodigoDeProtocolo.ERRO;
+        this.usuario    = null;
+        this.pergunta   = null;
+        this.resposta   = null;
+        this.voto       = null;
+        this.comentario = null;
+        cdp             = CodigoDeProtocolo.ERRO;
     }
 
-    public CelulaResposta(Usuario usuario, Pergunta pergunta, Resposta resposta, Voto voto, CodigoDeProtocolo codigoDeProtocolo) {
-        this.usuario  = usuario;
-        this.pergunta = pergunta;
-        this.resposta = resposta;
-        this.voto     = voto;
-        this.cdp      = codigoDeProtocolo;
+    public CelulaResposta(Usuario usuario, Pergunta pergunta, Resposta resposta, Voto voto, Comentario comentario, CodigoDeProtocolo codigoDeProtocolo) {
+        this.usuario    = usuario;
+        this.pergunta   = pergunta;
+        this.resposta   = resposta;
+        this.voto       = voto;
+        this.comentario = comentario;
+        this.cdp        = codigoDeProtocolo;
     }
 
 }

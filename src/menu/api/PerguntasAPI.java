@@ -5,7 +5,7 @@ import produtos.Pergunta;
 import menu.backend.cruds.abstracts.PerguntaInterface;
 import menu.backend.input.CustomInput;
 import menu.backend.misc.CodigoDeProtocolo;
-import menu.frontend.PerguntasFrontEnd;
+import menu.frontend.genericos.FrontEndPlus;
 
 /**
  * Classe para gerenciar todas as funções de controle de perguntas
@@ -20,12 +20,12 @@ public class PerguntasAPI {
     private final byte TAM_MIN_PERGUNTA; // Tamanho minimo para as perguntas
     private final byte TAM_MAX_PERGUNTA; // Tamanho maximo para as perguntas
 
-    private PerguntasFrontEnd perguntasFrontEnd;
+    private FrontEndPlus frontEnd;
 
     private CustomInput customInput;
 
     public PerguntasAPI(byte TAM_MIN_TITULO, byte TAM_MAX_TITULO, byte TAM_MIN_PERGUNTA, byte TAM_MAX_PERGUNTA,
-            PerguntasFrontEnd perguntasFrontEnd, CustomInput customInput) {
+            FrontEndPlus frontEnd, CustomInput customInput) {
 
         this.TAM_MIN_TITULO = TAM_MIN_TITULO;
         this.TAM_MAX_TITULO = TAM_MAX_TITULO;
@@ -33,12 +33,11 @@ public class PerguntasAPI {
         this.TAM_MIN_PERGUNTA = TAM_MIN_PERGUNTA;
         this.TAM_MAX_PERGUNTA = TAM_MAX_PERGUNTA;
 
-        this.perguntasFrontEnd = perguntasFrontEnd;
-
+        this.frontEnd    = frontEnd;
         this.customInput = customInput;
     }
 
-    public PerguntasAPI(PerguntasFrontEnd perguntasFrontEnd, CustomInput customInput) {
+    public PerguntasAPI(FrontEndPlus frontEnd, CustomInput customInput) {
 
         this.TAM_MIN_TITULO = 3;
         this.TAM_MAX_TITULO = 50;
@@ -46,8 +45,7 @@ public class PerguntasAPI {
         this.TAM_MIN_PERGUNTA = 3;
         this.TAM_MAX_PERGUNTA = 120;
 
-        this.perguntasFrontEnd = perguntasFrontEnd;
-
+        this.frontEnd    = frontEnd;
         this.customInput = customInput;
     }
 
@@ -69,7 +67,7 @@ public class PerguntasAPI {
             System.err.println("Ops.. parece que você não tem nenhuma pergunta...\n");
 
         } else {
-            System.out.println(perguntasFrontEnd.listar(array));
+            System.out.println(frontEnd.listar(array));
             resultado.setCdp(CodigoDeProtocolo.SUCESSO);
         }   
       
@@ -97,7 +95,7 @@ public class PerguntasAPI {
             return resultado;
         }
      
-        confirmarOperacao = perguntasFrontEnd.verificar(novaPergunta);
+        confirmarOperacao = frontEnd.verificar(novaPergunta);
         if (confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(confirmarOperacao);
             return resultado;
@@ -118,8 +116,8 @@ public class PerguntasAPI {
      */
     public CelulaResposta alterarPergunta(PerguntaInterface perguntas, int idUsuario) {
 
-        Pergunta perguntaAlterada = null;
-        int idPerguntaAlterada = -1;
+        Pergunta perguntaAlterada   = null;
+        int idPerguntaAlterada      = -1;
         CodigoDeProtocolo confirmar = CodigoDeProtocolo.ERRO;
 
         CelulaResposta resultado = new CelulaResposta();
@@ -137,9 +135,14 @@ public class PerguntasAPI {
         idPerguntaAlterada = perguntaAlterada.getId();
 
         perguntaAlterada = inserirDadosDaPergunta(idUsuario);
+        if(perguntaAlterada == null) {
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            return resultado;
+        }
+
         perguntaAlterada.setId(idPerguntaAlterada);
 
-        confirmar = perguntasFrontEnd.verificar(perguntaAlterada);
+        confirmar = frontEnd.verificar(perguntaAlterada);
         if (confirmar == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(confirmar);
             return resultado;
@@ -175,7 +178,7 @@ public class PerguntasAPI {
             return resultado;
         }
 
-        confirmarOperacao = perguntasFrontEnd.verificar(perguntaAlterada);
+        confirmarOperacao = frontEnd.verificar(perguntaAlterada);
         if (confirmarOperacao == CodigoDeProtocolo.OPERACAOCANCELADA) {
             resultado.setCdp(confirmarOperacao);
             return resultado;
@@ -217,7 +220,7 @@ public class PerguntasAPI {
 
         if (lista.length > 0) {
 
-            idPergunta = perguntasFrontEnd.escolherPergunta(lista);
+            idPergunta = frontEnd.escolher(lista);
             if (idPergunta != -1) {
                 resultado.setPergunta(perguntas.achar(idPergunta));
                 resultado.setCdp(CodigoDeProtocolo.IRPARAPERGUNTA);
@@ -226,6 +229,37 @@ public class PerguntasAPI {
 
         } else {
             System.out.println("Atenção! Nenhuma pergunta encontrada com as palavras-chave inserida!");
+        }
+
+        return resultado;
+    }
+
+    /**
+     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
+     * 
+     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de
+     *                  escolher uma de suas próprias perguntas
+     * @return a Pergunta que foi propriamente escolhida
+     */
+    private CelulaResposta escolherPergunta(PerguntaInterface perguntas, int idUsuario) {
+        int id = -1;
+        Pergunta[] array = null;
+
+        CelulaResposta resultado = new CelulaResposta();
+
+        array = perguntas.getPerguntaArray(idUsuario);
+
+        if (array != null) {
+            id = frontEnd.escolher(array);
+            if (id != -1)
+                if (id == -3) {
+                    resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+                } else {
+                    resultado.setPergunta(perguntas.achar(id));
+                }
+
+        } else {
+            System.err.println("ERRO! nenhuma pergunta encontrada!");
         }
 
         return resultado;
@@ -263,37 +297,6 @@ public class PerguntasAPI {
         p = new Pergunta(idUsuario, titulo, pergunta, palavras_chave);
 
         return p;
-    }
-
-    /**
-     * Função para gerenciar a escolha de pergunta com base na ID de um usuário
-     * 
-     * @param idUsuario é o número que corresponde a ID do usuário que gostaria de
-     *                  escolher uma de suas próprias perguntas
-     * @return a Pergunta que foi propriamente escolhida
-     */
-    private CelulaResposta escolherPergunta(PerguntaInterface perguntas, int idUsuario) {
-        int id = -1;
-        Pergunta[] array = null;
-
-        CelulaResposta resultado = new CelulaResposta();
-
-        array = perguntas.getPerguntaArray(idUsuario);
-
-        if (array != null) {
-            id = perguntasFrontEnd.escolherPergunta(array);
-            if (id != -1)
-                if (id == -3) {
-                    resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
-                } else {
-                    resultado.setPergunta(perguntas.achar(id));
-                }
-
-        } else {
-            System.err.println("ERRO! nenhuma pergunta encontrada!");
-        }
-
-        return resultado;
     }
 
     

@@ -3,15 +3,15 @@ package menu.api;
 import menu.backend.cruds.abstracts.VotosInterface;
 import menu.backend.input.CustomInput;
 import menu.backend.misc.CodigoDeProtocolo;
-import menu.frontend.VotosFrontEnd;
+import menu.frontend.genericos.FrontEnd;
 import produtos.CelulaResposta;
 import produtos.Voto;
 
 public class VotosAPI {
-    CustomInput   entrada;
-    VotosFrontEnd frontEnd;
+    CustomInput entrada;
+    FrontEnd    frontEnd;
 
-    public VotosAPI(VotosFrontEnd frontEnd, CustomInput entrada) {
+    public VotosAPI(FrontEnd frontEnd, CustomInput entrada) {
         this.entrada  = entrada;
         this.frontEnd = frontEnd;
     }
@@ -28,7 +28,7 @@ public class VotosAPI {
 
         } else {
             String indice = entrada.inserir("Insira o seu voto: ", "Obs: Insira positivo(P) ou negativo(N)", 1, 8, false);
-            voto = new Voto((byte)1, idUsuario, idPR);
+            voto = new Voto((byte)(ehResp ? 0 : 1), idUsuario, idPR);
 
             indice = indice.toLowerCase();
 

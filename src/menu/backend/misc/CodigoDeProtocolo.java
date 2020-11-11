@@ -32,11 +32,13 @@ public enum CodigoDeProtocolo {
     ARQUIVARRESPOSTA        ("44"),
 
     //Votos
-    VOTAREMPERGUNTA         ("33-1"),
-    VOTAREMRESPOSTA         ("33-2"),
+    VOTAREMPERGUNTA         ("16"),
+    VOTAREMRESPOSTA         ("26"),
 
     //Comentários
-    LISTARCOMENTARIOSGERAL  ("23"),
+    COMENTARIOSPERGUNTA     ("23"),
+    COMENTARPERGUNTA        ("15"),
+    COMENTARRESPOSTA        ("25"),
     
     //Possíveis resultados
     SUCESSO                 ("111"),
