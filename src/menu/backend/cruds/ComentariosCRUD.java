@@ -1,5 +1,7 @@
 package menu.backend.cruds;
 
+import java.util.ArrayList;
+
 import crud.Crud;
 import menu.backend.cruds.abstracts.ComentariosInterface;
 import menu.backend.listas.ListaIDs;
@@ -60,30 +62,35 @@ public class ComentariosCRUD implements ComentariosInterface {
     }
 
     @Override
-    public Comentario[] getComentarioArray(int idPergunta) {
+    public Comentario[] getComentarioArray(int idPergunta, byte tipo) {
         
-        Comentario[] resp = null;
-		int[] idsComentarios = null;
+        Comentario[]          resp           = null;
+        int[]                 idsComentarios = null;
+        ArrayList<Comentario> array          = new ArrayList<Comentario>();
 
         idsComentarios = comentPerguntasIDs.read(idPergunta);
         
 		if (idsComentarios == null)
 			return null;
 
-		resp = new Comentario[idsComentarios.length];
-
-		int contador = 0;
 		for (int i : idsComentarios) {
 			try {
 				Comentario temp = comentarios.read(i);
 				if (temp == null)
-					continue;
+                    continue;
+                    
+                if (temp.getTipo() != tipo)
+                    continue;
 
-				resp[contador] = temp;
-                contador++;
-                
-			} catch (Exception e) { e.printStackTrace(); }
+                array.add(temp);
+                    
+            } catch (Exception e) { e.printStackTrace(); }
+            
 		}
+        resp = new Comentario[array.size()];
+
+        for ( int i = 0 ; i < array.size() ; i++ ) 
+            resp[i] = array.get(i);
 
 		return resp;
     }

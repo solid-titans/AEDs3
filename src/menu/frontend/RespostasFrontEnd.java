@@ -10,8 +10,11 @@ import menu.frontend.graficos.*;
 
 public class RespostasFrontEnd extends FrontEndPlus {
 
-    public RespostasFrontEnd(CustomPrint myPrint, CustomInput myInput, String name) {
+    private ComentariosFrontEnd comentariosFrontEnd;
+
+    public RespostasFrontEnd(CustomPrint myPrint, CustomInput myInput, String name, ComentariosFrontEnd comentariosFrontEnd) {
         super(myPrint, myInput, name);
+        this.comentariosFrontEnd = comentariosFrontEnd;
     }
 
     /**
@@ -20,7 +23,7 @@ public class RespostasFrontEnd extends FrontEndPlus {
      * @param array é o array de respostas que foi enviado
      * @return a String correspondente a listagem das respostas
      */
-    public String listarGeral(int idUsuario, UsuarioInterface usuarios, VotosInterface votos, ComentariosInterface comentarios, RegistroVisualResposta[] array) {
+    public String listarGeral(int idUsuario, UsuarioInterface usuarios, VotosInterface votos, ComentariosInterface comentarios, RegistroVisualplus[] array) {
 
         String resp = "";
         String nome = "";
@@ -29,19 +32,21 @@ public class RespostasFrontEnd extends FrontEndPlus {
 
         resp += myPrint.imprimir("[" + (this.name + "s").toUpperCase() +  "]");
 
-        for (RegistroVisualResposta i : array) {
+        for (RegistroVisualplus i : array) {
             if (i.getAtiva() == false)
                 continue;
 
             nome = usuarios.achar(i.getIdUsuario()).getNome();
 
-            resp += "\n" + myPrint.imprimir(contador + "." + i.imprimir(nome) + "\n");
+            resp += "\n" + myPrint.imprimir(contador + "." + i.imprimir(nome) + "\n\n");
+            resp += votos.recuperarNota(idUsuario + "|R|" + i.getId()) + "\n\n";
 
-            resp += votos.recuperarNota(idUsuario + "|R|" + i.getId()) + "\n";
-            
-           // if(comentarios.achar(i.getId()).getTipo() != (byte)0)
-
-           // resp += comentarios.getComentarioArray(i.getId());
+            RegistroVisualplus[] comentariosDaResposta = comentarios.getComentarioArray(i.getId(),(byte)0);
+            if ( comentariosDaResposta != null)
+                resp += comentariosFrontEnd.listar(usuarios,comentariosDaResposta);
+            else {
+                resp += myPrint.imprimir("{Essa resposta não tem comentarios...}\n");
+            }
 
             contador++;
 

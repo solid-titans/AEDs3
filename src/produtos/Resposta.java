@@ -14,9 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import produtos.abstracts.RegistroVisualResposta;
+import produtos.abstracts.RegistroVisualplus;
 
-public class Resposta implements RegistroVisualResposta {
+public class Resposta implements RegistroVisualplus {
 
     private int idResposta;
     private int idPergunta;
