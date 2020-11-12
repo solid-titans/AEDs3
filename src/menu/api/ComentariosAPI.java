@@ -61,7 +61,7 @@ public class ComentariosAPI {
     public CelulaResposta listarComentariosDaPergunta(ComentariosInterface comentarios, UsuarioInterface usuarios,  int idPergunta) {
 
         CelulaResposta resultado = new CelulaResposta();
-        Comentario[] array = comentarios.getComentarioArray(idPergunta);
+        Comentario[] array = comentarios.getComentarioArray(idPergunta,(byte)1);
 
         if (array == null) {
             System.err.println("\n\n                   ¯\\_(ツ)_/¯");

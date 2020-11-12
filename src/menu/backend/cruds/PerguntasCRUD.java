@@ -155,7 +155,7 @@ public class PerguntasCRUD implements PerguntaInterface {
 	
 					Pergunta tmp = perguntas.read(idArray[j]);
 
-					if(tmp.getIdUsuario() != idUsuario)
+					if(tmp.getAtiva() == true)
 						array.add(perguntas.read(idArray[j]));
 				}
 			}

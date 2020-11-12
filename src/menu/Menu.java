@@ -237,7 +237,10 @@ public class Menu {
             myPrint.limparTela();
 
             System.out.println(myPrint.imprimir(pergunta.imprimir(u.getNome())));
-            System.out.println("\n" + minhaAPI.recuperarNota(idUsuario + "|P|" + pergunta.getId()) + "\n");
+
+            //Imprimir o voto do usuario na pergunta, se a pergunta em si não for do usuário
+            if ( pergunta.getIdUsuario() != idUsuario )
+                System.out.println("\n" + minhaAPI.recuperarNota(idUsuario + "|P|" + pergunta.getId()) + "\n");
 
             opcao = selecao.imprimirTela(menuIndex, (byte) -1);
 
@@ -252,23 +255,31 @@ public class Menu {
                     opcaoEscolhida = CodigoDeProtocolo.LISTARRESPOSTASGERAL;
                     break;
 
-                case "23":
+                case "23": 
                     opcaoEscolhida = CodigoDeProtocolo.COMENTARIOSPERGUNTA;
                     break;
 
-                case "33":
-                    menuIndex = 4;
+                case "33": // Menu de respostas
+                    if (pergunta.getIdUsuario() == idUsuario) {
+                        myPrint.limparTela();
+                        System.out.println("Você não pode responder a sua própria pergunta!");
+                        input.esperarUsuario();
+
+                    } else { 
+                        menuIndex = 4;
+                    }
+                    
                     break;
 
-                case "43":
+                case "43": // Menu de comentarios
                     menuIndex = 5;
                     break;
 
-                case "53":
+                case "53": // Menu de votos
                     menuIndex = 6;
                     break;
 
-                case "04":
+                case "04": // Voltar ao menu de navegar pela resposta escolhida 
                     menuIndex = 3;
                     break;
 
@@ -305,7 +316,14 @@ public class Menu {
                     break;
 
                 case "16":
-                    opcaoEscolhida = CodigoDeProtocolo.VOTAREMPERGUNTA;
+                    if (pergunta.getIdUsuario() == idUsuario) {
+                        myPrint.limparTela();
+                        System.out.println("Você não pode votar na sua própria pergunta!");
+                        input.esperarUsuario();
+
+                    } else { 
+                        opcaoEscolhida = CodigoDeProtocolo.VOTAREMPERGUNTA;
+                    }
                     break;
 
                 case "26":

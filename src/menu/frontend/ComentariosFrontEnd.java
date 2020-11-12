@@ -18,7 +18,7 @@ public class ComentariosFrontEnd extends FrontEndPlus {
      * @param array é o array de respostas que foi enviado
      * @return a String correspondente a listagem das respostas
      */
-    public String listar(UsuarioInterface usuarios, RegistroVisualComentario[] array) {
+    public String listar(UsuarioInterface usuarios, RegistroVisualplus[] array) {
 
         String resp = "";
         String nome = "";
@@ -27,7 +27,7 @@ public class ComentariosFrontEnd extends FrontEndPlus {
 
         resp += myPrint.imprimir("[" + (this.name + "s").toUpperCase() +  "]");
 
-        for (RegistroVisualComentario i : array) {
+        for (RegistroVisualplus i : array) {
             if (i.getAtiva() == false)
                 continue;
 

@@ -59,11 +59,11 @@ public class Main {
         CustomInput comentariosCustomInput  = new CustomInput(comentariosInputPrint);
 
         // Interface
-        UsuariosFrontEnd  usuariosFrontEnd      = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput, "usuario");
-        FrontEndPlus      perguntasFrontEnd     = new FrontEndPlus(perguntasPrint, perguntasCustomInput , "pergunta");
-        RespostasFrontEnd respostasFrontEnd     = new RespostasFrontEnd(respostasPrint, respostasCustomInput, "resposta");
-        FrontEnd          votosFrontEnd         = new FrontEnd(votosPrint, votosCustomInput, "voto");
-        ComentariosFrontEnd comentariosFrontEnd = new ComentariosFrontEnd(comentariosPrint, comentariosCustomInput, "comentario");
+        UsuariosFrontEnd    usuariosFrontEnd      = new UsuariosFrontEnd(usuariosPrint, usuariosCustomInput, "usuario");
+        FrontEndPlus        perguntasFrontEnd     = new FrontEndPlus(perguntasPrint, perguntasCustomInput , "pergunta");
+        FrontEnd            votosFrontEnd         = new FrontEnd(votosPrint, votosCustomInput, "voto");
+        ComentariosFrontEnd comentariosFrontEnd   = new ComentariosFrontEnd(comentariosPrint, comentariosCustomInput, "comentario");
+        RespostasFrontEnd   respostasFrontEnd     = new RespostasFrontEnd(respostasPrint, respostasCustomInput, "resposta",comentariosFrontEnd);
 
         // APIS
         UsuariosAPI   usuariosAPI           = new UsuariosAPI(usuariosFrontEnd, usuariosCustomInput);
