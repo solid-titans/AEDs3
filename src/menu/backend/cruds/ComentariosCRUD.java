@@ -1,7 +1,5 @@
 package menu.backend.cruds;
 
-import java.util.ArrayList;
-
 import crud.Crud;
 import menu.backend.cruds.abstracts.ComentariosInterface;
 import menu.backend.listas.ListaIDs;
@@ -20,7 +18,7 @@ public class ComentariosCRUD implements ComentariosInterface {
         this.path = path;
 
         try {
-            comentarios = new Crud<>("Comentarios",Comentario.class.getConstructor());
+            comentarios        = new Crud<>("Comentarios",Comentario.class.getConstructor());
             comentPerguntasIDs = new ListaIDs(this.path + "/" + "comentPerguntasIDs");
 			comentRespostasIDs = new ListaIDs(this.path + "/" + "comentRespostasIDs");
 
@@ -62,36 +60,31 @@ public class ComentariosCRUD implements ComentariosInterface {
     }
 
     @Override
-    public Comentario[] getComentarioArray(int idPergunta, byte tipo) {
+    public Comentario[] getComentarioArray(int idPR, byte tipo) {
         
         Comentario[]          resp           = null;
         int[]                 idsComentarios = null;
-        ArrayList<Comentario> array          = new ArrayList<Comentario>();
 
-        idsComentarios = comentPerguntasIDs.read(idPergunta);
+        idsComentarios = tipo == 1 ? comentPerguntasIDs.read(idPR) : comentRespostasIDs.read(idPR);
         
 		if (idsComentarios == null)
-			return null;
+            return null;
+            
+        resp = new Comentario[idsComentarios.length];
 
+        int contador = 0;
 		for (int i : idsComentarios) {
 			try {
 				Comentario temp = comentarios.read(i);
 				if (temp == null)
                     continue;
-                    
-                if (temp.getTipo() != tipo)
-                    continue;
 
-                array.add(temp);
+                resp[contador] = temp;
+                contador++;
                     
             } catch (Exception e) { e.printStackTrace(); }
             
 		}
-        resp = new Comentario[array.size()];
-
-        for ( int i = 0 ; i < array.size() ; i++ ) 
-            resp[i] = array.get(i);
-
 		return resp;
     }
 }

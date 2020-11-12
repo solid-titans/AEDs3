@@ -44,9 +44,10 @@ public class RespostasFrontEnd extends FrontEndPlus {
             RegistroVisualplus[] comentariosDaResposta = comentarios.getComentarioArray(i.getId(),(byte)0);
             if ( comentariosDaResposta != null)
                 resp += comentariosFrontEnd.listar(usuarios,comentariosDaResposta);
-            else {
+                
+            else 
                 resp += myPrint.imprimir("{Essa resposta não tem comentarios...}\n");
-            }
+            
 
             contador++;
 
