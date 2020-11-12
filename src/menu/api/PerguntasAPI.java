@@ -221,7 +221,8 @@ public class PerguntasAPI {
         if (lista.length > 0) {
 
             idPergunta = frontEnd.escolher(lista);
-            if (idPergunta != -1) {
+            resultado.setCdp(CodigoDeProtocolo.OPERACAOCANCELADA);
+            if (idPergunta != -1 && idPergunta != -3) {
                 resultado.setPergunta(perguntas.achar(idPergunta));
                 resultado.setCdp(CodigoDeProtocolo.IRPARAPERGUNTA);
 
