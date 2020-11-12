@@ -10,9 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import produtos.abstracts.RegistroVisualComentario;
+import produtos.abstracts.RegistroVisualplus;
 
-public class Comentario implements RegistroVisualComentario{
+public class Comentario implements RegistroVisualplus{
     
     private byte   tipo;
     private int    idUsuario;

@@ -18,7 +18,7 @@ public class ComentariosCRUD implements ComentariosInterface {
         this.path = path;
 
         try {
-            comentarios = new Crud<>("Comentarios",Comentario.class.getConstructor());
+            comentarios        = new Crud<>("Comentarios",Comentario.class.getConstructor());
             comentPerguntasIDs = new ListaIDs(this.path + "/" + "comentPerguntasIDs");
 			comentRespostasIDs = new ListaIDs(this.path + "/" + "comentRespostasIDs");
 
@@ -60,31 +60,31 @@ public class ComentariosCRUD implements ComentariosInterface {
     }
 
     @Override
-    public Comentario[] getComentarioArray(int idPergunta) {
+    public Comentario[] getComentarioArray(int idPR, byte tipo) {
         
-        Comentario[] resp = null;
-		int[] idsComentarios = null;
+        Comentario[]          resp           = null;
+        int[]                 idsComentarios = null;
 
-        idsComentarios = comentPerguntasIDs.read(idPergunta);
+        idsComentarios = tipo == 1 ? comentPerguntasIDs.read(idPR) : comentRespostasIDs.read(idPR);
         
 		if (idsComentarios == null)
-			return null;
+            return null;
+            
+        resp = new Comentario[idsComentarios.length];
 
-		resp = new Comentario[idsComentarios.length];
-
-		int contador = 0;
+        int contador = 0;
 		for (int i : idsComentarios) {
 			try {
 				Comentario temp = comentarios.read(i);
 				if (temp == null)
-					continue;
+                    continue;
 
-				resp[contador] = temp;
+                resp[contador] = temp;
                 contador++;
-                
-			} catch (Exception e) { e.printStackTrace(); }
+                    
+            } catch (Exception e) { e.printStackTrace(); }
+            
 		}
-
 		return resp;
     }
 }
